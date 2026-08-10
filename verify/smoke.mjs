@@ -121,6 +121,85 @@ if (global.window.Cartas.deck) {
 checkDeck(miniDeck, "mini fixture (2 cards)");
 
 /* ------------------------------------------------------------------ */
+/* B. Pure transition() core — T1 RELOAD, T2 DRAW_START                */
+/* ------------------------------------------------------------------ */
+
+console.log("\n== Section B: transition core (T1/T2) ==");
+
+/* app.js runs in the same shimmed global: window.Cartas gets transition. */
+loadScript("app.js");
+const { transition, createInitialState, poolFor } = global.window.Cartas;
+check("app.js exposes pure transition()/createInitialState()/poolFor()",
+  typeof transition === "function" &&
+    typeof createInitialState === "function" &&
+    typeof poolFor === "function");
+
+const initial = createInitialState();
+check(
+  "createInitialState: draw/home, drawn [], selectedId null",
+  initial.mode === "draw" &&
+    initial.phase === "home" &&
+    Array.isArray(initial.drawn) &&
+    initial.drawn.length === 0 &&
+    initial.selectedId === null,
+  JSON.stringify(initial)
+);
+
+/* T1 — RELOAD resets to home from any state (DRAW-1: reload → home). */
+{
+  const messy = { mode: "draw", phase: "carousel", drawn: [{ cardId: "sol" }], selectedId: "sol" };
+  const reloaded = transition(messy, { type: "RELOAD" });
+  check(
+    "T1 RELOAD → draw/home with empty drawn (reload → home)",
+    reloaded.mode === "draw" &&
+      reloaded.phase === "home" &&
+      reloaded.drawn.length === 0 &&
+      reloaded.selectedId === null,
+    JSON.stringify(reloaded)
+  );
+  check("T1 returns a fresh state object (immutable)", reloaded !== messy);
+}
+
+/* T2 — "Sacar carta" opens the carousel from draw/home (DRAW-1 happy path). */
+{
+  const carousel = transition(initial, { type: "DRAW_START" });
+  check(
+    "T2 DRAW_START → draw/carousel, drawn unchanged",
+    carousel.mode === "draw" &&
+      carousel.phase === "carousel" &&
+      carousel.drawn.length === 0 &&
+      carousel.selectedId === null,
+    JSON.stringify(carousel)
+  );
+  check("T2 keeps the pool at the full deck size (12)", poolFor(carousel).length === 12);
+}
+
+/* Guards — T2 only valid from draw/home; unknown actions are no-ops. */
+{
+  check(
+    "guard: DRAW_START from draw/carousel is a no-op (same reference)",
+    transition({ ...initial, phase: "carousel" }, { type: "DRAW_START" }).phase === "carousel"
+  );
+  check(
+    "guard: unknown action returns the same state reference",
+    transition(initial, { type: "SACAR_OTRA" }) === initial
+  );
+  check("guard: null action returns the same state reference", transition(initial, null) === initial);
+}
+
+/* poolFor — no-repeat pool excludes drawn ids (DECK-4). */
+{
+  const withDrawn = { ...initial, drawn: [{ cardId: "sol" }, { cardId: "luna" }] };
+  const pool = poolFor(withDrawn);
+  const ids = pool.map((c) => c.id);
+  check(
+    "poolFor excludes drawn ids (sol, luna absent), DECK-4",
+    ids.length === 10 && !ids.includes("sol") && !ids.includes("luna"),
+    ids.join(",")
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* Summary                                                             */
 /* ------------------------------------------------------------------ */
 
