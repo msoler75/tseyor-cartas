@@ -1,0 +1,364 @@
+/* ============================================================================
+ * Cartas Tseyor — styles.css
+ * ============================================================================
+ * CSS es dueño de TODO el movimiento; JS solo escribe variables (--rz/--rx/--tilt)
+ * y clases de estado. Regla de oro: se anima únicamente transform y opacity
+ * (nada de left/top/width/height); will-change solo en elementos animando.
+ *
+ * Estética: "guía de campo linocut" — papel cálido, tinta profunda, un acento
+ * terracota. Tipografías de sistema (sin fetches externos): serif de carácter
+ * para títulos + humanista para texto.
+ *
+ * Slice 1: shell (100vh/100dvh + safe-area), home, tira del carousel con
+ * scroll-snap y touch-action pan-x, esqueleto 3D de la carta, ≥44px,
+ * centrado de escritorio (DRAW-8).
+ * ========================================================================== */
+
+/* ---------------------------------------------------------------------------
+ * Tokens
+ * ------------------------------------------------------------------------- */
+:root {
+  /* Paleta — tinta profunda / papel cálido / acento terracota */
+  --paper: #f2ead9;
+  --paper-deep: #e9dfc8;
+  --ink: #26221c;
+  --muted: #6d6353;
+  --line: #d5c7a6;
+  --accent: #b3401f;
+  --accent-strong: #8f2f13;
+  --on-accent: #fdf8ec;
+
+  /* Tipografías de sistema (cero fetches; file:// offline) */
+  --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua",
+    Palatino, "DejaVu Serif", Georgia, serif;
+  --font-body: "Gill Sans", "Avenir Next", "Trebuchet MS", "DejaVu Sans",
+    sans-serif;
+
+  --card-radius: 12px;
+  --focus-outline: 2px solid var(--accent);
+}
+
+/* ---------------------------------------------------------------------------
+ * Base / shell de la aplicación
+ * ------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100vh;      /* fallback para navegadores sin dvh */
+  min-height: 100dvh;     /* alto real del viewport móvil */
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--ink);
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, 0.38), transparent 62%),
+    var(--paper);
+  padding-left: env(safe-area-inset-left);   /* respiración en notch/barra */
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-header {
+  text-align: center;
+  padding: clamp(1.25rem, 4vh, 2.5rem) 1rem 0;
+}
+
+.app-kicker {
+  margin: 0 0 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.app-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.9rem, 6vw, 2.9rem);
+  letter-spacing: 0.02em;
+}
+
+.app-stage {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------------------------------------------------------------------------
+ * Home
+ * ------------------------------------------------------------------------- */
+.home {
+  max-width: 42rem;
+  margin-inline: auto;
+  padding: clamp(1.5rem, 5vw, 3rem) clamp(1.25rem, 5vw, 2.5rem) 2rem;
+  text-align: center;
+}
+
+.home-intro {
+  max-width: 35em;
+  margin: 0 auto 2rem;
+  font-size: clamp(1.02rem, 2.6vw, 1.15rem);
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.home-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.hint {
+  margin: 0.5rem 0;
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--muted);
+}
+
+/* ---------------------------------------------------------------------------
+ * Botones (objetivos ≥ 44px; texto sin iconos, DRAW-4)
+ * ------------------------------------------------------------------------- */
+.btn {
+  min-height: 48px;
+  padding: 0.8rem 1.7rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  border-radius: 999px;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  /* Solo se anima transform (contrato de movimiento). */
+  transition: transform 0.18s ease;
+}
+
+.btn:active {
+  transform: translateY(2px) scale(0.99);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.btn--secondary {
+  background: transparent;
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+@media (hover: hover) {
+  .btn--primary:hover:not(:disabled) {
+    background: var(--accent-strong);
+    border-color: var(--accent-strong);
+  }
+  .btn--secondary:hover:not(:disabled) {
+    background: var(--paper-deep);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Carousel — tira con scroll-snap, swipe táctil (DRAW-2/8)
+ * ------------------------------------------------------------------------- */
+.carousel-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.carousel-caption {
+  margin: 0 1rem 0.4rem;
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.carousel {
+  display: flex;
+  gap: clamp(10px, 2.5vw, 24px);
+  overflow-x: auto;
+  touch-action: pan-x;                 /* el gesto horizontal pertenece a la tira */
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 50%;          /* centra cada carta al hacer snap */
+  overscroll-behavior-inline: contain;
+  padding-block: 1.25rem 1rem;
+  padding-inline: max(1rem, env(safe-area-inset-left))
+    max(1rem, env(safe-area-inset-right));
+  justify-content: flex-start;         /* fallback: nunca deja cartas inalcanzables */
+  justify-content: safe center;        /* centra si cabe; flex-start si desborda */
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+
+.carousel::-webkit-scrollbar {
+  height: 8px;
+}
+
+.carousel::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 999px;
+}
+
+.carousel-item {
+  flex: 0 0 auto;
+  scroll-snap-align: center;
+}
+
+/* ---------------------------------------------------------------------------
+ * Carta — esqueleto 3D (el flip real llega en el Slice 2)
+ * ------------------------------------------------------------------------- */
+.card {
+  position: relative;
+  width: clamp(140px, 38vw, 210px);
+  aspect-ratio: 3 / 4.6;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  /* JS compone: jitter --rx/--rz + tilt --tilt (D8/D9) */
+  transform: rotateX(var(--rx, 0deg)) rotateZ(var(--rz, 0deg))
+    rotateY(var(--tilt, 0deg));
+  perspective: 900px;
+  transition: transform 0.18s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: hover) {
+  .card:hover {
+    transform: rotateX(var(--rx, 0deg)) rotateZ(var(--rz, 0deg))
+      rotateY(var(--tilt, 0deg)) translateY(-6px);
+  }
+}
+
+.card-inner {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--card-radius);
+  backface-visibility: hidden;
+  box-shadow: 0 10px 24px rgba(38, 34, 28, 0.2);
+}
+
+/* Dorso: motivo linocut plano (sin degradados), marco doble + medallón */
+.face--back {
+  background: var(--paper-deep);
+  border: 2px solid var(--ink);
+  box-shadow:
+    inset 0 0 0 3px var(--paper),
+    inset 0 0 0 5px var(--line),
+    0 10px 24px rgba(38, 34, 28, 0.2);
+}
+
+.face--back::before {
+  content: "";
+  position: absolute;
+  inset: 24%;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  transform: rotate(45deg);
+}
+
+.face--back::after {
+  content: "";
+  position: absolute;
+  inset: 41%;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* Frente: número grande (placeholder del arte futuro, DECK-2) */
+.face--front {
+  display: grid;
+  place-items: center;
+  background: var(--paper-deep);
+  border: 2px solid var(--ink);
+  transform: rotateY(180deg);
+}
+
+.face-num {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 14vw, 4rem);
+  line-height: 1;
+  color: var(--accent);
+}
+
+/* ---------------------------------------------------------------------------
+ * Escritorio (≥768px): cartas más grandes, tira centrada (DRAW-8)
+ * ------------------------------------------------------------------------- */
+@media (min-width: 768px) {
+  .carousel {
+    max-width: min(92vw, 1100px);
+    margin-inline: auto;
+  }
+
+  .card {
+    width: clamp(190px, min(22vw, 30vh), 260px);
+  }
+
+  .home {
+    padding-bottom: 3rem;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Accesibilidad
+ * ------------------------------------------------------------------------- */
+:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

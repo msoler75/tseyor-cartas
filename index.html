@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Cartas Tseyor — Tirada de tres cartas</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <p class="app-kicker">Cartas Tseyor</p>
+      <h1 class="app-title">Saca tus cartas</h1>
+    </header>
+
+    <!-- El render de app.js reemplaza el contenido de #app según el estado. -->
+    <main id="app" class="app-stage"></main>
+
+    <!-- Región aria-live persistente, fuera de #app para que el render no la toque. -->
+    <div id="live" class="visually-hidden" aria-live="polite"></div>
+
+    <!-- Scripts planos, en este orden: deck.js (datos) antes de app.js (lógica). -->
+    <script src="deck.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
