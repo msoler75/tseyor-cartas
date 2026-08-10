@@ -13,8 +13,10 @@
  * Slice 1: T1 (RELOAD) y T2 ("Sacar carta" → carousel), render home/carousel,
  * jitter (--rz/--rx), tilt por scroll (rAF pasivo), teclado ←/→ + foco en la
  * primera carta, "Ver tirada" deshabilitado y scaffolding del tope de 3.
- * (Selección T3, reveal, sink, tirada completa y revisión llegan en los
- * slices 2 y 3.)
+ * Slice 2: T3–T7 (selección con commit-before-animation, flip/sink, reveal,
+ * "Sacar otra carta" con pool sin repetición), getDrawGuard (tope 3 y hint de
+ * pool agotado), reveal con detalle por scroll y atajo de reduced-motion.
+ * (Revisión T8–T13 llega en el Slice 3.)
  * ========================================================================== */
 
 (function () {
@@ -54,10 +56,41 @@
   }
 
   /**
+   * Guard de tirada + hint (DECK-2, DRAW-4) — puro y testeable (R3-W1).
+   * `canDraw` = quedan tiradas Y hay cartas en el pool. La copia exacta del
+   * hint depende del disparador:
+   *  - drawn.length === 3            → "Tirada completa 3/3"
+   *  - pool vacío (mazo pequeño)     → "Tirada completa — no quedan más cartas"
+   *    (sin 3/3 fijo, DECK-2); no se abre jamás un carousel con pool vacío.
+   * @param {{drawn: Array<{cardId: string}>}} state
+   * @param {Array<object>} pool pool ya calculado (deck − drawn)
+   * @returns {{canDraw: boolean, hint: string}}
+   */
+  function getDrawGuard(state, pool) {
+    const drawnCount = (state.drawn || []).length;
+    const canDraw = drawnCount < 3 && pool.length > 0;
+    let hint = "";
+    if (drawnCount >= 3) {
+      hint = "Tirada completa 3/3";
+    } else if (pool.length === 0) {
+      hint = "Tirada completa — no quedan más cartas";
+    }
+    return { canDraw, hint };
+  }
+
+  /**
    * Transición pura de estado (D3). Devuelve SIEMPRE un estado:
    *  - T1  RELOAD     → draw/home fresco (cualquier estado previo)
-   *  - T2  DRAW_START → draw/carousel (solo desde draw/home; el pool se
-   *                      calcula en render a partir de drawn)
+   *  - T2  DRAW_START → draw/carousel (solo desde draw/home y con canDraw;
+   *                      guard de estado R3-W2: nunca un carousel vacío ni
+   *                      una 4ª tirada)
+   *  - T3  SELECT     → commit-before-animation (D5): drawn += id y
+   *                      selectedId = id SIN cambiar de fase; el DOM anima
+   *                      de forma imperativa
+   *  - T4  FLIP_END   → draw/reveal (solo si hay selección en curso)
+   *  - T5  SELECT repetido durante el reveal → no-op (mismo estado)
+   *  - T6  SINK_END   → no-op de estado (solo limpieza de DOM)
+   *  - T7  NEXT_DRAW  → draw/carousel desde draw/reveal solo con canDraw
    *  - cualquier otra acción o guard fallido → mismo estado (no-op)
    */
   function transition(state, action) {
@@ -68,10 +101,47 @@
         return createInitialState();
 
       case "DRAW_START": {
-        // T2: solo desde draw/home. Un carousel nunca se abre con pool vacío
-        // (DECK-2): el render de home bloquea "Sacar carta" cuando no hay.
+        // T2: solo desde draw/home y con guard (R3-W2): un carousel nunca se
+        // abre con pool vacío ni con drawn.length >= 3 (DECK-2, DRAW-4).
         if (state.mode !== "draw" || state.phase !== "home") return state;
+        if (!getDrawGuard(state, poolFor(state)).canDraw) return state;
         return { ...state, mode: "draw", phase: "carousel" };
+      }
+
+      case "SELECT": {
+        // T3/T5: solo en draw/carousel, sin selección en curso y con la
+        // carta disponible. Commit-before-animation (D5): drawn y selectedId
+        // se actualizan ya; la animación es no bloqueante y sin rollback.
+        if (state.mode !== "draw" || state.phase !== "carousel") return state;
+        if (state.selectedId !== null) return state; // T5: ya revelando — no-op
+        if ((state.drawn || []).length >= 3) return state; // invariante DRAW-4
+        const cardId = action.cardId;
+        if (typeof cardId !== "string") return state;
+        if (state.drawn.some((d) => d.cardId === cardId)) return state; // sin repetir
+        return {
+          ...state,
+          drawn: [...state.drawn, { cardId }],
+          selectedId: cardId
+        };
+      }
+
+      case "FLIP_END": {
+        // T4: el flip terminó (transitionend / backstop / atajo reduced-motion).
+        if (state.mode !== "draw" || state.phase !== "carousel") return state;
+        if (state.selectedId === null) return state;
+        return { ...state, phase: "reveal" };
+      }
+
+      case "SINK_END":
+        // T6: solo limpieza de DOM; el estado no cambia.
+        return state;
+
+      case "NEXT_DRAW": {
+        // T7: "Sacar otra carta" — solo desde draw/reveal y con canDraw
+        // (R3-W2): nunca abrir un carousel con pool vacío o una 4ª tirada.
+        if (state.mode !== "draw" || state.phase !== "reveal") return state;
+        if (!getDrawGuard(state, poolFor(state)).canDraw) return state;
+        return { ...state, phase: "carousel", selectedId: null };
       }
 
       default:
@@ -203,8 +273,7 @@
   /** Fase home: instrucciones + "Sacar carta" (+ "Ver tirada" placeholder). */
   function renderHome(root) {
     const state = Cartas.state;
-    const drawnCount = state.drawn.length;
-    const canDraw = drawnCount < 3 && poolFor(state).length > 0; // tope 3 (DRAW-4)
+    const guard = getDrawGuard(state, poolFor(state)); // R3-W1: del núcleo puro
 
     const section = el("section", "home");
 
@@ -217,18 +286,15 @@
 
     const actions = el("div", "home-actions");
 
-    if (canDraw) {
+    if (guard.canDraw) {
       const drawBtn = el("button", "btn btn--primary", "Sacar carta");
       drawBtn.type = "button";
       drawBtn.addEventListener("click", () => dispatch({ type: "DRAW_START" }));
       actions.appendChild(drawBtn);
     } else {
-      // Tope alcanzado (DRAW-4): ninguno de los dos textos del hint.
+      // Tope alcanzado (DRAW-4) o pool agotado (DECK-2): copia exacta del hint.
       const hint = el("p", "hint");
-      hint.textContent =
-        drawnCount >= 3
-          ? "Tirada completa 3/3"
-          : "Tirada completa — no quedan más cartas";
+      hint.textContent = guard.hint;
       actions.appendChild(hint);
     }
 
@@ -341,6 +407,7 @@
   /* ==== API pública (contrato de design.md) ==== */
   Cartas.createInitialState = createInitialState;
   Cartas.poolFor = poolFor;
+  Cartas.getDrawGuard = getDrawGuard;
   Cartas.transition = transition;
   Cartas.render = render;
   Cartas.state = createInitialState();

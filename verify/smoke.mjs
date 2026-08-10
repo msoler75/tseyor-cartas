@@ -13,6 +13,11 @@
  *   B. Pure transition() core (DRAW-1, DECK-1) — T1 RELOAD, T2 "Sacar carta",
  *      guards, no-op fallback, no-repeat pool helper (DECK-4).
  *      (Added together with app.js.)
+ *   C. Draw-loop transitions T3–T7 + getDrawGuard (Slice 2) — commit-
+ *      before-animation, double-activation no-op, FLIP_END, SINK_END,
+ *      "Sacar otra carta" loop, max-3, no-repeat pool, and both "Tirada
+ *      completa" hint copies incl. the 2-card pool-exhaustion case (DECK-2).
+ *      (Added together with app.js Slice 2 core.)
  *
  * Exit code 0 = green, 1 = failures.
  */
@@ -176,9 +181,10 @@ check(
 
 /* Guards — T2 only valid from draw/home; unknown actions are no-ops. */
 {
+  const s = { ...initial, phase: "carousel" };
   check(
     "guard: DRAW_START from draw/carousel is a no-op (same reference)",
-    transition({ ...initial, phase: "carousel" }, { type: "DRAW_START" }).phase === "carousel"
+    transition(s, { type: "DRAW_START" }) === s && s.phase === "carousel" && s.drawn.length === 0
   );
   check(
     "guard: unknown action returns the same state reference",
@@ -197,6 +203,210 @@ check(
     ids.length === 10 && !ids.includes("sol") && !ids.includes("luna"),
     ids.join(",")
   );
+}
+
+/* ------------------------------------------------------------------ */
+/* C. Draw-loop transitions T3–T7 + getDrawGuard (Slice 2)             */
+/*    T3 commit-before-animation, T5 double-activation no-op, T4       */
+/*    FLIP_END, T6 SINK_END (DOM-only), T7 "Sacar otra carta", max-3,  */
+/*    no-repeat pool (DECK-4) and both "Tirada completa" copies        */
+/*    (DECK-2) — 12-card deck AND 2-card mini fixture.                 */
+/* ------------------------------------------------------------------ */
+
+console.log("\n== Section C: draw-loop transitions (T3–T7) + guard ==");
+
+/* Helper: estado draw/carousel fresco (T2). */
+const carouselState = () => transition(initial, { type: "DRAW_START" });
+
+/* T3 — SELECT commits BEFORE any animation (DRAW-1 commit-before-animation). */
+{
+  const s = carouselState();
+  const next = transition(s, { type: "SELECT", cardId: "sol" });
+  check(
+    "T3 SELECT commits: drawn=[sol], selectedId=sol, phase stays carousel (revealing)",
+    next.drawn.length === 1 &&
+      next.drawn[0].cardId === "sol" &&
+      next.selectedId === "sol" &&
+      next.phase === "carousel",
+    JSON.stringify(next)
+  );
+  check("T3 returns a fresh state (immutable)", next !== s);
+  check("T3 pool immediately excludes the committed card (11)", poolFor(next).length === 11);
+}
+
+/* T3 guard — an already-drawn id can never be selected twice (no-repeat). */
+{
+  const s = { ...carouselState(), drawn: [{ cardId: "sol" }] };
+  const next = transition(s, { type: "SELECT", cardId: "sol" });
+  check(
+    "T3 refuses an already-drawn id (same reference, no duplicate)",
+    next === s && next.drawn.length === 1
+  );
+}
+
+/* T5 — double activation while revealing is a no-op (DRAW-2). */
+{
+  const s = { ...carouselState(), drawn: [{ cardId: "sol" }], selectedId: "sol" };
+  check(
+    "T5 SELECT while revealing is a no-op (same reference)",
+    transition(s, { type: "SELECT", cardId: "luna" }) === s && s.drawn.length === 1
+  );
+  check(
+    "T5 re-activating the same committed card is a no-op",
+    transition(s, { type: "SELECT", cardId: "sol" }) === s
+  );
+}
+
+/* T4 — FLIP_END advances to reveal, preserving drawn/selectedId. */
+{
+  const revealing = { ...carouselState(), drawn: [{ cardId: "sol" }], selectedId: "sol" };
+  const reveal = transition(revealing, { type: "FLIP_END" });
+  check(
+    "T4 FLIP_END → draw/reveal, drawn & selectedId preserved",
+    reveal.mode === "draw" &&
+      reveal.phase === "reveal" &&
+      reveal.drawn.length === 1 &&
+      reveal.selectedId === "sol",
+    JSON.stringify(reveal)
+  );
+  const idle = carouselState();
+  check(
+    "T4 FLIP_END without a pending selection is a no-op (same reference)",
+    transition(idle, { type: "FLIP_END" }) === idle
+  );
+  check(
+    "T4 repeated FLIP_END in reveal is a no-op (same reference)",
+    transition(reveal, { type: "FLIP_END" }) === reveal
+  );
+}
+
+/* T6 — SINK_END is DOM-only; state never changes. */
+{
+  const s = { ...carouselState(), drawn: [{ cardId: "sol" }], selectedId: "sol" };
+  check("T6 SINK_END keeps the same state reference (DOM-only)", transition(s, { type: "SINK_END" }) === s);
+}
+
+/* T7 — "Sacar otra carta" opens the next carousel; pool excludes drawn (DRAW-6/DECK-4). */
+{
+  const reveal1 = transition(
+    { ...carouselState(), drawn: [{ cardId: "sol" }], selectedId: "sol" },
+    { type: "FLIP_END" }
+  );
+  const next2 = transition(reveal1, { type: "NEXT_DRAW" });
+  check(
+    "T7 NEXT_DRAW → draw/carousel, selectedId null, drawn preserved",
+    next2.mode === "draw" &&
+      next2.phase === "carousel" &&
+      next2.selectedId === null &&
+      next2.drawn.length === 1,
+    JSON.stringify(next2)
+  );
+  const pool2 = poolFor(next2);
+  check(
+    "T7 new pool excludes drawn ids (DECK-4): 11 cards, sol absent",
+    pool2.length === 11 && !pool2.some((c) => c.id === "sol"),
+    pool2.map((c) => c.id).join(",")
+  );
+}
+
+/* T7/T2 state-level guards (R3-W2): never a 4th draw, never an empty carousel. */
+{
+  const reveal3 = {
+    mode: "draw",
+    phase: "reveal",
+    drawn: [{ cardId: "a" }, { cardId: "b" }, { cardId: "c" }],
+    selectedId: "c"
+  };
+  check(
+    "T7 NEXT_DRAW refused at drawn.length 3 (same reference, max-3)",
+    transition(reveal3, { type: "NEXT_DRAW" }) === reveal3 && reveal3.drawn.length === 3
+  );
+
+  const homeDrawn3 = {
+    mode: "draw",
+    phase: "home",
+    drawn: [{ cardId: "a" }, { cardId: "b" }, { cardId: "c" }],
+    selectedId: null
+  };
+  check(
+    "T2 DRAW_START refused when drawn.length >= 3 (same reference, defensive)",
+    transition(homeDrawn3, { type: "DRAW_START" }) === homeDrawn3
+  );
+
+  /* Mini deck (2 cards): pool exhausted after 2 draws → machine refuses. */
+  const shippedDeck = global.window.Cartas.deck;
+  global.window.Cartas.deck = miniDeck;
+  try {
+    const homeEmpty = {
+      mode: "draw",
+      phase: "home",
+      drawn: [{ cardId: "sol" }, { cardId: "luna" }],
+      selectedId: null
+    };
+    check(
+      "T2 DRAW_START refused with empty pool (undersized deck, same reference)",
+      transition(homeEmpty, { type: "DRAW_START" }) === homeEmpty
+    );
+    const revealMini = {
+      mode: "draw",
+      phase: "reveal",
+      drawn: [{ cardId: "sol" }, { cardId: "luna" }],
+      selectedId: "luna"
+    };
+    check(
+      "T7 NEXT_DRAW refused with empty pool (undersized deck, same reference)",
+      transition(revealMini, { type: "NEXT_DRAW" }) === revealMini
+    );
+  } finally {
+    global.window.Cartas.deck = shippedDeck;
+  }
+}
+
+/* getDrawGuard — pure guard + exact hint copies (R3-W1, DECK-2/DRAW-4). */
+{
+  const { getDrawGuard } = global.window.Cartas;
+  check("app.js exposes pure getDrawGuard()", typeof getDrawGuard === "function");
+
+  const g0 = getDrawGuard(initial, poolFor(initial));
+  check(
+    "guard: 12-card deck, drawn 0 → canDraw true, no hint",
+    g0.canDraw === true && g0.hint === "",
+    JSON.stringify(g0)
+  );
+
+  const g3 = getDrawGuard(
+    { ...initial, drawn: [{ cardId: "a" }, { cardId: "b" }, { cardId: "c" }] },
+    poolFor(initial)
+  );
+  check(
+    "guard: drawn 3 → canDraw false, hint 'Tirada completa 3/3' (DRAW-4)",
+    g3.canDraw === false && g3.hint === "Tirada completa 3/3",
+    JSON.stringify(g3)
+  );
+
+  /* Mini deck: both cards drawn, pool empty → pool-exhaustion copy, no 3/3. */
+  const shippedDeck = global.window.Cartas.deck;
+  global.window.Cartas.deck = miniDeck;
+  try {
+    const exhausted = {
+      ...initial,
+      drawn: [{ cardId: "sol" }, { cardId: "luna" }]
+    };
+    const ga = getDrawGuard(exhausted, poolFor(exhausted));
+    check(
+      "guard: 2-card deck exhausted → canDraw false, hint 'Tirada completa — no quedan más cartas' (DECK-2)",
+      ga.canDraw === false && ga.hint === "Tirada completa — no quedan más cartas",
+      JSON.stringify(ga)
+    );
+    const gb = getDrawGuard(initial, poolFor(initial));
+    check(
+      "guard: 2-card deck, drawn 0 → canDraw true, no hint",
+      gb.canDraw === true && gb.hint === "",
+      JSON.stringify(gb)
+    );
+  } finally {
+    global.window.Cartas.deck = shippedDeck;
+  }
 }
 
 /* ------------------------------------------------------------------ */
