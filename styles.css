@@ -15,6 +15,9 @@
  * Slice 2: flip-elevate 3D (~600ms) + hundimiento escalonado (--i * 45ms),
  * carta agrandada del reveal (min(72vw, 340px)), panel de detalle de hasta
  * 65ch con revelado por scroll, atajo de prefers-reduced-motion (DRAW-3/5/8).
+ * Slice 3: spread de revisión (pila móvil / fila ≥1024px, REVIEW-6), diálogo
+ * de detalle (min(92vw,640px), max-height min(85dvh,85vh), overflow-y:auto),
+ * botón fantasma "Nueva tirada" (T12) y foco visible en todo el recorrido.
  * ========================================================================== */
 
 /* ---------------------------------------------------------------------------
@@ -187,6 +190,14 @@ body {
   color: var(--ink);
 }
 
+/* "Nueva tirada": acción destructiva por diseño (REVIEW-5) — peso visual
+   bajo, texto plano; no compite con la acción principal. */
+.btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--muted);
+}
+
 @media (hover: hover) {
   .btn--primary:hover:not(:disabled) {
     background: var(--accent-strong);
@@ -194,6 +205,11 @@ body {
   }
   .btn--secondary:hover:not(:disabled) {
     background: var(--paper-deep);
+  }
+  .btn--ghost:hover:not(:disabled) {
+    color: var(--accent-strong);
+    text-decoration: underline;
+    text-underline-offset: 4px;
   }
 }
 
@@ -471,6 +487,219 @@ body {
 }
 
 /* ---------------------------------------------------------------------------
+ * Spread de revisión (Slice 3, T8/T9 — REVIEW-1/6): la tirada en orden, cada
+ * carta con su etiqueta de posición. Pila vertical en móvil (targets ≥44px,
+ * respiración safe-area) y fila centrada en escritorio (≥1024px).
+ * ------------------------------------------------------------------------- */
+.spread {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(1.25rem, 4vh, 2.5rem) clamp(1rem, 4vw, 2rem) 2rem;
+  text-align: center;
+}
+
+.spread-kicker {
+  margin: 0 0 1.4rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.spread-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1.1rem, 4.5vh, 2rem);
+  width: 100%;
+  max-width: 24rem;
+}
+
+.spread-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 0.9rem 0.8rem;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border-radius: var(--card-radius);
+  -webkit-tap-highlight-color: transparent;
+  /* Solo transform (contrato de movimiento); el hover es mejora. */
+  transition: transform 0.18s ease;
+}
+
+.spread-face {
+  display: grid;
+  place-items: center;
+  width: clamp(150px, 52vw, 220px);
+  aspect-ratio: 3 / 4.6;
+  background: var(--paper-deep);
+  border: 2px solid var(--ink);
+  border-radius: var(--card-radius);
+  box-shadow:
+    inset 0 0 0 3px var(--paper),
+    inset 0 0 0 5px var(--line),
+    0 14px 34px rgba(38, 34, 28, 0.25);
+}
+
+.spread-face .face-num {
+  font-size: clamp(2.6rem, 15vw, 4.2rem);
+}
+
+.spread-caption {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.spread-pos {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.spread-title {
+  font-family: var(--font-display);
+  font-size: 1.06rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+@media (hover: hover) {
+  .spread-card:hover .spread-face {
+    transform: translateY(-5px);
+  }
+  .spread-card:hover .spread-title {
+    color: var(--accent-strong);
+  }
+}
+
+.spread-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  margin-top: 2rem;
+}
+
+/* ---------------------------------------------------------------------------
+ * Diálogo de revisión (Slice 3, T9/T10 — REVIEW-2/3/6): overlay fijo,
+ * HERMANO de #app (index.html #dialog-root). Ancho min(92vw, 640px), alto
+ * min(85dvh, 85vh) con scroll interno; solo transform/opacity (contrato).
+ * ------------------------------------------------------------------------- */
+.dialog-root {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding:
+    max(1rem, env(safe-area-inset-top))
+    max(1rem, env(safe-area-inset-right))
+    max(1rem, env(safe-area-inset-bottom))
+    max(1rem, env(safe-area-inset-left));
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.25s ease,
+    visibility 0s linear 0.25s;
+}
+
+.dialog-root.is-open {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.25s ease;
+}
+
+/* Velo terracota translúcido sobre el fondo inerte. */
+.dialog-root::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(38, 34, 28, 0.45);
+}
+
+.dialog {
+  position: relative;
+  width: min(92vw, 640px);
+  max-height: min(85dvh, 85vh);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: clamp(1.25rem, 4vw, 2rem);
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 16px;
+  box-shadow:
+    inset 0 0 0 3px var(--paper-deep),
+    inset 0 0 0 5px var(--line),
+    0 28px 64px rgba(38, 34, 28, 0.45);
+  transform: translateY(14px) scale(0.98);
+  transition: transform 0.25s ease;
+}
+
+.dialog-root.is-open .dialog {
+  transform: none;
+}
+
+.dialog .reveal-title {
+  margin-top: 0.3rem;
+}
+
+/* Cara de la carta dentro del diálogo. */
+.dialog-face {
+  display: grid;
+  place-items: center;
+  width: min(44vw, 150px);
+  aspect-ratio: 3 / 4.6;
+  margin: 1rem 0 1.25rem;
+  background: var(--paper-deep);
+  border: 2px solid var(--ink);
+  border-radius: var(--card-radius);
+  box-shadow:
+    inset 0 0 0 3px var(--paper),
+    inset 0 0 0 5px var(--line),
+    0 14px 34px rgba(38, 34, 28, 0.25);
+}
+
+.dialog-face .face-num {
+  font-size: clamp(2.4rem, 13vw, 3.6rem);
+}
+
+/* El detalle reutiliza las clases del reveal (D10): dentro del diálogo
+   siempre visible (JS añade .is-visible al abrir). */
+.dialog .reveal-detail {
+  opacity: 1;
+  transform: none;
+}
+
+.dialog-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.8rem;
+  width: 100%;
+  max-width: 22rem;
+  margin-top: 1.4rem;
+}
+
+/* ---------------------------------------------------------------------------
  * Escritorio (≥768px): cartas más grandes, tira centrada (DRAW-8)
  * ------------------------------------------------------------------------- */
 @media (min-width: 768px) {
@@ -488,6 +717,33 @@ body {
   }
 
   .reveal-actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .dialog-actions {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    max-width: none;
+  }
+}
+
+/* REVIEW-6: el spread pasa a fila centrada en escritorio (≥1024px),
+   con cartas más grandes y sin desbordes. */
+@media (min-width: 1024px) {
+  .spread-list {
+    flex-direction: row;
+    justify-content: center;
+    gap: clamp(1.25rem, 3.5vw, 2.75rem);
+    max-width: none;
+  }
+
+  .spread-face {
+    width: clamp(180px, 17vw, 235px);
+  }
+
+  .spread-actions {
     flex-direction: row;
     justify-content: center;
   }

@@ -16,7 +16,11 @@
  * Slice 2: T3–T7 (selección con commit-before-animation, flip/sink, reveal,
  * "Sacar otra carta" con pool sin repetición), getDrawGuard (tope 3 y hint de
  * pool agotado), reveal con detalle por scroll y atajo de reduced-motion.
- * (Revisión T8–T13 llega en el Slice 3.)
+ * Slice 3: T8–T13 — "Ver tirada" (spread con etiquetas de posición), diálogo
+ * de detalle compartido (D10, #dialog-root hermano de #app + inert + trampa
+ * de foco), "Volver" que reanuda en el último reveal (REVIEW-4), "Nueva
+ * tirada" con reset instantáneo (REVIEW-5), Escape según contexto (T13 no-op
+ * en draw), anuncios aria-live del diálogo y pulido responsive.
  * ========================================================================== */
 
 (function () {
@@ -79,6 +83,24 @@
   }
 
   /**
+   * T11: salida de review hacia el draw — reanuda en el reveal de la ÚLTIMA
+   * carta sacada (REVIEW-4). El estado de la tirada no cambia en el viaje de
+   * ida y vuelta: solo mode/phase/selectedId; drawn queda intacto.
+   * @param {{mode: string, phase: string, drawn: Array<{cardId: string}>}} state
+   * @returns {object} mismo estado en draw/reveal, selectedId = última carta
+   */
+  function resumeFromReview(state) {
+    const drawn = state.drawn || [];
+    if (drawn.length === 0) return state; // defensivo (REVIEW-1 nunca llega vacío)
+    return {
+      ...state,
+      mode: "draw",
+      phase: "reveal",
+      selectedId: drawn[drawn.length - 1].cardId
+    };
+  }
+
+  /**
    * Transición pura de estado (D3). Devuelve SIEMPRE un estado:
    *  - T1  RELOAD     → draw/home fresco (cualquier estado previo)
    *  - T2  DRAW_START → draw/carousel (solo desde draw/home y con canDraw;
@@ -91,6 +113,12 @@
    *  - T5  SELECT repetido durante el reveal → no-op (mismo estado)
    *  - T6  SINK_END   → no-op de estado (solo limpieza de DOM)
    *  - T7  NEXT_DRAW  → draw/carousel desde draw/reveal solo con canDraw
+   *  - T8  REVIEW_OPEN → review/spread si drawn >= 1 (REVIEW-1)
+   *  - T9  REVIEW_TAP  → review/spread + selectedId (abre el diálogo)
+   *  - T10 REVIEW_CLOSE → review/spread + selectedId null (cierra el diálogo)
+   *  - T11 REVIEW_BACK  → draw/reveal reanudando en la última carta (REVIEW-4)
+   *  - ESCAPE → T10 si hay diálogo, T11 si no, no-op en draw (T13, DRAW-7)
+   *  - T12 RESET        → draw/home fresco (REVIEW-5, sin confirmación)
    *  - cualquier otra acción o guard fallido → mismo estado (no-op)
    */
   function transition(state, action) {
@@ -143,6 +171,55 @@
         if (!getDrawGuard(state, poolFor(state)).canDraw) return state;
         return { ...state, phase: "carousel", selectedId: null };
       }
+
+      case "REVIEW_OPEN": {
+        // T8: "Ver tirada" — desde draw (home o reveal, ambos renderizan el
+        // botón) con drawn.length >= 1 (REVIEW-1): review nunca se abre con
+        // spread vacío.
+        if (state.mode !== "draw") return state;
+        if (state.phase !== "home" && state.phase !== "reveal") return state;
+        if ((state.drawn || []).length < 1) return state;
+        return { ...state, mode: "review", phase: "spread", selectedId: null };
+      }
+
+      case "REVIEW_TAP": {
+        // T9: tocar una carta del spread abre su detalle (REVIEW-2). Solo sin
+        // diálogo abierto y con cartas de la tirada actual.
+        if (state.mode !== "review" || state.phase !== "spread") return state;
+        if (state.selectedId !== null) return state; // ya abierto — no-op
+        const cardId = action.cardId;
+        if (typeof cardId !== "string") return state;
+        if (!state.drawn.some((d) => d.cardId === cardId)) return state;
+        return { ...state, selectedId: cardId };
+      }
+
+      case "REVIEW_CLOSE": {
+        // T10: "Cerrar" — solo con el diálogo abierto; el spread queda igual
+        // (REVIEW-2/3).
+        if (state.mode !== "review" || state.phase !== "spread") return state;
+        if (state.selectedId === null) return state;
+        return { ...state, selectedId: null };
+      }
+
+      case "REVIEW_BACK": {
+        // T11: "Volver" sin diálogo — reanuda en el último reveal (REVIEW-4).
+        if (state.mode !== "review" || state.phase !== "spread") return state;
+        if (state.selectedId !== null) return state; // con diálogo: cerrar antes
+        return resumeFromReview(state);
+      }
+
+      case "ESCAPE": {
+        // T10/T11/T13: Escape cierra el diálogo si está abierto; sin diálogo
+        // vuelve al último reveal; en fases de draw es no-op (DRAW-7).
+        if (state.mode !== "review" || state.phase !== "spread") return state;
+        if (state.selectedId !== null) return { ...state, selectedId: null };
+        return resumeFromReview(state);
+      }
+
+      case "RESET":
+        // T12: "Nueva tirada" — reset instantáneo sin confirmación (REVIEW-5);
+        // cierra el diálogo (selectedId null) como parte del reset.
+        return createInitialState();
 
       default:
         return state;
@@ -310,14 +387,12 @@
       actions.appendChild(hint);
     }
 
-    // Placeholder del Slice 1/2: habilitado recién cuando drawn.length ≥ 1
-    // (T8, Slice 3). Disabled mientras tanto (DRAW-4 scaffolding).
+    // T8 (Slice 3): "Ver tirada" habilitado solo con drawn.length >= 1
+    // (REVIEW-1). En home normal (drawn = 0) permanece deshabilitado.
     const reviewBtn = el("button", "btn btn--secondary", "Ver tirada");
     reviewBtn.type = "button";
     reviewBtn.disabled = state.drawn.length === 0;
-    reviewBtn.addEventListener("click", () => {
-      /* T8 se cablea en el Slice 3. */
-    });
+    reviewBtn.addEventListener("click", () => dispatch({ type: "REVIEW_OPEN" }));
     actions.appendChild(reviewBtn);
 
     section.appendChild(actions);
@@ -382,9 +457,29 @@
   }
 
   /**
+   * D10: renderer COMPARTIDO del detalle — el mismo contenido (kicker de
+   * posición, título, keywords, meaning, description) sirve al panel del
+   * reveal y al diálogo de revisión (REVIEW-2). Cada llamador decide dónde
+   * inserta cada nodo y si el detalle se revela por scroll (.is-visible) o
+   * queda visible al instante.
+   * @param {{title: string, keywords: string, meaning: string, description: string}} card
+   * @param {string} position etiqueta de posición (DECK-3)
+   * @returns {{kicker: HTMLElement, title: HTMLElement, detail: HTMLElement}}
+   */
+  function renderDetail(card, position) {
+    const kicker = el("p", "reveal-kicker", `Posición · ${position || ""}`);
+    const title = el("h2", "reveal-title", card.title);
+    const detail = el("div", "reveal-detail");
+    detail.appendChild(el("p", "reveal-keywords", card.keywords));
+    detail.appendChild(el("p", "reveal-meaning", card.meaning));
+    detail.appendChild(el("p", "reveal-description", card.description));
+    return { kicker, title, detail };
+  }
+
+  /**
    * Fase reveal (T4, DRAW-5/8): carta agrandada estática + panel de detalle
    * revelado por scroll (IO) + acciones ("Sacar otra carta" / hint / "Ver
-   * tirada" placeholder). El foco aterriza en el h2, destino programático.
+   * tirada" / "Nueva tirada"). El foco aterriza en el h2, destino programático.
    */
   function renderReveal(root) {
     const state = Cartas.state;
@@ -398,12 +493,12 @@
 
     const posIndex = state.drawn.findIndex((d) => d.cardId === state.selectedId);
     const position = deck().positions[posIndex] || ""; // DECK-3: la etiqueta la da el índice
+    const { kicker, title, detail } = renderDetail(cardData, position); // D10
 
     const section = el("section", "reveal");
 
-    section.appendChild(el("p", "reveal-kicker", `Posición · ${position}`));
+    section.appendChild(kicker);
 
-    const title = el("h2", "reveal-title", cardData.title);
     title.tabIndex = -1; // destino de foco programático tras el flip (DRAW-2)
     section.appendChild(title);
 
@@ -415,10 +510,6 @@
     cardWrap.appendChild(revealCard);
     section.appendChild(cardWrap);
 
-    const detail = el("div", "reveal-detail");
-    detail.appendChild(el("p", "reveal-keywords", cardData.keywords));
-    detail.appendChild(el("p", "reveal-meaning", cardData.meaning));
-    detail.appendChild(el("p", "reveal-description", cardData.description));
     section.appendChild(detail);
 
     const actions = el("div", "reveal-actions");
@@ -431,14 +522,17 @@
       // Tope 3/3 (DRAW-4) o pool agotado (DECK-2): copia exacta del hint.
       actions.appendChild(el("p", "hint", guard.hint));
     }
-    // Placeholder (T8, Slice 3): igual que en home, disabled por ahora.
+    // T8 (Slice 3): "Ver tirada" habilitado con drawn >= 1 (siempre en reveal).
     const reviewBtn = el("button", "btn btn--secondary", "Ver tirada");
     reviewBtn.type = "button";
-    reviewBtn.disabled = true;
-    reviewBtn.addEventListener("click", () => {
-      /* T8 se cablea en el Slice 3. */
-    });
+    reviewBtn.disabled = state.drawn.length === 0;
+    reviewBtn.addEventListener("click", () => dispatch({ type: "REVIEW_OPEN" }));
     actions.appendChild(reviewBtn);
+    // T12 (Slice 3): "Nueva tirada" — reset instantáneo también desde reveal.
+    const resetBtn = el("button", "btn btn--ghost", "Nueva tirada");
+    resetBtn.type = "button";
+    resetBtn.addEventListener("click", () => dispatch({ type: "RESET" }));
+    actions.appendChild(resetBtn);
 
     section.appendChild(actions);
     setRoot(root, section);
@@ -459,6 +553,66 @@
     } else {
       observeDetail(detail);
     }
+  }
+
+  /**
+   * Fase spread (T8, REVIEW-1): todas las cartas sacadas, EN ORDEN, cada una
+   * con su etiqueta de posición (DECK-3). El render es defensivo: si se
+   * llamara con drawn vacío (solo posible por llamada directa, T8 lo impide),
+   * muestra el estado seguro — mensaje breve, sin spread, sin diálogo, sin
+   * crash (REVIEW-1).
+   */
+  function renderSpread(root) {
+    const state = Cartas.state;
+    const section = el("section", "spread");
+
+    // REVIEW-1: guarda de spread vacío — nunca una vista rota.
+    if ((state.drawn || []).length === 0) {
+      section.appendChild(el("p", "hint", "Aún no has sacado cartas"));
+      setRoot(root, section);
+      return;
+    }
+
+    section.appendChild(el("p", "spread-kicker", "Tu tirada"));
+
+    const list = el("ol", "spread-list");
+    state.drawn.forEach((d, i) => {
+      const cardData = deck().cards.find((c) => c.id === d.cardId);
+      if (!cardData) return; // defensivo: nunca debe ocurrir
+      const position = deck().positions[i] || ""; // DECK-3: etiqueta por índice
+      const number = deck().cards.indexOf(cardData) + 1;
+
+      const li = el("li", "spread-item");
+      const btn = el("button", "spread-card");
+      btn.type = "button";
+      btn.dataset.cardId = cardData.id; // para restaurar foco al cerrar (T10)
+      btn.setAttribute("aria-label", `${position} · ${cardData.title}`);
+      btn.addEventListener("click", () =>
+        dispatch({ type: "REVIEW_TAP", cardId: cardData.id })
+      );
+
+      const face = el("span", "spread-face");
+      face.appendChild(el("span", "face-num", roman(number)));
+      const caption = el("span", "spread-caption");
+      caption.appendChild(el("span", "spread-pos", position));
+      caption.appendChild(el("span", "spread-title", cardData.title));
+
+      btn.append(face, caption);
+      li.appendChild(btn);
+      list.appendChild(li);
+    });
+    section.appendChild(list);
+
+    // T11: "Volver" reanuda en el último reveal (REVIEW-4). "Nueva tirada"
+    // (T12) se añade en el Slice 3 completo junto al diálogo.
+    const actions = el("div", "spread-actions");
+    const backBtn = el("button", "btn btn--secondary", "Volver");
+    backBtn.type = "button";
+    backBtn.addEventListener("click", () => dispatch({ type: "REVIEW_BACK" }));
+    actions.appendChild(backBtn);
+    section.appendChild(actions);
+
+    setRoot(root, section);
   }
 
   /**
@@ -603,29 +757,182 @@
       renderCarousel(root);
     } else if (state.mode === "draw" && state.phase === "reveal") {
       renderReveal(root);
+    } else if (state.mode === "review" && state.phase === "spread") {
+      renderSpread(root);
     } else {
       // home (y cualquier estado inesperado → home seguro)
       renderHome(root);
     }
   }
 
+  /* ------------------------------------------------------------------------
+   * Diálogo de revisión (REVIEW-2/3) — #dialog-root es HERMANO de #app
+   * (hijo directo de <body>, position:fixed): con el diálogo abierto, #app
+   * queda inert para que el fondo sea inerte pero el diálogo siga vivo.
+   * ---------------------------------------------------------------------- */
+
+  /** Vacía un contenedor (fallback seguro sin Element.replaceChildren). */
+  function clearNode(node) {
+    if (typeof node.replaceChildren === "function") {
+      node.replaceChildren();
+    } else {
+      node.textContent = "";
+    }
+  }
+
+  /** REVIEW-2: inerta / des-inerta #app (propiedad + atributo, R4-safe). */
+  function setInert(on) {
+    const app = document.getElementById("app");
+    if (!app) return;
+    if (on) {
+      app.setAttribute("inert", "");
+      app.inert = true;
+    } else {
+      app.removeAttribute("inert");
+      app.inert = false;
+    }
+  }
+
+  /**
+   * T9: abre el diálogo con el detalle compartido (D10). Pone #app inert
+   * (REVIEW-2) y mueve el foco DENTRO del diálogo (botón "Cerrar").
+   */
+  function openDialog(cardId) {
+    const root = document.getElementById("dialog-root");
+    const state = Cartas.state;
+    const card = deck().cards.find((c) => c.id === cardId);
+    if (!card || !root) return;
+
+    const posIndex = state.drawn.findIndex((d) => d.cardId === cardId);
+    const position = deck().positions[posIndex] || "";
+    const { kicker, title, detail } = renderDetail(card, position); // D10
+
+    title.id = "dialog-title";
+    title.tabIndex = -1;
+    detail.classList.add("is-visible"); // dentro del diálogo siempre visible
+
+    const dialog = el("div", "dialog");
+    dialog.setAttribute("role", "dialog");
+    dialog.setAttribute("aria-modal", "true");
+    dialog.setAttribute("aria-labelledby", "dialog-title");
+
+    const face = el("span", "dialog-face");
+    face.appendChild(el("span", "face-num", roman(deck().cards.indexOf(card) + 1)));
+
+    const actions = el("div", "dialog-actions");
+    const closeBtn = el("button", "btn btn--secondary", "Cerrar");
+    closeBtn.type = "button";
+    closeBtn.addEventListener("click", () => dispatch({ type: "REVIEW_CLOSE" }));
+    actions.appendChild(closeBtn);
+
+    dialog.append(kicker, title, face, detail, actions);
+    clearNode(root);
+    root.appendChild(dialog);
+
+    setInert(true); // REVIEW-2: fondo inerte; el diálogo (hermano) sigue vivo
+    closeBtn.focus(); // REVIEW-2: el foco entra al diálogo
+
+    // CSS es dueño del movimiento: la clase is-open dispara el fundido/entrada.
+    window.requestAnimationFrame(() => root.classList.add("is-open"));
+  }
+
+  /**
+   * T10: cierra el diálogo, quita inert y devuelve el foco a la carta que lo
+   * abrió (REVIEW-2/3). El spread se re-renderizó con selectedId null, así
+   * que la carta activadora se busca por su data-card-id.
+   */
+  function closeDialogFocus(cardId) {
+    const root = document.getElementById("dialog-root");
+    if (!root) return;
+    root.classList.remove("is-open");
+    // Limpieza tras el fundido de salida (CSS dueño del movimiento; con
+    // reduced-motion las transiciones son instantáneas y apenas se nota).
+    window.setTimeout(() => {
+      if (!root.classList.contains("is-open") && root.firstChild) {
+        clearNode(root);
+      }
+    }, 240);
+    setInert(false);
+    if (cardId) {
+      const card = document.querySelector(`.spread-card[data-card-id="${cardId}"]`);
+      if (card) card.focus(); // REVIEW-2: foco de vuelta a la carta activadora
+    }
+  }
+
+  /** Foco en la primera carta del spread al entrar en review (T8). */
+  function focusFirstSpreadCard() {
+    const root = document.getElementById("app");
+    if (!root) return;
+    const first = root.querySelector(".spread-card");
+    if (first) first.focus();
+  }
+
+  /** Foco en la acción principal del home tras "Nueva tirada" (T12). */
+  function focusHomePrimary() {
+    const root = document.getElementById("app");
+    if (!root) return;
+    const actions = root.querySelector(".home-actions");
+    if (!actions) return;
+    const btn =
+      actions.querySelector("button:not(:disabled)") ||
+      actions.querySelector("button");
+    if (btn) btn.focus();
+  }
+
+  /**
+   * Escape (DRAW-7, REVIEW-2/3): con el diálogo abierto lo cierra (T10); en
+   * review sin diálogo vuelve al último reveal (T11); en fases de draw no hace
+   * nada (T13). Un único handler global, sin preventDefault fuera de review.
+   */
+  function bindGlobalKeys() {
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape") return;
+      const s = Cartas.state;
+      if (s.mode === "review" && s.phase === "spread") {
+        event.preventDefault();
+        dispatch({ type: "ESCAPE" });
+      }
+      // T13: en fases de draw, Escape es no-op (nada, ni preventDefault).
+    });
+  }
+
   /**
    * Despacha una acción: transición pura → render. Devuelve true si el
-   * estado cambió (útil para flujos imperativos). R2-W1: el foco en la
-   * primera carta se deriva de la transición real — T2/T7 abren carousel
-   * (home→carousel o reveal→carousel) y solo entonces se enfoca; nunca de
-   * un flag oculto de fase.
+   * estado cambió (útil para flujos imperativos). R2-W1: el foco se deriva de
+   * la transición real comparando prev/next; el diálogo (hermano de #app) se
+   * sincroniza de forma imperativa (T9 abrir / T10 cerrar).
    */
   function dispatch(action) {
     const prev = Cartas.state;
     const next = transition(prev, action);
     if (next === prev) return false;
 
+    const prevDialog =
+      prev.mode === "review" && prev.phase === "spread" && prev.selectedId !== null;
+    const nextDialog =
+      next.mode === "review" && next.phase === "spread" && next.selectedId !== null;
+
     Cartas.state = next;
     render();
 
+    // Diálogo de revisión: hermano de #app, vida imperativa (REVIEW-2).
+    if (nextDialog && !prevDialog) {
+      openDialog(next.selectedId);
+    } else if (!nextDialog && prevDialog) {
+      closeDialogFocus(prev.selectedId);
+    }
+
+    // Foco derivado del cambio real (R2-W1): solo cuando cambió el esqueleto.
     if (next.mode === "draw" && next.phase === "carousel" && prev.phase !== "carousel") {
       focusFirstCard();
+    } else if (
+      next.mode === "review" &&
+      next.phase === "spread" &&
+      prev.phase !== "spread"
+    ) {
+      focusFirstSpreadCard();
+    } else if (next.mode === "draw" && next.phase === "home" && prev.phase !== "home") {
+      focusHomePrimary();
     }
     return true;
   }
@@ -633,7 +940,9 @@
   function init() {
     // Recarga → home (sin persistencia; DRAW-1, REVIEW-5).
     Cartas.state = createInitialState();
+    setInert(false); // defensivo: ningún estado previo deja #app inert
     render();
+    bindGlobalKeys();
   }
 
   /* ==== API pública (contrato de design.md) ==== */

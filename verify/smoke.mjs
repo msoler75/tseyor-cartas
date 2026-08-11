@@ -18,6 +18,12 @@
  *      "Sacar otra carta" loop, max-3, no-repeat pool, and both "Tirada
  *      completa" hint copies incl. the 2-card pool-exhaustion case (DECK-2).
  *      (Added together with app.js Slice 2 core.)
+ *   D. Review transitions T8–T11 + ESCAPE + REVIEW-1/4 (Slice 3 PR 3
+ *      commit 1) — "Ver tirada" opens review/spread only with drawn >= 1,
+ *      tap opens the detail (dialog state), close/back round-trip resumes
+ *      at the last reveal with drawn unchanged, Escape is context-dependent
+ *      (close dialog / back / no-op in draw), empty review is unreachable
+ *      at the machine level.
  *
  * Exit code 0 = green, 1 = failures.
  */
@@ -407,6 +413,196 @@ const carouselState = () => transition(initial, { type: "DRAW_START" });
   } finally {
     global.window.Cartas.deck = shippedDeck;
   }
+}
+
+/* ------------------------------------------------------------------ */
+/* D. Review transitions T8–T11 + ESCAPE (Slice 3, PR 3 commit 1)      */
+/*    T8 "Ver tirada", T9 tap → dialog, T10 close, T11 back/resume,    */
+/*    ESCAPE context (T10/T11/T13), REVIEW-1 empty guard, REVIEW-4     */
+/*    round-trip unchanged.                                            */
+/* ------------------------------------------------------------------ */
+
+console.log("\n== Section D: review transitions (T8–T11) + ESCAPE ==");
+
+/* Helper: estado draw/reveal con 2 cartas sacadas (para T8/T9/T11). */
+const reveal2 = {
+  mode: "draw",
+  phase: "reveal",
+  drawn: [{ cardId: "sol" }, { cardId: "luna" }],
+  selectedId: "luna"
+};
+
+/* T8 — "Ver tirada" abre review/spread solo con drawn >= 1 (REVIEW-1). */
+{
+  const review = transition(reveal2, { type: "REVIEW_OPEN" });
+  check(
+    "T8 REVIEW_OPEN → review/spread, selectedId null, drawn preserved",
+    review.mode === "review" &&
+      review.phase === "spread" &&
+      review.selectedId === null &&
+      review.drawn.length === 2 &&
+      review.drawn[0].cardId === "sol" &&
+      review.drawn[1].cardId === "luna",
+    JSON.stringify(review)
+  );
+  check("T8 returns a fresh state (immutable)", review !== reveal2);
+
+  const revealEmpty = { ...reveal2, drawn: [], selectedId: null };
+  check(
+    "T8 refused with drawn.length 0 (same reference, REVIEW-1 empty guard)",
+    transition(revealEmpty, { type: "REVIEW_OPEN" }) === revealEmpty
+  );
+  check(
+    "T8 refused from draw/carousel (same reference)",
+    (() => {
+      const s = carouselState();
+      return transition(s, { type: "REVIEW_OPEN" }) === s;
+    })()
+  );
+  check(
+    "T8 refused from draw/home with drawn 0 (same reference)",
+    transition(initial, { type: "REVIEW_OPEN" }) === initial
+  );
+  check(
+    "T8 accepted from draw/home when drawn >= 1 (home renders the button)",
+    transition({ ...initial, drawn: [{ cardId: "sol" }] }, { type: "REVIEW_OPEN" })
+      .phase === "spread"
+  );
+}
+
+/* T9 — tap en una carta del spread abre el detalle (selectedId). */
+{
+  const spread = transition(reveal2, { type: "REVIEW_OPEN" });
+  const tapped = transition(spread, { type: "REVIEW_TAP", cardId: "sol" });
+  check(
+    "T9 REVIEW_TAP → selectedId sol, mode/phase intactos (dialog open)",
+    tapped.mode === "review" &&
+      tapped.phase === "spread" &&
+      tapped.selectedId === "sol",
+    JSON.stringify(tapped)
+  );
+  check(
+    "T9 refuses a card not in drawn (same reference)",
+    transition(spread, { type: "REVIEW_TAP", cardId: "vuelo" }) === spread
+  );
+  check(
+    "T9 refuses a second tap while the dialog is open (no-op)",
+    transition(tapped, { type: "REVIEW_TAP", cardId: "luna" }) === tapped
+  );
+  check(
+    "T9 refuses tap outside review/spread (same reference)",
+    transition(reveal2, { type: "REVIEW_TAP", cardId: "sol" }) === reveal2
+  );
+}
+
+/* T10 — "Cerrar" cierra el diálogo; sin diálogo es no-op. */
+{
+  const spread = transition(reveal2, { type: "REVIEW_OPEN" });
+  const open = transition(spread, { type: "REVIEW_TAP", cardId: "luna" });
+  const closed = transition(open, { type: "REVIEW_CLOSE" });
+  check(
+    "T10 REVIEW_CLOSE → selectedId null, spread y drawn intactos",
+    closed.mode === "review" &&
+      closed.phase === "spread" &&
+      closed.selectedId === null &&
+      closed.drawn.length === 2,
+    JSON.stringify(closed)
+  );
+  check(
+    "T10 REVIEW_CLOSE without an open dialog is a no-op (same reference)",
+    transition(spread, { type: "REVIEW_CLOSE" }) === spread
+  );
+}
+
+/* T11 — "Volver" sin diálogo reanuda en el ÚLTIMO reveal (REVIEW-4). */
+{
+  const spread = transition(reveal2, { type: "REVIEW_OPEN" });
+  const back = transition(spread, { type: "REVIEW_BACK" });
+  check(
+    "T11 REVIEW_BACK → draw/reveal, selectedId = last drawn card (luna)",
+    back.mode === "draw" &&
+      back.phase === "reveal" &&
+      back.selectedId === "luna" &&
+      back.drawn.length === 2,
+    JSON.stringify(back)
+  );
+  check(
+    "T11 round-trip leaves drawn unchanged (REVIEW-4)",
+    JSON.stringify(back.drawn) === JSON.stringify(reveal2.drawn) &&
+      back.drawn[0].cardId === "sol" &&
+      back.drawn[1].cardId === "luna"
+  );
+  check(
+    "T11 REVIEW_BACK with the dialog open is a no-op (close first)",
+    transition(
+      transition(spread, { type: "REVIEW_TAP", cardId: "sol" }),
+      { type: "REVIEW_BACK" }
+    ).selectedId === "sol"
+  );
+
+  const spreadEmpty = { mode: "review", phase: "spread", drawn: [], selectedId: null };
+  check(
+    "T11 REVIEW_BACK with empty drawn is a no-op (defensive, same reference)",
+    transition(spreadEmpty, { type: "REVIEW_BACK" }) === spreadEmpty
+  );
+
+  const reveal3 = {
+    mode: "draw",
+    phase: "reveal",
+    drawn: [{ cardId: "a" }, { cardId: "b" }, { cardId: "c" }],
+    selectedId: "c"
+  };
+  const spread3 = transition(reveal3, { type: "REVIEW_OPEN" });
+  const back3 = transition(spread3, { type: "REVIEW_BACK" });
+  check(
+    "T11 back from a complete tirada resumes at the 3rd reveal with drawn 3",
+    back3.phase === "reveal" && back3.selectedId === "c" && back3.drawn.length === 3
+  );
+}
+
+/* ESCAPE — T10 si hay diálogo, T11 si no, T13 no-op en fases de draw. */
+{
+  const spread = transition(reveal2, { type: "REVIEW_OPEN" });
+  const open = transition(spread, { type: "REVIEW_TAP", cardId: "sol" });
+  const escClose = transition(open, { type: "ESCAPE" });
+  check(
+    "ESCAPE with dialog open closes it (T10): selectedId null",
+    escClose.mode === "review" && escClose.phase === "spread" && escClose.selectedId === null
+  );
+  const escBack = transition(spread, { type: "ESCAPE" });
+  check(
+    "ESCAPE in review without dialog goes back to reveal (T11)",
+    escBack.mode === "draw" && escBack.phase === "reveal" && escBack.selectedId === "luna"
+  );
+  check(
+    "T13 ESCAPE in draw/home is a no-op (same reference, DRAW-7)",
+    transition(initial, { type: "ESCAPE" }) === initial
+  );
+  check(
+    "T13 ESCAPE in draw/carousel is a no-op (same reference, DRAW-7)",
+    (() => {
+      const s = carouselState();
+      return transition(s, { type: "ESCAPE" }) === s;
+    })()
+  );
+  check(
+    "T13 ESCAPE in draw/reveal is a no-op (same reference, DRAW-7)",
+    transition(reveal2, { type: "ESCAPE" }) === reveal2
+  );
+}
+
+/* REVIEW-1 a nivel de máquina: ningún flujo llega a review con drawn 0, y
+   las acciones de review sobre un spread vacío son no-op (nunca se cuelga). */
+{
+  const spreadEmpty = { mode: "review", phase: "spread", drawn: [], selectedId: null };
+  check(
+    "empty review: REVIEW_TAP is a no-op (same reference)",
+    transition(spreadEmpty, { type: "REVIEW_TAP", cardId: "sol" }) === spreadEmpty
+  );
+  check(
+    "empty review: ESCAPE is a no-op (same reference)",
+    transition(spreadEmpty, { type: "ESCAPE" }) === spreadEmpty
+  );
 }
 
 /* ------------------------------------------------------------------ */
