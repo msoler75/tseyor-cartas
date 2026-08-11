@@ -661,6 +661,37 @@ const reveal2 = {
   );
 }
 
+/* Gate Slice 2 — endurecimiento de invariantes (carry-over #2): SELECT está
+   prohibido a nivel de MÁQUINA con drawn.length === 3 y fuera de draw/carousel
+   (mismo estado, no-op), no solo bloqueado por el DOM. */
+{
+  const fullCarousel = {
+    mode: "draw",
+    phase: "carousel",
+    drawn: [{ cardId: "a" }, { cardId: "b" }, { cardId: "c" }],
+    selectedId: null
+  };
+  check(
+    "hardening: SELECT refused at drawn.length 3 (same reference, max-3)",
+    transition(fullCarousel, { type: "SELECT", cardId: "x" }) === fullCarousel &&
+      fullCarousel.drawn.length === 3
+  );
+  check(
+    "hardening: SELECT refused in draw/reveal (same reference)",
+    transition(reveal2, { type: "SELECT", cardId: "vuelo" }) === reveal2
+  );
+  check(
+    "hardening: SELECT refused in draw/home (same reference)",
+    transition(initial, { type: "SELECT", cardId: "sol" }) === initial
+  );
+  const spreadSel = transition(reveal2, { type: "REVIEW_OPEN" });
+  check(
+    "hardening: SELECT refused in review/spread (same reference)",
+    transition(spreadSel, { type: "SELECT", cardId: "sol" }) === spreadSel &&
+      spreadSel.selectedId === null
+  );
+}
+
 /* ------------------------------------------------------------------ */
 /* Summary                                                             */
 /* ------------------------------------------------------------------ */

@@ -64,7 +64,7 @@ Independent + verifiable; completes the app.
 - [x] 3.2 Smoke: T8/T9, empty-spread safe render (REVIEW-1), REVIEW-4 round-trip unchanged
 - [x] 3.3 Trap + reset: T10 Escape/"Cerrar" restore focus, T11 back → resume (REVIEW-4), T12 "Nueva tirada" incl. dialog footer (REVIEW-5), T13 Escape no-op (DRAW-7); focus trap + `#app.inert` (REVIEW-3); full T1–T13 green
 - [x] 3.4 A11y + polish: aria-live (title+position, tirada completa — DRAW-7), `:focus-visible`, reduced-motion spread/dialog, 1440px desktop pass (DRAW-8, REVIEW-6), Spanish copy, frontend-design aesthetic
-- [ ] 3.5 Finalize `verify/checklist.md` (DECK-1..4, DRAW-1..8, REVIEW-1..6); smoke + 390/1440px device pass
+- [x] 3.5 Finalize `verify/checklist.md` (DECK-1..4, DRAW-1..8, REVIEW-1..6); smoke + 390/1440px device pass
 
 Commits (PR 3, base `main`):
 1. `feat(cartas): review spread + shared detail dialog` — 3.1–3.2
