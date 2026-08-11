@@ -603,13 +603,17 @@
     });
     section.appendChild(list);
 
-    // T11: "Volver" reanuda en el último reveal (REVIEW-4). "Nueva tirada"
-    // (T12) se añade en el Slice 3 completo junto al diálogo.
+    // T11: "Volver" reanuda en el último reveal (REVIEW-4); T12: "Nueva
+    // tirada" resetea al instante desde la vista de spread (REVIEW-5).
     const actions = el("div", "spread-actions");
     const backBtn = el("button", "btn btn--secondary", "Volver");
     backBtn.type = "button";
     backBtn.addEventListener("click", () => dispatch({ type: "REVIEW_BACK" }));
     actions.appendChild(backBtn);
+    const resetBtn = el("button", "btn btn--ghost", "Nueva tirada");
+    resetBtn.type = "button";
+    resetBtn.addEventListener("click", () => dispatch({ type: "RESET" }));
+    actions.appendChild(resetBtn);
     section.appendChild(actions);
 
     setRoot(root, section);
@@ -689,12 +693,20 @@
     selected.classList.add("is-flipped");
     bindFlipEnd(selected);
 
+    const sunk = [];
     for (const card of root.querySelectorAll(".card")) {
       if (card !== selected) {
         card.classList.add("is-sunk");
-        bindSinkRemoval(card);
+        sunk.push(card);
       }
     }
+    // Gate Slice 2 — backstop alineado con el estirón máximo: la última
+    // carta en hundirse tarda (N-1)*45ms de retardo + 450ms de duración
+    // (12 cartas → 945ms). Un barrido menor retiraría cartas a media
+    // animación; este cubre el peor caso y solo rescata rezagadas (el
+    // transitionend ya retira a las que terminan antes).
+    const sinkBackstop = Math.max(700, sunk.length * 45 + 450 + 60);
+    for (const card of sunk) bindSinkRemoval(card, sinkBackstop);
   }
 
   /**
@@ -722,10 +734,13 @@
 
   /**
    * T6: cada carta hundida se retira del DOM al terminar su transitionend,
-   * con un barrido backstop (~700ms) para las rezagadas (D7, DRAW-3). El
-   * estado no cambia; solo el DOM.
+   * con un barrido backstop alineado al estirón máximo de la tanda (D7,
+   * DRAW-3; gate Slice 2): `backstopMs` >= (N-1)*45 + 450 + margen, para no
+   * retirar cartas a media animación. El estado no cambia; solo el DOM.
+   * @param {HTMLElement} card carta hundida
+   * @param {number} [backstopMs] milisegundos del barrido (default 700)
    */
-  function bindSinkRemoval(card) {
+  function bindSinkRemoval(card, backstopMs) {
     let removed = false;
     const remove = () => {
       if (removed) return;
@@ -740,7 +755,7 @@
       }
     };
     card.addEventListener("transitionend", onEnd);
-    const timer = setTimeout(remove, 700); // barrido backstop (D7)
+    const timer = setTimeout(remove, backstopMs || 700); // barrido backstop (D7)
   }
 
   /**
@@ -793,9 +808,70 @@
     }
   }
 
+  /** Selector de elementos enfocables dentro del diálogo (REVIEW-3). */
+  const FOCUSABLE_SEL =
+    'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+  /** Enfocables reales (visibles) de un contenedor. */
+  function focusablesIn(container) {
+    return Array.from(container.querySelectorAll(FOCUSABLE_SEL)).filter(
+      (n) => n.getClientRects().length > 0
+    );
+  }
+
+  /**
+   * REVIEW-3 — trampa de foco: Tab/Shift+Tab ciclan DENTRO del diálogo. Se
+   * computa per-pulsación (los visibles cambian según is-open) y hay un
+   * reductor de foco que recoloca cualquier fuga fuera del diálogo.
+   */
+  function trapKeydown(event) {
+    if (event.key !== "Tab") return;
+    const root = document.getElementById("dialog-root");
+    if (!root) return;
+    const dialog = root.querySelector(".dialog");
+    if (!dialog) return;
+    const focusables = focusablesIn(dialog);
+    if (focusables.length === 0) {
+      event.preventDefault();
+      return;
+    }
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    const active = document.activeElement;
+    if (event.shiftKey) {
+      if (active === first || !dialog.contains(active)) {
+        event.preventDefault();
+        last.focus();
+      }
+    } else if (active === last || !dialog.contains(active)) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  function trapFocusIn(event) {
+    const root = document.getElementById("dialog-root");
+    if (!root || !root.classList.contains("is-open")) return;
+    const dialog = root.querySelector(".dialog");
+    if (!dialog || dialog.contains(event.target)) return;
+    const focusables = focusablesIn(dialog);
+    if (focusables.length > 0) focusables[0].focus();
+  }
+
+  function bindDialogTrap() {
+    document.addEventListener("keydown", trapKeydown);
+    document.addEventListener("focusin", trapFocusIn);
+  }
+
+  function unbindDialogTrap() {
+    document.removeEventListener("keydown", trapKeydown);
+    document.removeEventListener("focusin", trapFocusIn);
+  }
+
   /**
    * T9: abre el diálogo con el detalle compartido (D10). Pone #app inert
-   * (REVIEW-2) y mueve el foco DENTRO del diálogo (botón "Cerrar").
+   * (REVIEW-2), activa la trampa de foco (REVIEW-3) y mueve el foco DENTRO
+   * del diálogo (botón "Cerrar").
    */
   function openDialog(cardId) {
     const root = document.getElementById("dialog-root");
@@ -823,13 +899,21 @@
     const closeBtn = el("button", "btn btn--secondary", "Cerrar");
     closeBtn.type = "button";
     closeBtn.addEventListener("click", () => dispatch({ type: "REVIEW_CLOSE" }));
-    actions.appendChild(closeBtn);
+    // REVIEW-5: "Nueva tirada" es ALCANZABLE con el diálogo abierto (footer
+    // propio del diálogo, hermano de #app): cierra diálogo, quita trap e
+    // inert y resetea al instante.
+    const resetBtn = el("button", "btn btn--ghost", "Nueva tirada");
+    resetBtn.type = "button";
+    resetBtn.addEventListener("click", () => dispatch({ type: "RESET" }));
+    actions.append(closeBtn, resetBtn);
 
     dialog.append(kicker, title, face, detail, actions);
     clearNode(root);
     root.appendChild(dialog);
 
     setInert(true); // REVIEW-2: fondo inerte; el diálogo (hermano) sigue vivo
+    unbindDialogTrap();
+    bindDialogTrap(); // REVIEW-3: Tab/Shift+Tab ciclan dentro del diálogo
     closeBtn.focus(); // REVIEW-2: el foco entra al diálogo
 
     // CSS es dueño del movimiento: la clase is-open dispara el fundido/entrada.
@@ -853,6 +937,7 @@
       }
     }, 240);
     setInert(false);
+    unbindDialogTrap(); // REVIEW-3: la trampa se suelta al cerrar
     if (cardId) {
       const card = document.querySelector(`.spread-card[data-card-id="${cardId}"]`);
       if (card) card.focus(); // REVIEW-2: foco de vuelta a la carta activadora

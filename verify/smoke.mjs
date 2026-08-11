@@ -18,12 +18,13 @@
  *      "Sacar otra carta" loop, max-3, no-repeat pool, and both "Tirada
  *      completa" hint copies incl. the 2-card pool-exhaustion case (DECK-2).
  *      (Added together with app.js Slice 2 core.)
- *   D. Review transitions T8–T11 + ESCAPE + REVIEW-1/4 (Slice 3 PR 3
- *      commit 1) — "Ver tirada" opens review/spread only with drawn >= 1,
- *      tap opens the detail (dialog state), close/back round-trip resumes
- *      at the last reveal with drawn unchanged, Escape is context-dependent
+ *   D. Review transitions T8–T13 + ESCAPE + REVIEW-1..5 (Slice 3) —
+ *      "Ver tirada" opens review/spread only with drawn >= 1, tap opens
+ *      the detail (dialog state), close/back round-trip resumes at the
+ *      last reveal with drawn unchanged, Escape is context-dependent
  *      (close dialog / back / no-op in draw), empty review is unreachable
- *      at the machine level.
+ *      at the machine level, and "Nueva tirada" resets instantly from
+ *      review or reveal with no confirmation (dialog included).
  *
  * Exit code 0 = green, 1 = failures.
  */
@@ -602,6 +603,61 @@ const reveal2 = {
   check(
     "empty review: ESCAPE is a no-op (same reference)",
     transition(spreadEmpty, { type: "ESCAPE" }) === spreadEmpty
+  );
+}
+
+/* T12 — "Nueva tirada": reset instantáneo, sin confirmación (REVIEW-5);
+   con el diálogo abierto lo cierra (selectedId null) como parte del reset. */
+{
+  const spread = transition(reveal2, { type: "REVIEW_OPEN" });
+  const open = transition(spread, { type: "REVIEW_TAP", cardId: "sol" });
+  const resetFromDialog = transition(open, { type: "RESET" });
+  check(
+    "T12 RESET from review with dialog open → draw/home, drawn [], selectedId null (REVIEW-5)",
+    resetFromDialog.mode === "draw" &&
+      resetFromDialog.phase === "home" &&
+      resetFromDialog.drawn.length === 0 &&
+      resetFromDialog.selectedId === null,
+    JSON.stringify(resetFromDialog)
+  );
+  const resetFromReveal = transition(reveal2, { type: "RESET" });
+  check(
+    "T12 RESET from draw/reveal → draw/home, drawn [] (REVIEW-5)",
+    resetFromReveal.mode === "draw" &&
+      resetFromReveal.phase === "home" &&
+      resetFromReveal.drawn.length === 0 &&
+      resetFromReveal.selectedId === null,
+    JSON.stringify(resetFromReveal)
+  );
+  check("T12 returns a fresh state object (immutable)", resetFromReveal !== reveal2);
+  check(
+    "T12 RESET is unconditional (any state → home, no confirmation)",
+    transition(
+      { mode: "review", phase: "spread", drawn: [{ cardId: "x" }], selectedId: "x" },
+      { type: "RESET" }
+    ).phase === "home"
+  );
+}
+
+/* REVIEW-4 completo: volver desde una tirada de 3 conserva el hint
+   "Tirada completa 3/3" y "Ver tirada"; no hay control de sacar otra. */
+{
+  const s3 = {
+    mode: "draw",
+    phase: "reveal",
+    drawn: [{ cardId: "a" }, { cardId: "b" }, { cardId: "c" }],
+    selectedId: "c"
+  };
+  const back = transition(transition(s3, { type: "REVIEW_OPEN" }), { type: "REVIEW_BACK" });
+  const guard = global.window.Cartas.getDrawGuard(back, global.window.Cartas.poolFor(back));
+  check(
+    "REVIEW-4: back from a 3-card review resumes with 'Tirada completa 3/3' and no draw control",
+    guard.canDraw === false && guard.hint === "Tirada completa 3/3",
+    JSON.stringify(guard)
+  );
+  check(
+    "REVIEW-4: 'Ver tirada' remains available after the round-trip (drawn 3)",
+    back.drawn.length === 3 && back.mode === "draw" && back.phase === "reveal"
   );
 }
 

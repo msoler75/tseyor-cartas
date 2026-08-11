@@ -62,7 +62,7 @@ Independent + verifiable; completes the app.
 
 - [x] 3.1 Review UI: `#dialog-root` sibling overlay; T8 "Ver tirada" (drawn ≥1, REVIEW-1) + T9 dialog; shared `renderDetail()` (D10); `styles.css` spread (mobile stack, desktop ≥1024 row) + dialog `min(92vw,640px)`, `max-height:min(85dvh,85vh)`, `overflow-y:auto` (REVIEW-1/2/6)
 - [x] 3.2 Smoke: T8/T9, empty-spread safe render (REVIEW-1), REVIEW-4 round-trip unchanged
-- [ ] 3.3 Trap + reset: T10 Escape/"Cerrar" restore focus, T11 back → resume (REVIEW-4), T12 "Nueva tirada" incl. dialog footer (REVIEW-5), T13 Escape no-op (DRAW-7); focus trap + `#app.inert` (REVIEW-3); full T1–T13 green
+- [x] 3.3 Trap + reset: T10 Escape/"Cerrar" restore focus, T11 back → resume (REVIEW-4), T12 "Nueva tirada" incl. dialog footer (REVIEW-5), T13 Escape no-op (DRAW-7); focus trap + `#app.inert` (REVIEW-3); full T1–T13 green
 - [ ] 3.4 A11y + polish: aria-live (title+position, tirada completa — DRAW-7), `:focus-visible`, reduced-motion spread/dialog, 1440px desktop pass (DRAW-8, REVIEW-6), Spanish copy, frontend-design aesthetic
 - [ ] 3.5 Finalize `verify/checklist.md` (DECK-1..4, DRAW-1..8, REVIEW-1..6); smoke + 390/1440px device pass
 
