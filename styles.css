@@ -10,8 +10,11 @@
  * para títulos + humanista para texto.
  *
  * Slice 1: shell (100vh/100dvh + safe-area), home, tira del carousel con
- * scroll-snap y touch-action pan-x, esqueleto 3D de la carta, ≥44px,
+ * scroll-snap y touch-action, esqueleto 3D de la carta, ≥44px,
  * centrado de escritorio (DRAW-8).
+ * Slice 2: flip-elevate 3D (~600ms) + hundimiento escalonado (--i * 45ms),
+ * carta agrandada del reveal (min(72vw, 340px)), panel de detalle de hasta
+ * 65ch con revelado por scroll, atajo de prefers-reduced-motion (DRAW-3/5/8).
  * ========================================================================== */
 
 /* ---------------------------------------------------------------------------
@@ -216,7 +219,12 @@ body {
   display: flex;
   gap: clamp(10px, 2.5vw, 24px);
   overflow-x: auto;
-  touch-action: pan-x;                 /* el gesto horizontal pertenece a la tira */
+  /* R4-W1: pan-x pan-y — el gesto horizontal pertenece a la tira (swipe de
+     cartas) y el vertical a la página (scroll del reveal). La página del
+     reveal no restringe touch-action, así que el desplazamiento vertical
+     siempre funciona en táctil; overscroll-behavior-inline contiene el
+     rebote horizontal de la tira y lo deja fuera del scroll de la página. */
+  touch-action: pan-x pan-y;
   scroll-snap-type: x mandatory;
   scroll-padding-inline: 50%;          /* centra cada carta al hacer snap */
   overscroll-behavior-inline: contain;
@@ -327,6 +335,142 @@ body {
 }
 
 /* ---------------------------------------------------------------------------
+ * Flip-elevate + hundimiento (Slice 2, D4/D5/D7 — DRAW-3)
+ * La elección (T3) marca .is-flipped en la carta elegida y .is-sunk en los
+ * hermanos. CSS es dueño de TODO el movimiento: solo transform/opacity.
+ * ------------------------------------------------------------------------- */
+.card-inner {
+  transition: transform 0.6s ease-in-out;
+}
+
+/* La carta elegida se eleva y gira 180° (~600ms); will-change SOLO mientras
+   anima (contrato de rendimiento del proposal). */
+.card.is-flipped .card-inner {
+  transform: translateY(-14%) scale(1.08) rotateY(180deg);
+  will-change: transform;
+}
+
+/* Los hermanos se hunden escalonados (--i * 45ms). El hundimiento compone el
+   jitter (--rx/--rz/--tilt) para no "saltar" de pose al empezar; con
+   pointer-events:none dejan de ser interactivos mientras se hunden (D7). */
+.card.is-sunk {
+  transform: rotateX(var(--rx, 0deg)) rotateZ(var(--rz, 0deg))
+    rotateY(var(--tilt, 0deg)) translateY(24%) scale(0.92);
+  opacity: 0;
+  transition:
+    transform 0.45s ease-in calc(var(--i, 0) * 45ms),
+    opacity 0.45s ease-in calc(var(--i, 0) * 45ms);
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------------------
+ * Reveal (Slice 2, T4 — DRAW-5/8): carta agrandada + panel por scroll
+ * ------------------------------------------------------------------------- */
+.reveal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(1.25rem, 4vh, 2.5rem) clamp(1rem, 4vw, 2rem) 2rem;
+  text-align: center;
+}
+
+.reveal-kicker {
+  margin: 0 0 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.reveal-title {
+  margin: 0 0 1.1rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.7rem, 5.4vw, 2.6rem);
+  letter-spacing: 0.02em;
+}
+
+.reveal-card-wrap {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  margin-bottom: clamp(1.25rem, 4vh, 2.25rem);
+}
+
+/* Carta agrandada estática, sin transición (D6); tope de lectura DRAW-8:
+   min(72vw, 340px) centrado — funciona en móvil y en escritorio. */
+.reveal-card {
+  display: grid;
+  place-items: center;
+  width: min(72vw, 340px);
+  aspect-ratio: 3 / 4.6;
+  background: var(--paper-deep);
+  border: 2px solid var(--ink);
+  border-radius: var(--card-radius);
+  box-shadow:
+    inset 0 0 0 3px var(--paper),
+    inset 0 0 0 5px var(--line),
+    0 18px 44px rgba(38, 34, 28, 0.3);
+}
+
+.reveal-card .face-num {
+  font-size: clamp(4rem, 20vw, 7rem);
+}
+
+/* Panel de detalle: se revela al entrar en el viewport (IO, DRAW-5).
+   Solo transform/opacity, y ancho de lectura de hasta 65ch (DRAW-8). */
+.reveal-detail {
+  width: 100%;
+  max-width: 65ch;
+  margin-inline: auto;
+  padding-inline: clamp(0.5rem, 3vw, 1.5rem);
+  text-align: left;
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+
+.reveal-detail.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.reveal-keywords {
+  margin: 0 0 1rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.reveal-meaning {
+  margin: 0 0 1.1rem;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.15rem, 3vw, 1.35rem);
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.reveal-description {
+  margin: 0 0 1.75rem;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+.reveal-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+/* ---------------------------------------------------------------------------
  * Escritorio (≥768px): cartas más grandes, tira centrada (DRAW-8)
  * ------------------------------------------------------------------------- */
 @media (min-width: 768px) {
@@ -341,6 +485,11 @@ body {
 
   .home {
     padding-bottom: 3rem;
+  }
+
+  .reveal-actions {
+    flex-direction: row;
+    justify-content: center;
   }
 }
 
@@ -360,5 +509,13 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /* DRAW-3: el detalle del reveal queda visible al instante — el JS también
+     añade .is-visible, pero esto garantiza el contenido sin depender del
+     IntersectionObserver ni del scroll. */
+  .reveal-detail {
+    opacity: 1;
+    transform: none;
   }
 }
