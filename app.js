@@ -242,7 +242,7 @@
   /**
    * Teclado del carousel (DRAW-2): ←/→ mueven el foco y centran la carta;
    * Inicio/Fin saltan a los extremos. Enter/Space activan el botón de forma
-   * nativa; la selección (T3) se cablea en el Slice 2.
+   * nativa → click → selectCard (T3, Slice 2).
    */
   function bindCarouselKeys(carousel) {
     carousel.addEventListener("keydown", (event) => {
@@ -265,10 +265,22 @@
   }
 
   /* ========================================================================
-   * Render (D11) — esqueleto por (mode, phase)
+   * Render (D11) — esqueleto por (mode, phase) + movimiento imperativo T3
    * ====================================================================== */
 
-  let lastPhase = null;
+  /**
+   * Reemplaza el contenido de #app por un esqueleto nuevo. Fallback seguro
+   * para navegadores sin Element.replaceChildren (R4-W3): textContent="" +
+   * append hacen lo mismo sin hard-crash.
+   */
+  function setRoot(root, section) {
+    if (typeof root.replaceChildren === "function") {
+      root.replaceChildren(section);
+    } else {
+      root.textContent = "";
+      root.appendChild(section);
+    }
+  }
 
   /** Fase home: instrucciones + "Sacar carta" (+ "Ver tirada" placeholder). */
   function renderHome(root) {
@@ -298,18 +310,18 @@
       actions.appendChild(hint);
     }
 
-    // Placeholder del Slice 1: habilitado recién cuando drawn.length ≥ 1
+    // Placeholder del Slice 1/2: habilitado recién cuando drawn.length ≥ 1
     // (T8, Slice 3). Disabled mientras tanto (DRAW-4 scaffolding).
     const reviewBtn = el("button", "btn btn--secondary", "Ver tirada");
     reviewBtn.type = "button";
-    reviewBtn.disabled = drawnCount === 0;
+    reviewBtn.disabled = state.drawn.length === 0;
     reviewBtn.addEventListener("click", () => {
       /* T8 se cablea en el Slice 3. */
     });
     actions.appendChild(reviewBtn);
 
     section.appendChild(actions);
-    root.replaceChildren(section);
+    setRoot(root, section);
   }
 
   /**
@@ -323,11 +335,11 @@
     const section = el("section", "carousel-section");
     section.appendChild(el("p", "carousel-caption", "Elige una carta"));
 
-    // Defensivo (DECK-2): el carousel nunca se abre con pool vacío vía T2,
+    // Defensivo (DECK-2): el carousel nunca se abre con pool vacío vía T2/T7,
     // pero render vacío no debe romper.
     if (pool.length === 0) {
       section.appendChild(el("p", "hint", "No quedan cartas por sacar."));
-      root.replaceChildren(section);
+      setRoot(root, section);
       return;
     }
 
@@ -344,6 +356,8 @@
       const card = el("button", "card");
       card.type = "button";
       card.setAttribute("aria-label", `Carta ${number}`);
+      card.dataset.cardId = cardData.id; // para el movimiento imperativo T3
+      card.addEventListener("click", () => selectCard(cardData.id));
 
       const inner = el("span", "card-inner");
       const back = el("span", "face face--back");
@@ -361,15 +375,224 @@
     });
 
     section.appendChild(carousel);
-    root.replaceChildren(section);
+    setRoot(root, section);
 
     bindCarouselKeys(carousel);
     bindTilt(carousel);
   }
 
   /**
+   * Fase reveal (T4, DRAW-5/8): carta agrandada estática + panel de detalle
+   * revelado por scroll (IO) + acciones ("Sacar otra carta" / hint / "Ver
+   * tirada" placeholder). El foco aterriza en el h2, destino programático.
+   */
+  function renderReveal(root) {
+    const state = Cartas.state;
+    const guard = getDrawGuard(state, poolFor(state));
+    const cardData = deck().cards.find((c) => c.id === state.selectedId);
+    if (!cardData) {
+      // Defensivo: selección desconocida no debe romper el render.
+      renderHome(root);
+      return;
+    }
+
+    const posIndex = state.drawn.findIndex((d) => d.cardId === state.selectedId);
+    const position = deck().positions[posIndex] || ""; // DECK-3: la etiqueta la da el índice
+
+    const section = el("section", "reveal");
+
+    section.appendChild(el("p", "reveal-kicker", `Posición · ${position}`));
+
+    const title = el("h2", "reveal-title", cardData.title);
+    title.tabIndex = -1; // destino de foco programático tras el flip (DRAW-2)
+    section.appendChild(title);
+
+    const cardWrap = el("div", "reveal-card-wrap");
+    const revealCard = el("div", "reveal-card");
+    revealCard.appendChild(
+      el("span", "face-num", roman(deck().cards.indexOf(cardData) + 1))
+    );
+    cardWrap.appendChild(revealCard);
+    section.appendChild(cardWrap);
+
+    const detail = el("div", "reveal-detail");
+    detail.appendChild(el("p", "reveal-keywords", cardData.keywords));
+    detail.appendChild(el("p", "reveal-meaning", cardData.meaning));
+    detail.appendChild(el("p", "reveal-description", cardData.description));
+    section.appendChild(detail);
+
+    const actions = el("div", "reveal-actions");
+    if (guard.canDraw) {
+      const againBtn = el("button", "btn btn--primary", "Sacar otra carta");
+      againBtn.type = "button";
+      againBtn.addEventListener("click", () => dispatch({ type: "NEXT_DRAW" }));
+      actions.appendChild(againBtn);
+    } else {
+      // Tope 3/3 (DRAW-4) o pool agotado (DECK-2): copia exacta del hint.
+      actions.appendChild(el("p", "hint", guard.hint));
+    }
+    // Placeholder (T8, Slice 3): igual que en home, disabled por ahora.
+    const reviewBtn = el("button", "btn btn--secondary", "Ver tirada");
+    reviewBtn.type = "button";
+    reviewBtn.disabled = true;
+    reviewBtn.addEventListener("click", () => {
+      /* T8 se cablea en el Slice 3. */
+    });
+    actions.appendChild(reviewBtn);
+
+    section.appendChild(actions);
+    setRoot(root, section);
+
+    // Anuncio aria-live (DRAW-7): título + posición; el hint cuando toca.
+    announce(`${cardData.title} — ${position}`);
+    if (!guard.canDraw) {
+      window.setTimeout(() => announce(guard.hint), 500);
+    }
+
+    // DRAW-2: el h2 recibe el foco sin saltar el scroll del viewport.
+    title.focus({ preventScroll: true });
+
+    // DRAW-5: el detalle se revela al entrar al viewport (IO); con
+    // reduced-motion queda visible al instante (DRAW-3).
+    if (prefersReducedMotion()) {
+      detail.classList.add("is-visible");
+    } else {
+      observeDetail(detail);
+    }
+  }
+
+  /**
+   * IntersectionObserver del detalle (DRAW-5): añade .is-visible una vez y
+   * se desconecta. El scroll del carousel/reveal se lee de forma pasiva.
+   */
+  function observeDetail(panel) {
+    if (typeof IntersectionObserver === "undefined") {
+      panel.classList.add("is-visible");
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            panel.classList.add("is-visible");
+            io.disconnect();
+          }
+        }
+      },
+      { threshold: 0.2 }
+    );
+    io.observe(panel);
+  }
+
+  /** Región aria-live persistente (DRAW-7), fuera de #app. */
+  function announce(text) {
+    if (typeof document === "undefined" || !text) return;
+    const live = document.getElementById("live");
+    if (!live) return;
+    live.textContent = "";
+    // Reanuncia incluso si la copia es idéntica a la anterior.
+    window.setTimeout(() => {
+      live.textContent = text;
+    }, 30);
+  }
+
+  /** Foco en la primera carta del abanico (DRAW-2) — carousel recién abierto. */
+  function focusFirstCard() {
+    const root = document.getElementById("app");
+    if (!root) return;
+    const first = root.querySelector(".card");
+    if (first) first.focus();
+  }
+
+  /* ------------------------------------------------------------------------
+   * Selección T3 — movimiento imperativo (D11: sin re-render en vuelo)
+   * ---------------------------------------------------------------------- */
+
+  /**
+   * Selección de una carta: la transición pura T3 confirma el commit
+   * (drawn + selectedId) ANTES de tocar el DOM (D5, DRAW-1). Tras el commit
+   * se aplican .is-flipped (elegida) y .is-sunk (hermanas), sin render().
+   * Con prefers-reduced-motion se salta directo al reveal (D6/DRAW-3).
+   */
+  function selectCard(cardId) {
+    const prev = Cartas.state;
+    const next = transition(prev, { type: "SELECT", cardId });
+    if (next === prev) return; // T5: doble activación durante el reveal — no-op
+
+    Cartas.state = next;
+
+    if (prefersReducedMotion()) {
+      // DRAW-3: el estado avanza al instante, sin animación.
+      dispatch({ type: "FLIP_END" });
+      return;
+    }
+
+    const root = document.getElementById("app");
+    if (!root) return;
+    const selected = root.querySelector(`.card[data-card-id="${cardId}"]`);
+    if (!selected) return;
+
+    selected.classList.add("is-flipped");
+    bindFlipEnd(selected);
+
+    for (const card of root.querySelectorAll(".card")) {
+      if (card !== selected) {
+        card.classList.add("is-sunk");
+        bindSinkRemoval(card);
+      }
+    }
+  }
+
+  /**
+   * T4: al terminar el transform del flip (transitionend) o por backstop
+   * (~800ms) se despacha FLIP_END → el render pasa a reveal. El atajo de
+   * reduced-motion hace este camino instantáneo desde selectCard.
+   */
+  function bindFlipEnd(card) {
+    const inner = card.querySelector(".card-inner");
+    if (!inner) return;
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      inner.removeEventListener("transitionend", onEnd);
+      clearTimeout(timer);
+      dispatch({ type: "FLIP_END" });
+    };
+    const onEnd = (event) => {
+      if (event.propertyName === "transform") finish();
+    };
+    inner.addEventListener("transitionend", onEnd);
+    const timer = setTimeout(finish, 800); // backstop (D6)
+  }
+
+  /**
+   * T6: cada carta hundida se retira del DOM al terminar su transitionend,
+   * con un barrido backstop (~700ms) para las rezagadas (D7, DRAW-3). El
+   * estado no cambia; solo el DOM.
+   */
+  function bindSinkRemoval(card) {
+    let removed = false;
+    const remove = () => {
+      if (removed) return;
+      removed = true;
+      card.removeEventListener("transitionend", onEnd);
+      clearTimeout(timer);
+      if (card.isConnected) card.remove();
+    };
+    const onEnd = (event) => {
+      if (event.propertyName === "transform" || event.propertyName === "opacity") {
+        remove();
+      }
+    };
+    card.addEventListener("transitionend", onEnd);
+    const timer = setTimeout(remove, 700); // barrido backstop (D7)
+  }
+
+  /**
    * Render declarativo: reemplaza el esqueleto de #app según (mode, phase).
-   * El foco aterriza en la primera carta cuando el carousel se abre (DRAW-2).
+   * El foco del carousel NO se decide aquí: se deriva de la transición real
+   * en dispatch() comparando el estado anterior con el nuevo (R2-W1).
    */
   function render() {
     const state = Cartas.state;
@@ -378,24 +601,33 @@
 
     if (state.mode === "draw" && state.phase === "carousel") {
       renderCarousel(root);
-      if (lastPhase !== "carousel") {
-        const first = root.querySelector(".card");
-        if (first) first.focus();
-      }
+    } else if (state.mode === "draw" && state.phase === "reveal") {
+      renderReveal(root);
     } else {
       // home (y cualquier estado inesperado → home seguro)
       renderHome(root);
     }
-
-    lastPhase = state.phase;
   }
 
+  /**
+   * Despacha una acción: transición pura → render. Devuelve true si el
+   * estado cambió (útil para flujos imperativos). R2-W1: el foco en la
+   * primera carta se deriva de la transición real — T2/T7 abren carousel
+   * (home→carousel o reveal→carousel) y solo entonces se enfoca; nunca de
+   * un flag oculto de fase.
+   */
   function dispatch(action) {
-    const next = transition(Cartas.state, action);
-    if (next !== Cartas.state) {
-      Cartas.state = next;
-      render();
+    const prev = Cartas.state;
+    const next = transition(prev, action);
+    if (next === prev) return false;
+
+    Cartas.state = next;
+    render();
+
+    if (next.mode === "draw" && next.phase === "carousel" && prev.phase !== "carousel") {
+      focusFirstCard();
     }
+    return true;
   }
 
   function init() {
