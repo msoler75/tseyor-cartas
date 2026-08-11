@@ -1,0 +1,40 @@
+schema: spec-driven
+
+context: |
+  Project: cartas-tseyor
+  Tech stack: static vanilla frontend (HTML + CSS 3D animations + JavaScript)
+  Architecture: static site, no framework, no database, no build step required
+  Testing: no test infrastructure detected at init; to be established during apply
+  Style: vanilla HTML/CSS/JS conventions, no framework conventions to inherit
+
+testing:
+  strict_tdd: false
+  detected: false
+  note: >
+    No test runner, coverage tool, linter, type checker, or formatter was
+    detected at init (empty repo). Apply phase must establish minimal
+    verification tooling before sdd-verify runs; strict_tdd stays false
+    until a test runner exists.
+
+rules:
+  proposal:
+    - Include rollback plan for risky changes
+  specs:
+    - Use Given/When/Then for scenarios
+    - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
+  design:
+    - Include sequence diagrams for complex flows
+    - Document architecture decisions with rationale
+  tasks:
+    - Group by phase, use hierarchical numbering
+    - Keep tasks completable in one session
+  apply:
+    - Follow existing code patterns
+    tdd: false
+    test_command: ""
+  verify:
+    test_command: ""
+    build_command: ""
+    coverage_threshold: 0
+  archive:
+    - Warn before merging destructive deltas
