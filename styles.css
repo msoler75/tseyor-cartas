@@ -520,6 +520,22 @@ body {
   max-width: 24rem;
 }
 
+/* Entrada del spread: aparición escalonada (solo transform/opacity) — cada
+   carta sube y se asienta en su sitio; la pila móvil se siente ritual. */
+.spread-item {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: spread-in 0.5s ease forwards;
+  animation-delay: calc(var(--i, 0) * 90ms);
+}
+
+@keyframes spread-in {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 .spread-card {
   display: flex;
   flex-direction: column;
@@ -719,6 +735,7 @@ body {
   .reveal-actions {
     flex-direction: row;
     justify-content: center;
+    flex-wrap: wrap;
   }
 
   .dialog-actions {
@@ -771,6 +788,14 @@ body {
      añade .is-visible, pero esto garantiza el contenido sin depender del
      IntersectionObserver ni del scroll. */
   .reveal-detail {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* El escalonado del spread no debe dejar cartas invisibles por el delay:
+     se anula la animación y entran visibles al instante (REVIEW-6, DRAW-3). */
+  .spread-item {
+    animation: none;
     opacity: 1;
     transform: none;
   }

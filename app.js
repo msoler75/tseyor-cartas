@@ -583,6 +583,7 @@
       const number = deck().cards.indexOf(cardData) + 1;
 
       const li = el("li", "spread-item");
+      li.style.setProperty("--i", String(i)); // entrada escalonada (CSS)
       const btn = el("button", "spread-card");
       btn.type = "button";
       btn.dataset.cardId = cardData.id; // para restaurar foco al cerrar (T10)
@@ -915,6 +916,10 @@
     unbindDialogTrap();
     bindDialogTrap(); // REVIEW-3: Tab/Shift+Tab ciclan dentro del diálogo
     closeBtn.focus(); // REVIEW-2: el foco entra al diálogo
+
+    // DRAW-7 (Slice 3): el diálogo anuncia título + posición por aria-live,
+    // mismo patrón que el reveal — contexto claro para lectores de pantalla.
+    announce(`${card.title} — ${position}`);
 
     // CSS es dueño del movimiento: la clase is-open dispara el fundido/entrada.
     window.requestAnimationFrame(() => root.classList.add("is-open"));
