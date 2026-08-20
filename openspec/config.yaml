@@ -29,7 +29,8 @@ rules:
     - Group by phase, use hierarchical numbering
     - Keep tasks completable in one session
   apply:
-    - Follow existing code patterns
+    rules:
+      - Follow existing code patterns
     tdd: false
     test_command: ""
   verify:

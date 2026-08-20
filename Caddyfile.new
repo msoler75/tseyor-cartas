@@ -1,0 +1,54 @@
+164.68.107.151.sslip.io {
+	encode gzip zstd
+
+	@mplata_bare path /mejor-plato
+	redir @mplata_bare /mejor-plato/ 308
+
+	# MEJOR-PLATO - Admin API (granian espera /admin/...; no cortar /api)
+	handle /mejor-plato/api/admin/* {
+		uri strip_prefix /mejor-plato
+		reverse_proxy 127.0.0.1:8001
+	}
+
+	# MEJOR-PLATO - Otras API (se quita /mejor-plato/api)
+	handle_path /mejor-plato/api/* {
+		reverse_proxy 127.0.0.1:8001
+	}
+
+	# MEJOR-PLATO - Admin SPA local
+	handle_path /mejor-plato/admin* {
+		root * /home/dev_901/mejor-plato/frontend/dist
+		try_files {path} /admin.html
+		file_server
+	}
+
+	# MEJOR-PLATO - SPA principal (catch-all)
+	handle_path /mejor-plato/* {
+		root * /home/dev_901/mejor-plato/frontend/dist
+		try_files {path} /index.html
+		file_server
+	}
+
+	# CARTAS-TSEYOR - app estatica (HTML+CSS+JS, sin backend)
+	@cartas_bare path /cartas-tseyor
+	redir @cartas_bare /cartas-tseyor/ 308
+
+	handle_path /cartas-tseyor/* {
+		root * /home/dev_901/cartas-tseyor
+		try_files {path} /index.html
+		file_server
+	}
+
+	# TSEYOR (Laravel) - raiz: PHP-FPM sobre /home/dev_901/tseyor/public
+	handle {
+		root * /home/dev_901/tseyor/public
+		php_fastcgi 127.0.0.1:9000
+		file_server
+	}
+}
+
+# VITE DEV SERVER - proxy HTTPS para npm run dev (HMR)
+vite.164.68.107.151.sslip.io {
+	encode gzip
+	reverse_proxy 127.0.0.1:5173
+}
