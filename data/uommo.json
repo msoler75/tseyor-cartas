@@ -1,0 +1,177 @@
+[
+  {
+    "id": 1,
+    "title": "Conexión",
+    "category": "Ciencia",
+    "text": ""
+  },
+  {
+    "id": 2,
+    "title": "Eficacia",
+    "category": "Ciencia",
+    "text": ""
+  },
+  {
+    "id": 3,
+    "title": "Monje y Guerrero",
+    "category": "Ciencia",
+    "text": ""
+  },
+  {
+    "id": 4,
+    "title": "Sabiduría",
+    "category": "Ciencia",
+    "text": ""
+  },
+  {
+    "id": 5,
+    "title": "Origen",
+    "category": "Ciencia",
+    "text": ""
+  },
+  {
+    "id": 6,
+    "title": "La llamada",
+    "category": "Ciencia",
+    "text": ""
+  },
+  {
+    "id": 7,
+    "title": "Regeneración",
+    "category": "Ciencia",
+    "text": ""
+  },
+  {
+    "id": 8,
+    "title": "Inspiración",
+    "category": "Arte",
+    "text": ""
+  },
+  {
+    "id": 9,
+    "title": "Transformación",
+    "category": "Arte",
+    "text": ""
+  },
+  {
+    "id": 10,
+    "title": "Confianza",
+    "category": "Arte",
+    "text": ""
+  },
+  {
+    "id": 11,
+    "title": "Visión",
+    "category": "Arte",
+    "text": ""
+  },
+  {
+    "id": 12,
+    "title": "Totalidad",
+    "category": "Arte",
+    "text": ""
+  },
+  {
+    "id": 13,
+    "title": "Éxito",
+    "category": "Arte",
+    "text": ""
+  },
+  {
+    "id": 14,
+    "title": "Fascinación",
+    "category": "Arte",
+    "text": ""
+  },
+  {
+    "id": 15,
+    "title": "Observación",
+    "category": "Filosofía",
+    "text": ""
+  },
+  {
+    "id": 16,
+    "title": "Discernimiento",
+    "category": "Filosofía",
+    "text": ""
+  },
+  {
+    "id": 17,
+    "title": "Dogmatismo",
+    "category": "Filosofía",
+    "text": ""
+  },
+  {
+    "id": 18,
+    "title": "La caverna",
+    "category": "Filosofía",
+    "text": ""
+  },
+  {
+    "id": 19,
+    "title": "Vuelo",
+    "category": "Filosofía",
+    "text": ""
+  },
+  {
+    "id": 20,
+    "title": "Divergencia",
+    "category": "Filosofía",
+    "text": ""
+  },
+  {
+    "id": 21,
+    "title": "Liberación",
+    "category": "Filosofía",
+    "text": ""
+  },
+  {
+    "id": 22,
+    "title": "La clave",
+    "category": "Espiritualidad",
+    "text": ""
+  },
+  {
+    "id": 23,
+    "title": "Transmutación",
+    "category": "Espiritualidad",
+    "text": ""
+  },
+  {
+    "id": 24,
+    "title": "Amor",
+    "category": "Espiritualidad",
+    "text": ""
+  },
+  {
+    "id": 25,
+    "title": "Cambio",
+    "category": "Espiritualidad",
+    "text": ""
+  },
+  {
+    "id": 26,
+    "title": "Compromiso",
+    "category": "Espiritualidad",
+    "text": ""
+  },
+  {
+    "id": 27,
+    "title": "Comprensión",
+    "category": "Espiritualidad",
+    "text": ""
+  },
+  {
+    "id": 28,
+    "title": "Consciencia",
+    "category": "Espiritualidad",
+    "text": ""
+  },
+  {
+    "id": 29,
+    "title": "Comodín",
+    "category": "-",
+    "text": "",
+    "image": "comodin.jpg"
+  }
+]
