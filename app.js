@@ -244,7 +244,7 @@
    * persistencia, DRAW-1/REVIEW-5).
    */
   function createInitialState() {
-    return { mode: "draw", phase: "home", drawn: [], selectedId: null, readingMode: 0 };
+    return { mode: "draw", phase: "home", drawn: [], selectedId: null, readingMode: 0, question: "" };
   }
 
   /**
@@ -581,6 +581,18 @@
       section.appendChild(labelsEl);
     }
 
+    // Input de pregunta (opcional, se guardará en el estado)
+    const questionWrap = el("div", "home-question");
+    const questionInput = el("input", "home-question-input");
+    questionInput.type = "text";
+    questionInput.placeholder = "Escribe tu pregunta (opcional)";
+    questionInput.value = state.question || "";
+    questionInput.addEventListener("input", function () {
+      Cartas.state = { ...Cartas.state, question: this.value };
+    });
+    questionWrap.appendChild(questionInput);
+    section.appendChild(questionWrap);
+
     const actions = el("div", "home-actions");
 
     if (guard.canDraw) {
@@ -597,8 +609,12 @@
       actions.appendChild(hint);
     }
 
-    // T8: "Ver tirada" solo con 2+ cartas sacadas
-    if (state.drawn.length >= 2) {
+    // T8: "Ver tirada"
+    const isFreeMode = mode.labels === null;
+    const canReview = isFreeMode
+      ? state.drawn.length >= 1
+      : state.drawn.length >= maxCards();
+    if (canReview) {
       const reviewBtn = el("button", "btn btn--secondary", "Ver tirada");
       reviewBtn.type = "button";
       reviewBtn.addEventListener("click", () => dispatch({ type: "REVIEW_OPEN" }));
@@ -912,8 +928,13 @@
       // Tope 3/3 (DRAW-4) o pool agotado (DECK-2): copia exacta del hint.
       actions.appendChild(el("p", "hint", guard.hint));
     }
-    // T8: "Ver tirada" solo con 2+ cartas sacadas
-    if (state.drawn.length >= 2) {
+    // T8: "Ver tirada"
+    const mode = readingMode();
+    const isFreeMode = mode.labels === null;
+    const canReview = isFreeMode
+      ? state.drawn.length >= 1
+      : state.drawn.length >= maxCards();
+    if (canReview) {
       const reviewBtn = el("button", "btn btn--secondary", "Ver tirada");
       reviewBtn.type = "button";
       reviewBtn.addEventListener("click", () =>
@@ -1060,11 +1081,18 @@
     actions.appendChild(resetBtn);
     section.appendChild(actions);
 
-    // Botón de captura/compartir
-    const captureBtn = el("button", "btn btn--secondary", "Compartir tirada");
-    captureBtn.type = "button";
-    captureBtn.addEventListener("click", () => openCapturePanel());
-    section.appendChild(captureBtn);
+    // Botón compartir: siempre en libre, solo cuando completa en modos fijos
+    const spreadMode = readingMode();
+    const spreadIsFree = spreadMode.labels === null;
+    const canShare = spreadIsFree || state.drawn.length >= maxCards();
+    if (canShare) {
+      const captureWrap = el("div", "spread-capture");
+      const captureBtn = el("button", "btn btn--secondary", "Compartir tirada");
+      captureBtn.type = "button";
+      captureBtn.addEventListener("click", () => openCapturePanel());
+      captureWrap.appendChild(captureBtn);
+      section.appendChild(captureWrap);
+    }
 
     setRoot(root, section);
   }
@@ -1073,105 +1101,190 @@
    * Captura de tirada — html2canvas + compartir
    * --------------------------------------------------------------------- */
 
-  /** Abre el panel de captura: captura la tirada como imagen y muestra opciones */
+  /** Abre el panel de captura: construye zona limpia, captura y muestra opciones */
   function openCapturePanel() {
-    const spread = document.querySelector(".spread");
-    if (!spread || typeof html2canvas === "undefined") return;
+    if (typeof html2canvas === "undefined") return;
 
-    // Crear panel de captura
+    const state = Cartas.state;
+    const col = collection();
+    const mode = readingMode();
+
+    // Pedir pregunta si está vacía
+    let question = state.question || "";
+    if (!question) {
+      question = prompt("Escribe tu pregunta para la tirada:") || "";
+      if (!question.trim()) return;
+      Cartas.state = { ...Cartas.state, question };
+    }
+
+    // Fecha
+    const now = new Date();
+    const dateStr = now.toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" });
+
+    // Encabezado
+    const header = el("div", "");
+    header.style.cssText = "background:#f2ead9;padding:1.5rem 2rem 0.5rem;text-align:center;font-family:'Bradley Hand ITC TT Bold',serif;";
+    header.appendChild(el("p", "", col.deck || "Cartas Tseyor", "font-size:1.1rem;color:#6d6353;margin:0;"));
+    header.appendChild(el("p", "", dateStr, "margin:0.3rem 0;font-size:0.8rem;color:#6d6353;"));
+    if (question) {
+      header.appendChild(el("p", "", "\u00ab " + question + " \u00bb", "margin:0.5rem 0 0;font-size:1.1rem;font-style:italic;color:#26221c;"));
+    }
+
+    // Pie
+    const footer = el("div", "");
+    footer.style.cssText = "background:#f2ead9;padding:0.5rem 2rem 1.5rem;text-align:center;font-family:'Bradley Hand ITC TT Bold',serif;";
+    footer.appendChild(el("p", "", mode.name, "margin:0;font-size:0.8rem;color:#6d6353;letter-spacing:0.1em;"));
+
+    // Capturar el contenido de #app
+    const source = document.getElementById("app");
+    console.log("[capture] source:", source ? source.tagName + " children:" + source.children.length : "null");
+    if (!source) return;
+
+    // Ocultar botones temporalmente
+    const hidden = [];
+    source.querySelectorAll("button, .reveal-actions, .spread-actions, .spread-capture, .carousel-caption, .home-question").forEach(function (b) {
+      hidden.push({ el: b, prev: b.style.display });
+      b.style.display = "none";
+    });
+    console.log("[capture] hidden", hidden.length, "elements");
+
+    // Panel overlay
     const panel = el("div", "capture-panel");
-    const loading = el("p", "capture-loading", "Generando imagen...");
-    panel.appendChild(loading);
+    panel.appendChild(el("p", "capture-loading", "Generando imagen..."));
     document.body.appendChild(panel);
 
-    html2canvas(spread, {
-      backgroundColor: "#f2ead9",
-      scale: 2,
-      useCORS: true
-    }).then(function (canvas) {
-      panel.innerHTML = "";
-
-      // Preview
-      const preview = el("div", "capture-preview");
-      canvas.classList.add("capture-img");
-      preview.appendChild(canvas);
-      panel.appendChild(preview);
-
-      // Acciones
-      const actions = el("div", "capture-actions");
-
-      // Descargar
-      const downloadBtn = el("button", "btn btn--primary", "Descargar imagen");
-      downloadBtn.type = "button";
-      downloadBtn.addEventListener("click", function () {
-        const link = document.createElement("a");
-        link.download = "tirada-cartas-tseyor.png";
-        link.href = canvas.toDataURL("image/png");
-        link.click();
-      });
-      actions.appendChild(downloadBtn);
-
-      // Compartir en WhatsApp
-      const mode = readingMode();
-      const text = "Mi tirada de " + (collection().deck || "Cartas Tseyor") + " (" + mode.name + ")";
-      const whatsappBtn = el("button", "btn btn--share share-whatsapp", "WhatsApp");
-      whatsappBtn.type = "button";
-      whatsappBtn.addEventListener("click", function () {
-        canvas.toBlob(function (blob) {
-          const file = new File([blob], "tirada.png", { type: "image/png" });
-          if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-            navigator.share({ files: [file], text: text });
-          } else {
-            window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
-          }
-        });
-      });
-      actions.appendChild(whatsappBtn);
-
-      // Compartir en Facebook
-      const fbBtn = el("button", "btn btn--share share-facebook", "Facebook");
-      fbBtn.type = "button";
-      fbBtn.addEventListener("click", function () {
-        window.open("https://www.facebook.com/sharer/sharer.php?quote=" + encodeURIComponent(text), "_blank", "width=626,height=436");
-      });
-      actions.appendChild(fbBtn);
-
-      // Twitter/X
-      const twitterBtn = el("button", "btn btn--share share-twitter", "X / Twitter");
-      twitterBtn.type = "button";
-      twitterBtn.addEventListener("click", function () {
-        window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(text), "_blank", "width=626,height=436");
-      });
-      actions.appendChild(twitterBtn);
-
-      // Copiar al portapapeles
-      const copyBtn = el("button", "btn btn--share", "Copiar imagen");
-      copyBtn.type = "button";
-      copyBtn.addEventListener("click", function () {
-        canvas.toBlob(function (blob) {
-          if (navigator.clipboard && navigator.clipboard.write) {
-            const item = new ClipboardItem({ "image/png": blob });
-            navigator.clipboard.write([item]).then(function () {
-              copyBtn.textContent = "Copiada ✓";
-              setTimeout(() => { copyBtn.textContent = "Copiar imagen"; }, 2000);
-            });
-          }
-        });
-      });
-      actions.appendChild(copyBtn);
-
-      panel.appendChild(actions);
-
-      // Botón cerrar
-      const closeBtn = el("button", "capture-close", "×");
-      closeBtn.type = "button";
-      closeBtn.addEventListener("click", () => panel.remove());
-      panel.appendChild(closeBtn);
-    }).catch(function (err) {
-      panel.innerHTML = "<p>Error al generar la imagen</p>";
-      console.error(err);
-      setTimeout(() => panel.remove(), 2000);
+    // Log de imágenes
+    const imgs = source.querySelectorAll("img");
+    console.log("[capture] imgs:", imgs.length);
+    imgs.forEach(function (img, i) {
+      console.log("[capture]   img[" + i + "]:", img.src.split("/").pop(), "complete:", img.complete, "natural:", img.naturalWidth + "x" + img.naturalHeight);
     });
+
+    // Capturar
+    html2canvas(source, { backgroundColor: "#f2ead9", scale: 2, useCORS: true, allowTaint: true, foreignObjectRendering: false })
+      .then(function (sourceCanvas) {
+        console.log("[capture] sourceCanvas:", sourceCanvas.width + "x" + sourceCanvas.height);
+        // Verificar píxeles
+        const checkCtx = sourceCanvas.getContext("2d");
+        const px = checkCtx.getImageData(0, 0, sourceCanvas.width, sourceCanvas.height).data;
+        let filled = 0;
+        for (let i = 3; i < px.length; i += 4) { if (px[i] > 0) filled++; }
+        console.log("[capture] filled pixels:", filled, "/", px.length / 4, "(", (filled / (px.length / 4) * 100).toFixed(1), "%)");
+        // Restaurar
+        hidden.forEach(function (h) { h.el.style.display = h.prev; });
+
+        // Componer imagen final con header + source + footer
+        const headerH = 80;
+        const footerH = 50;
+        const w = sourceCanvas.width;
+        const h = headerH + sourceCanvas.height + footerH;
+
+        const final = document.createElement("canvas");
+        final.width = w;
+        final.height = h;
+        const ctx = final.getContext("2d");
+
+        // Fondo
+        ctx.fillStyle = "#f2ead9";
+        ctx.fillRect(0, 0, w, h);
+
+        // Header
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#6d6353";
+        ctx.font = "bold 24px 'Bradley Hand ITC TT Bold', serif";
+        ctx.fillText(col.deck || "Cartas Tseyor", w / 2, 30);
+        ctx.font = "16px 'Bradley Hand ITC TT Bold', serif";
+        ctx.fillText(dateStr, w / 2, 55);
+        if (question) {
+          ctx.fillStyle = "#26221c";
+          ctx.font = "italic 22px 'Bradley Hand ITC TT Bold', serif";
+          ctx.fillText("\u00ab " + question + " \u00bb", w / 2, 78);
+        }
+
+        // Source
+        ctx.drawImage(sourceCanvas, 0, headerH);
+
+        // Footer
+        ctx.fillStyle = "#6d6353";
+        ctx.font = "16px 'Bradley Hand ITC TT Bold', serif";
+        ctx.textAlign = "center";
+        ctx.fillText(mode.name, w / 2, headerH + sourceCanvas.height + 30);
+
+        panel.innerHTML = "";
+
+        const preview = el("div", "capture-preview");
+        final.classList.add("capture-img");
+        preview.appendChild(final);
+        panel.appendChild(preview);
+
+        const actions = el("div", "capture-actions");
+        const shareText = (col.deck || "Cartas Tseyor") + " \u2014 " + mode.name + (question ? " \u2014 \u00ab" + question + "\u00bb" : "");
+
+        const downloadBtn = el("button", "btn btn--primary", "Descargar imagen");
+        downloadBtn.type = "button";
+        downloadBtn.addEventListener("click", function () {
+          const link = document.createElement("a");
+          link.download = "tirada-cartas.png";
+          link.href = final.toDataURL("image/png");
+          link.click();
+        });
+        actions.appendChild(downloadBtn);
+
+        const whatsappBtn = el("button", "btn btn--share share-whatsapp", "WhatsApp");
+        whatsappBtn.type = "button";
+        whatsappBtn.addEventListener("click", function () {
+          final.toBlob(function (blob) {
+            const file = new File([blob], "tirada.png", { type: "image/png" });
+            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+              navigator.share({ files: [file], text: shareText });
+            } else {
+              window.open("https://wa.me/?text=" + encodeURIComponent(shareText), "_blank");
+            }
+          });
+        });
+        actions.appendChild(whatsappBtn);
+
+        const fbBtn = el("button", "btn btn--share share-facebook", "Facebook");
+        fbBtn.type = "button";
+        fbBtn.addEventListener("click", function () {
+          window.open("https://www.facebook.com/sharer/sharer.php?quote=" + encodeURIComponent(shareText), "_blank", "width=626,height=436");
+        });
+        actions.appendChild(fbBtn);
+
+        const twitterBtn = el("button", "btn btn--share share-twitter", "X / Twitter");
+        twitterBtn.type = "button";
+        twitterBtn.addEventListener("click", function () {
+          window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(shareText), "_blank", "width=626,height=436");
+        });
+        actions.appendChild(twitterBtn);
+
+        const copyBtn = el("button", "btn btn--share", "Copiar imagen");
+        copyBtn.type = "button";
+        copyBtn.addEventListener("click", function () {
+          final.toBlob(function (blob) {
+            if (navigator.clipboard && navigator.clipboard.write) {
+              navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]).then(function () {
+                copyBtn.textContent = "Copiada \u2713";
+                setTimeout(function () { copyBtn.textContent = "Copiar imagen"; }, 2000);
+              });
+            }
+          });
+        });
+        actions.appendChild(copyBtn);
+
+        panel.appendChild(actions);
+
+        const closeBtn = el("button", "capture-close", "\u00d7");
+        closeBtn.type = "button";
+        closeBtn.addEventListener("click", function () { panel.remove(); });
+        panel.appendChild(closeBtn);
+      })
+      .catch(function (err) {
+        hidden.forEach(function (h) { h.el.style.display = h.prev; });
+        panel.innerHTML = "<p>Error al generar la imagen</p>";
+        console.error(err);
+        setTimeout(function () { panel.remove(); }, 2000);
+      });
   }
 
   /**
