@@ -119,6 +119,32 @@ body {
   letter-spacing: 0.02em;
 }
 
+/* Dev toggle: muestra el frente de todas las cartas */
+.dev-toggle {
+  margin-top: 0.5rem;
+  padding: 0.3em 0.8em;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.dev-toggle[aria-pressed="true"] {
+  color: var(--on-accent);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+body.dev-show-front .carousel .card-inner {
+  transform: rotateY(180deg);
+  transition: none;
+}
+
 .app-header {
   transition:
     opacity 0.24s ease,
@@ -556,8 +582,9 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   right: var(--title-pad-right, 0);
   bottom: var(--title-pad-bottom, 0);
   left: var(--title-pad-left, 0);
+  display: grid;
+  place-items: center;
   z-index: 2;
-  text-align: center;
   font-size: var(--title-cqw, 3cqw);
   color: var(--ink);
   text-shadow: 0 1px 3px rgba(242, 234, 217, 0.7);
@@ -571,8 +598,9 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   right: var(--cat-pad-right, 0);
   bottom: var(--cat-pad-bottom, 0);
   left: var(--cat-pad-left, 0);
+  display: grid;
+  place-items: center;
   z-index: 2;
-  text-align: center;
   color: var(--ink);
   text-shadow: 0 1px 3px rgba(242, 234, 217, 0.7);
   line-height: 1.2;
@@ -619,8 +647,9 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   right: var(--title-pad-right, 0);
   bottom: var(--title-pad-bottom, 0);
   left: var(--title-pad-left, 0);
+  display: grid;
+  place-items: center;
   z-index: 2;
-  text-align: center;
   font-size: var(--title-cqw, 3cqw);
   color: var(--ink);
   text-shadow: 0 1px 4px rgba(242, 234, 217, 0.8);
@@ -634,8 +663,9 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   right: var(--cat-pad-right, 0);
   bottom: var(--cat-pad-bottom, 0);
   left: var(--cat-pad-left, 0);
+  display: grid;
+  place-items: center;
   z-index: 2;
-  text-align: center;
   color: var(--ink);
   text-shadow: 0 1px 4px rgba(242, 234, 217, 0.8);
   line-height: 1.2;
@@ -677,8 +707,9 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   right: var(--title-pad-right, 0);
   bottom: var(--title-pad-bottom, 0);
   left: var(--title-pad-left, 0);
+  display: grid;
+  place-items: center;
   z-index: 2;
-  text-align: center;
   font-size: var(--title-cqw, 3cqw);
   color: var(--ink);
   text-shadow: 0 1px 3px rgba(242, 234, 217, 0.7);
@@ -692,8 +723,9 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   right: var(--cat-pad-right, 0);
   bottom: var(--cat-pad-bottom, 0);
   left: var(--cat-pad-left, 0);
+  display: grid;
+  place-items: center;
   z-index: 2;
-  text-align: center;
   color: var(--ink);
   text-shadow: 0 1px 3px rgba(242, 234, 217, 0.7);
   line-height: 1.2;
@@ -745,8 +777,9 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   right: var(--title-pad-right, 0);
   bottom: var(--title-pad-bottom, 0);
   left: var(--title-pad-left, 0);
+  display: grid;
+  place-items: center;
   z-index: 2;
-  text-align: center;
   font-size: var(--title-cqw, 3cqw);
   color: var(--ink);
   text-shadow: 0 1px 4px rgba(242, 234, 217, 0.8);
@@ -760,8 +793,9 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   right: var(--cat-pad-right, 0);
   bottom: var(--cat-pad-bottom, 0);
   left: var(--cat-pad-left, 0);
+  display: grid;
+  place-items: center;
   z-index: 2;
-  text-align: center;
   color: var(--ink);
   text-shadow: 0 1px 4px rgba(242, 234, 217, 0.8);
   line-height: 1.2;

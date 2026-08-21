@@ -1618,6 +1618,15 @@
     setInert(false); // defensivo: ningún estado previo deja #app inert
     render();
     bindGlobalKeys();
+
+    // Dev toggle: muestra el frente de todas las cartas del carousel
+    const devBtn = document.getElementById("dev-toggle");
+    if (devBtn) {
+      devBtn.addEventListener("click", () => {
+        const on = document.body.classList.toggle("dev-show-front");
+        devBtn.setAttribute("aria-pressed", String(on));
+      });
+    }
   }
 
   /* ==== API pública (contrato de design.md) ==== */
