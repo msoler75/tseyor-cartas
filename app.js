@@ -151,10 +151,10 @@
   }
 
   /* --- Parámetros de diseño (design.md): jitter ±4–10° / ±2–6°, tilt ∝ offset --- */
-  const JITTER_RZ_MIN = 4;
-  const JITTER_RZ_MAX = 10;
-  const JITTER_RX_MIN = 2;
-  const JITTER_RX_MAX = 6;
+  const JITTER_RZ_MIN = 2;
+  const JITTER_RZ_MAX = 6;
+  const JITTER_RX_MIN = 1;
+  const JITTER_RX_MAX = 3;
   const TILT_MAX_DEG = 14; // rotateY máximo por distancia al centro
 
   /* El movimiento entre vistas queda bloqueado durante unos cientos de ms
@@ -569,29 +569,9 @@
     const intro = el(
       "p",
       "home-intro",
-      "Tómate un momento de calma, formula tu pregunta en silencio y, cuando llegue el momento, saca hasta tres cartas, una a la vez."
+      ["Pregunta y saca tus cartas.", "¿Qué quieres saber?", "¿Cuál es tu pregunta?"][Math.floor(Math.random() * 3)]
     );
     section.appendChild(intro);
-
-    // Selector de modo de lectura (solo al inicio, antes de sacar cartas)
-    const col = collection();
-    const modes = col.reading_modes || [];
-    if (modes.length > 1 && state.drawn.length === 0) {
-      const modeWrap = el("div", "reading-modes");
-      modes.forEach(function (mode, i) {
-        const btn = el("button", "reading-mode-btn");
-        btn.type = "button";
-        btn.textContent = mode.name;
-        if (i === state.readingMode) btn.classList.add("is-active");
-        btn.addEventListener("click", function () {
-          Cartas.state = { ...Cartas.state, readingMode: i };
-          render();
-          focusHomePrimary();
-        });
-        modeWrap.appendChild(btn);
-      });
-      section.appendChild(modeWrap);
-    }
 
     // Mostrar labels del modo seleccionado
     const mode = readingMode();
@@ -1080,7 +1060,118 @@
     actions.appendChild(resetBtn);
     section.appendChild(actions);
 
+    // Botón de captura/compartir
+    const captureBtn = el("button", "btn btn--secondary", "Compartir tirada");
+    captureBtn.type = "button";
+    captureBtn.addEventListener("click", () => openCapturePanel());
+    section.appendChild(captureBtn);
+
     setRoot(root, section);
+  }
+
+  /* -----------------------------------------------------------------------
+   * Captura de tirada — html2canvas + compartir
+   * --------------------------------------------------------------------- */
+
+  /** Abre el panel de captura: captura la tirada como imagen y muestra opciones */
+  function openCapturePanel() {
+    const spread = document.querySelector(".spread");
+    if (!spread || typeof html2canvas === "undefined") return;
+
+    // Crear panel de captura
+    const panel = el("div", "capture-panel");
+    const loading = el("p", "capture-loading", "Generando imagen...");
+    panel.appendChild(loading);
+    document.body.appendChild(panel);
+
+    html2canvas(spread, {
+      backgroundColor: "#f2ead9",
+      scale: 2,
+      useCORS: true
+    }).then(function (canvas) {
+      panel.innerHTML = "";
+
+      // Preview
+      const preview = el("div", "capture-preview");
+      canvas.classList.add("capture-img");
+      preview.appendChild(canvas);
+      panel.appendChild(preview);
+
+      // Acciones
+      const actions = el("div", "capture-actions");
+
+      // Descargar
+      const downloadBtn = el("button", "btn btn--primary", "Descargar imagen");
+      downloadBtn.type = "button";
+      downloadBtn.addEventListener("click", function () {
+        const link = document.createElement("a");
+        link.download = "tirada-cartas-tseyor.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      });
+      actions.appendChild(downloadBtn);
+
+      // Compartir en WhatsApp
+      const mode = readingMode();
+      const text = "Mi tirada de " + (collection().deck || "Cartas Tseyor") + " (" + mode.name + ")";
+      const whatsappBtn = el("button", "btn btn--share share-whatsapp", "WhatsApp");
+      whatsappBtn.type = "button";
+      whatsappBtn.addEventListener("click", function () {
+        canvas.toBlob(function (blob) {
+          const file = new File([blob], "tirada.png", { type: "image/png" });
+          if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+            navigator.share({ files: [file], text: text });
+          } else {
+            window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
+          }
+        });
+      });
+      actions.appendChild(whatsappBtn);
+
+      // Compartir en Facebook
+      const fbBtn = el("button", "btn btn--share share-facebook", "Facebook");
+      fbBtn.type = "button";
+      fbBtn.addEventListener("click", function () {
+        window.open("https://www.facebook.com/sharer/sharer.php?quote=" + encodeURIComponent(text), "_blank", "width=626,height=436");
+      });
+      actions.appendChild(fbBtn);
+
+      // Twitter/X
+      const twitterBtn = el("button", "btn btn--share share-twitter", "X / Twitter");
+      twitterBtn.type = "button";
+      twitterBtn.addEventListener("click", function () {
+        window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(text), "_blank", "width=626,height=436");
+      });
+      actions.appendChild(twitterBtn);
+
+      // Copiar al portapapeles
+      const copyBtn = el("button", "btn btn--share", "Copiar imagen");
+      copyBtn.type = "button";
+      copyBtn.addEventListener("click", function () {
+        canvas.toBlob(function (blob) {
+          if (navigator.clipboard && navigator.clipboard.write) {
+            const item = new ClipboardItem({ "image/png": blob });
+            navigator.clipboard.write([item]).then(function () {
+              copyBtn.textContent = "Copiada ✓";
+              setTimeout(() => { copyBtn.textContent = "Copiar imagen"; }, 2000);
+            });
+          }
+        });
+      });
+      actions.appendChild(copyBtn);
+
+      panel.appendChild(actions);
+
+      // Botón cerrar
+      const closeBtn = el("button", "capture-close", "×");
+      closeBtn.type = "button";
+      closeBtn.addEventListener("click", () => panel.remove());
+      panel.appendChild(closeBtn);
+    }).catch(function (err) {
+      panel.innerHTML = "<p>Error al generar la imagen</p>";
+      console.error(err);
+      setTimeout(() => panel.remove(), 2000);
+    });
   }
 
   /**
@@ -1502,6 +1593,7 @@
       // home (y cualquier estado inesperado → home seguro)
       renderHome(root);
     }
+    renderHeaderModes();
   }
 
   /* ------------------------------------------------------------------------
@@ -1590,6 +1682,13 @@
     if (col.width && col.height) {
       document.documentElement.style.setProperty("--card-aspect", `${col.width} / ${col.height}`);
     }
+    // Título de la deck en el header
+    const deckTitle = document.getElementById("deck-title");
+    if (deckTitle && col.deck) {
+      deckTitle.textContent = col.deck;
+    }
+    // Selector de modo de tirada en el header
+    renderHeaderModes();
     // Recarga → home (sin persistencia; DRAW-1, REVIEW-5).
     Cartas.state = createInitialState();
     render();
@@ -1602,6 +1701,41 @@
         const on = document.body.classList.toggle("dev-show-front");
         devBtn.setAttribute("aria-pressed", String(on));
       });
+    }
+  }
+
+  /** Renderiza el selector de modos de tirada en el header */
+  function renderHeaderModes() {
+    const col = collection();
+    const modes = col.reading_modes || [];
+    const wrap = document.getElementById("reading-modes");
+    if (!wrap) return;
+    wrap.innerHTML = "";
+    if (modes.length <= 1) return;
+
+    const canChange = !Cartas.state || Cartas.state.drawn.length === 0;
+    const mode = readingMode();
+
+    if (canChange) {
+      const label = el("span", "reading-modes-label", "Tipo de tirada");
+      wrap.appendChild(label);
+      const btns = el("div", "reading-modes-btns");
+      modes.forEach(function (m, i) {
+        const btn = el("button", "reading-mode-btn");
+        btn.type = "button";
+        btn.textContent = m.name;
+        if (i === (Cartas.state && Cartas.state.readingMode)) btn.classList.add("is-active");
+        btn.addEventListener("click", function () {
+          Cartas.state = { ...Cartas.state, readingMode: i };
+          render();
+          renderHeaderModes();
+        });
+        btns.appendChild(btn);
+      });
+      wrap.appendChild(btns);
+    } else {
+      const info = el("span", "reading-modes-label", "Tipo de tirada: " + mode.name);
+      wrap.appendChild(info);
     }
   }
 

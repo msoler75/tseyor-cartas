@@ -11,9 +11,9 @@
   </head>
   <body>
     <header class="app-header">
-      <p class="app-kicker">Cartas Tseyor</p>
-      <h1 class="app-title">Saca tus cartas</h1>
+      <p class="app-kicker" id="deck-title">Cartas Tseyor</p>
       <button id="dev-toggle" class="dev-toggle" type="button" aria-pressed="false">Ver cartas</button>
+      <div id="reading-modes" class="reading-modes"></div>
     </header>
 
     <!-- El render de app.js reemplaza el contenido de #app según el estado. -->
@@ -23,6 +23,7 @@
     <div id="live" class="visually-hidden" aria-live="polite"></div>
 
     <!-- Scripts planos, en este orden: deck.js (datos) antes de app.js (lógica). -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="deck.js"></script>
     <script src="app.js"></script>
   </body>
