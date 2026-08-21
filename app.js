@@ -737,7 +737,9 @@
    */
   function renderDetail(card, position) {
     const col = collection();
-    const kicker = el("p", "reveal-kicker", `Posición · ${position || ""}`);
+    const mode = readingMode();
+    const hasLabels = mode.labels !== null;
+    const kicker = hasLabels ? el("p", "reveal-kicker", `Posición · ${position || ""}`) : null;
     const title = el("h2", "reveal-title", formatTitle(card, col));
     const detail = el("div", "reveal-detail");
 
@@ -873,7 +875,7 @@
 
     const section = el("section", "reveal");
 
-    section.appendChild(kicker);
+    if (kicker) section.appendChild(kicker);
 
     title.tabIndex = -1; // destino de foco programático tras el flip (DRAW-2)
     section.appendChild(title);
@@ -991,6 +993,7 @@
     const list = el("ol", "spread-list");
     const col = collection();
     const imgFolder = col.images_folder || "";
+    const hasLabels = readingMode().labels !== null;
 
     state.drawn.forEach((d, i) => {
       const cardData = deck().cards.find((c) => c.id === d.cardId);
@@ -1038,7 +1041,9 @@
       }
 
       const caption = el("span", "spread-caption");
-      caption.appendChild(el("span", "spread-pos", position));
+      if (hasLabels) {
+        caption.appendChild(el("span", "spread-pos", position));
+      }
       if (col.show_titles_in_review !== false) {
         caption.appendChild(el("span", "spread-title", cardData.title));
       }

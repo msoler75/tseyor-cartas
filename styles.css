@@ -353,11 +353,10 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   color: var(--ink);
 }
 
-/* "Nueva tirada": acción destructiva por diseño (REVIEW-5) — peso visual
-   bajo, texto plano; no compite con la acción principal. */
+/* "Nueva tirada": botón visible pero no destacado */
 .btn--ghost {
   background: transparent;
-  border-color: transparent;
+  border-color: var(--line);
   color: var(--muted);
 }
 
