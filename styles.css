@@ -267,6 +267,46 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   gap: 0.9rem;
 }
 
+.reading-modes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.reading-mode-btn {
+  padding: 0.45em 1em;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reading-mode-btn:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+.reading-mode-btn.is-active {
+  color: var(--on-accent);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.home-labels {
+  margin: 0 0 1.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
 .hint {
   margin: 0.5rem 0;
   font-size: 1.05rem;

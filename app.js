@@ -30,6 +30,27 @@
   const deck = () => Cartas.deck || { positions: [], cards: [] };
   const collection = () => Cartas.collection || {};
 
+  /** Obtiene el modo de lectura actual según el índice en el estado */
+  function readingMode() {
+    const col = collection();
+    const modes = col.reading_modes || [];
+    const idx = (Cartas.state && Cartas.state.readingMode) || 0;
+    return modes[idx] || modes[0] || { name: "", labels: null, num_cards: -1, max_cards: 3 };
+  }
+
+  /** Devuelve las etiquetas de posición para el modo actual */
+  function positionLabels() {
+    const mode = readingMode();
+    return mode.labels || deck().positions;
+  }
+
+  /** Número máximo de cartas según el modo actual */
+  function maxCards() {
+    const mode = readingMode();
+    if (mode.num_cards > 0) return mode.num_cards;
+    return mode.max_cards || 3;
+  }
+
   /**
    * Aplica las variables --pad-top/right/bottom/left a un elemento <img>
    * a partir del image_padding [top, right, bottom, left] del JSON.
@@ -223,7 +244,7 @@
    * persistencia, DRAW-1/REVIEW-5).
    */
   function createInitialState() {
-    return { mode: "draw", phase: "home", drawn: [], selectedId: null };
+    return { mode: "draw", phase: "home", drawn: [], selectedId: null, readingMode: 0 };
   }
 
   /**
@@ -249,10 +270,11 @@
    */
   function getDrawGuard(state, pool) {
     const drawnCount = (state.drawn || []).length;
-    const canDraw = drawnCount < 3 && pool.length > 0;
+    const max = maxCards();
+    const canDraw = drawnCount < max && pool.length > 0;
     let hint = "";
-    if (drawnCount >= 3) {
-      hint = "Tirada completa 3/3";
+    if (drawnCount >= max) {
+      hint = max === 3 ? "Tirada completa 3/3" : `Tirada completa ${drawnCount}/${max}`;
     } else if (pool.length === 0) {
       hint = "Tirada completa — no quedan más cartas";
     }
@@ -319,7 +341,7 @@
         // se actualizan ya; la animación es no bloqueante y sin rollback.
         if (state.mode !== "draw" || state.phase !== "carousel") return state;
         if (state.selectedId !== null) return state; // T5: ya revelando — no-op
-        if ((state.drawn || []).length >= 3) return state; // invariante DRAW-4
+        if ((state.drawn || []).length >= maxCards()) return state; // DRAW-4
         const cardId = action.cardId;
         if (typeof cardId !== "string") return state;
         if (state.drawn.some((d) => d.cardId === cardId)) return state; // sin repetir
@@ -536,19 +558,47 @@
     }
   }
 
-  /** Fase home: instrucciones + "Sacar carta" (+ "Ver tirada" placeholder). */
+  /** Fase home: instrucciones + selector de modo + "Sacar carta". */
   function renderHome(root) {
     const state = Cartas.state;
-    const guard = getDrawGuard(state, poolFor(state)); // R3-W1: del núcleo puro
+    const guard = getDrawGuard(state, poolFor(state));
 
     const section = el("section", "home");
 
     const intro = el(
       "p",
       "home-intro",
-      "Tómate un momento de calma, formula tu pregunta en silencio y, cuando llegue el momento, saca hasta tres cartas, una a la vez. Cada carta ocupa una posición con su propio significado: situación actual, desafío y consejo."
+      "Tómate un momento de calma, formula tu pregunta en silencio y, cuando llegue el momento, saca hasta tres cartas, una a la vez."
     );
     section.appendChild(intro);
+
+    // Selector de modo de lectura (solo al inicio, antes de sacar cartas)
+    const col = collection();
+    const modes = col.reading_modes || [];
+    if (modes.length > 1 && state.drawn.length === 0) {
+      const modeWrap = el("div", "reading-modes");
+      modes.forEach(function (mode, i) {
+        const btn = el("button", "reading-mode-btn");
+        btn.type = "button";
+        btn.textContent = mode.name;
+        if (i === state.readingMode) btn.classList.add("is-active");
+        btn.addEventListener("click", function () {
+          Cartas.state = { ...Cartas.state, readingMode: i };
+          render();
+          focusHomePrimary();
+        });
+        modeWrap.appendChild(btn);
+      });
+      section.appendChild(modeWrap);
+    }
+
+    // Mostrar labels del modo seleccionado
+    const mode = readingMode();
+    if (mode.labels) {
+      const labelsEl = el("p", "home-labels");
+      labelsEl.textContent = mode.labels.join(" · ");
+      section.appendChild(labelsEl);
+    }
 
     const actions = el("div", "home-actions");
 
@@ -747,7 +797,7 @@
     }
 
     const posIndex = state.drawn.findIndex((d) => d.cardId === state.selectedId);
-    const position = deck().positions[posIndex] || ""; // DECK-3: la etiqueta la da el índice
+    const position = positionLabels()[posIndex] || ""; // labels del modo de lectura
     const { kicker, title, detail } = renderDetail(cardData, position); // D10
 
     const section = el("section", "reveal");
@@ -873,7 +923,7 @@
     state.drawn.forEach((d, i) => {
       const cardData = deck().cards.find((c) => c.id === d.cardId);
       if (!cardData) return; // defensivo: nunca debe ocurrir
-      const position = deck().positions[i] || ""; // DECK-3: etiqueta por índice
+      const position = positionLabels()[i] || ""; // etiqueta por índice del modo
 
       const li = el("li", "spread-item");
       li.style.setProperty("--i", String(i)); // entrada escalonada (CSS)
@@ -1468,7 +1518,7 @@
     if (!card || !root) return;
 
     const posIndex = state.drawn.findIndex((d) => d.cardId === cardId);
-    const position = deck().positions[posIndex] || "";
+    const position = positionLabels()[posIndex] || "";
     const { kicker, title, detail } = renderDetail(card, position); // D10
 
     title.id = "dialog-title";
