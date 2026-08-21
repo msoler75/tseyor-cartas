@@ -28,6 +28,65 @@
 
   const Cartas = (window.Cartas = window.Cartas || {});
   const deck = () => Cartas.deck || { positions: [], cards: [] };
+  const collection = () => Cartas.collection || {};
+
+  /**
+   * Aplica las variables --pad-top/right/bottom/left a un elemento <img>
+   * a partir del image_padding [top, right, bottom, left] del JSON.
+   * Los valores se convierten a % del tamaño original de la carta.
+   */
+  function applyImagePadding(img, col) {
+    const pad = col.image_padding;
+    if (!Array.isArray(pad) || pad.length < 4) return;
+    const cw = col.width || 764;
+    const ch = col.height || 1110;
+    img.style.setProperty("--pad-top", `${pad[0] / ch * 100}%`);
+    img.style.setProperty("--pad-right", `${pad[1] / cw * 100}%`);
+    img.style.setProperty("--pad-bottom", `${pad[2] / ch * 100}%`);
+    img.style.setProperty("--pad-left", `${pad[3] / cw * 100}%`);
+  }
+
+  /**
+   * Aplica las variables --title-pad-top/right/bottom/left a un elemento
+   * a partir del title_padding [top, right, bottom, left] del JSON.
+   * Los valores se convierten a % del tamaño original de la carta.
+   */
+  function applyTitlePadding(el, col) {
+    const pad = col.title_padding;
+    if (!Array.isArray(pad) || pad.length < 4) return;
+    const cw = col.width || 764;
+    const ch = col.height || 1110;
+    el.style.setProperty("--title-pad-top", `${pad[0] / ch * 100}%`);
+    el.style.setProperty("--title-pad-right", `${pad[1] / cw * 100}%`);
+    el.style.setProperty("--title-pad-bottom", `${pad[2] / ch * 100}%`);
+    el.style.setProperty("--title-pad-left", `${pad[3] / cw * 100}%`);
+  }
+
+  /**
+   * Calcula y aplica --title-cqw a un elemento según title_size y width
+   * de la colección. El resultado son unidades cqw (container query width)
+   * para que el título sea proporcional al ancho de la carta.
+   */
+  function applyTitleSize(el, col, multiplier) {
+    if (!col.title_size) return;
+    const baseSize = parseFloat(col.title_size);
+    const configWidth = col.width || 764;
+    const scale = (baseSize / configWidth) * 100 * (multiplier || 1);
+    el.style.setProperty("--title-cqw", `${scale}cqw`);
+  }
+
+  /**
+   * Formatea el título de una carta según el title_format de la colección.
+   * %ID% → id numérico de la carta, %TITLE% → título de la carta.
+   * Si no hay title_format, devuelve el título tal cual.
+   */
+  function formatTitle(cardData, col) {
+    const fmt = col.title_format;
+    if (!fmt) return cardData.title;
+    return fmt
+      .replace("%ID%", cardData.id)
+      .replace("%TITLE%", cardData.title);
+  }
 
   /* --- Parámetros de diseño (design.md): jitter ±4–10° / ±2–6°, tilt ∝ offset --- */
   const JITTER_RZ_MIN = 4;
@@ -35,6 +94,83 @@
   const JITTER_RX_MIN = 2;
   const JITTER_RX_MAX = 6;
   const TILT_MAX_DEG = 14; // rotateY máximo por distancia al centro
+
+  /* El movimiento entre vistas queda bloqueado durante unos cientos de ms
+     para evitar dobles activaciones y árboles DOM solapados. */
+  let navigationLocked = false;
+  let motionRunId = 0;
+  let motionStartedAt = 0;
+
+  // Los logs quedan activos por petición de diagnóstico. Pueden silenciarse
+  // desde DevTools con: Cartas.motionDebug = false
+  Cartas.motionDebug = Cartas.motionDebug !== false;
+
+  function motionNow() {
+    return typeof performance !== "undefined" && performance.now
+      ? performance.now()
+      : Date.now();
+  }
+
+  function compactRect(node) {
+    if (!node || typeof node.getBoundingClientRect !== "function") return null;
+    const rect = node.getBoundingClientRect();
+    return {
+      x: Number(rect.x.toFixed(1)),
+      y: Number(rect.y.toFixed(1)),
+      width: Number(rect.width.toFixed(1)),
+      height: Number(rect.height.toFixed(1))
+    };
+  }
+
+  function motionLayout() {
+    if (typeof document === "undefined") return {};
+    const html = document.documentElement;
+    const carousel = document.querySelector(".carousel");
+    return {
+      viewport: {
+        innerWidth: window.innerWidth,
+        innerHeight: window.innerHeight,
+        clientWidth: html.clientWidth,
+        clientHeight: html.clientHeight
+      },
+      document: {
+        scrollWidth: html.scrollWidth,
+        scrollHeight: html.scrollHeight,
+        scrollX: window.scrollX,
+        scrollY: window.scrollY,
+        overflowsX: html.scrollWidth > html.clientWidth,
+        overflowsY: html.scrollHeight > html.clientHeight
+      },
+      carousel: carousel
+        ? {
+            rect: compactRect(carousel),
+            clientWidth: carousel.clientWidth,
+            clientHeight: carousel.clientHeight,
+            scrollWidth: carousel.scrollWidth,
+            scrollHeight: carousel.scrollHeight,
+            overflowX: window.getComputedStyle(carousel).overflowX,
+            overflowY: window.getComputedStyle(carousel).overflowY,
+            hasHorizontalScrollbar:
+              /auto|scroll/.test(window.getComputedStyle(carousel).overflowX) &&
+              carousel.scrollWidth > carousel.clientWidth,
+            hasVerticalScrollbar:
+              /auto|scroll/.test(window.getComputedStyle(carousel).overflowY) &&
+              carousel.scrollHeight > carousel.clientHeight
+          }
+        : null
+    };
+  }
+
+  function motionLog(phase, details) {
+    if (!Cartas.motionDebug || typeof console === "undefined") return;
+    const elapsed = motionStartedAt
+      ? Number((motionNow() - motionStartedAt).toFixed(1))
+      : 0;
+    console.info(
+      `[Cartas motion #${motionRunId} +${elapsed}ms] ${phase}`,
+      { ...(details || {}), layout: motionLayout() }
+    );
+  }
 
   /* ========================================================================
    * Núcleo puro (sin DOM) — testeable en Node
@@ -378,7 +514,9 @@
     if (guard.canDraw) {
       const drawBtn = el("button", "btn btn--primary", "Sacar carta");
       drawBtn.type = "button";
-      drawBtn.addEventListener("click", () => dispatch({ type: "DRAW_START" }));
+      drawBtn.addEventListener("click", () =>
+        transitionDispatch({ type: "DRAW_START" }, "forward")
+      );
       actions.appendChild(drawBtn);
     } else {
       // Tope alcanzado (DRAW-4) o pool agotado (DECK-2): copia exacta del hint.
@@ -424,22 +562,54 @@
 
     pool.forEach((cardData, i) => {
       const number = deck().cards.indexOf(cardData) + 1; // cara = índice del mazo + 1 (DECK-2)
+      const col = collection();
+      const imgFolder = col.images_folder || "";
 
       const item = el("div", "carousel-item");
       item.style.setProperty("--i", String(i)); // para el sink escalonado (Slice 2)
 
       const card = el("button", "card");
       card.type = "button";
-      card.setAttribute("aria-label", `Carta ${number}`);
+      card.setAttribute("aria-label", `Carta ${number}: ${cardData.title}`);
       card.dataset.cardId = cardData.id; // para el movimiento imperativo T3
       card.addEventListener("click", () => selectCard(cardData.id));
 
       const inner = el("span", "card-inner");
+
+      // Cara trasera: imagen del reverso de la colección
       const back = el("span", "face face--back");
       back.setAttribute("aria-hidden", "true");
+      if (col.back_image) {
+        const backImg = el("img", "face-img");
+        backImg.src = `${imgFolder}/${col.back_image}`;
+        backImg.alt = "";
+        backImg.draggable = false;
+        back.appendChild(backImg);
+      }
+
+      // Cara frontal: imagen base + ilustración + título
       const front = el("span", "face face--front");
       front.setAttribute("aria-hidden", "true");
-      front.appendChild(el("span", "face-num", roman(number)));
+      if (col.front_image) {
+        const frontBg = el("img", "face-bg");
+        frontBg.src = `${imgFolder}/${col.front_image}`;
+        frontBg.alt = "";
+        frontBg.draggable = false;
+        front.appendChild(frontBg);
+      }
+      if (cardData.image && imgFolder) {
+        const artImg = el("img", "face-art");
+        artImg.src = cardData._imagePath || `${imgFolder}/${cardData.image}`;
+        artImg.alt = "";
+        artImg.draggable = false;
+        applyImagePadding(artImg, col);
+        front.appendChild(artImg);
+      }
+      const titleEl = el("span", "face-title", formatTitle(cardData, col));
+      if (col.title_font) titleEl.style.fontFamily = col.title_font;
+      applyTitleSize(titleEl, col);
+      applyTitlePadding(titleEl, col);
+      front.appendChild(titleEl);
 
       inner.append(back, front);
       card.appendChild(inner);
@@ -502,11 +672,34 @@
     title.tabIndex = -1; // destino de foco programático tras el flip (DRAW-2)
     section.appendChild(title);
 
+    const col = collection();
+    const imgFolder = col.images_folder || "";
+
     const cardWrap = el("div", "reveal-card-wrap");
     const revealCard = el("div", "reveal-card");
-    revealCard.appendChild(
-      el("span", "face-num", roman(deck().cards.indexOf(cardData) + 1))
-    );
+
+    // Cara frontal de la carta en el reveal: imagen base + ilustración + título
+    if (col.front_image) {
+      const frontBg = el("img", "reveal-card-bg");
+      frontBg.src = `${imgFolder}/${col.front_image}`;
+      frontBg.alt = "";
+      frontBg.draggable = false;
+      revealCard.appendChild(frontBg);
+    }
+    if (cardData.image && imgFolder) {
+      const artImg = el("img", "reveal-card-art");
+      artImg.src = cardData._imagePath || `${imgFolder}/${cardData.image}`;
+      artImg.alt = "";
+      artImg.draggable = false;
+      applyImagePadding(artImg, col);
+      revealCard.appendChild(artImg);
+    }
+    const revealTitle = el("span", "reveal-card-title", formatTitle(cardData, col));
+    if (col.title_font) revealTitle.style.fontFamily = col.title_font;
+    applyTitleSize(revealTitle, col);
+    applyTitlePadding(revealTitle, col);
+    revealCard.appendChild(revealTitle);
+
     cardWrap.appendChild(revealCard);
     section.appendChild(cardWrap);
 
@@ -516,7 +709,9 @@
     if (guard.canDraw) {
       const againBtn = el("button", "btn btn--primary", "Sacar otra carta");
       againBtn.type = "button";
-      againBtn.addEventListener("click", () => dispatch({ type: "NEXT_DRAW" }));
+      againBtn.addEventListener("click", () =>
+        transitionDispatch({ type: "NEXT_DRAW" }, "forward")
+      );
       actions.appendChild(againBtn);
     } else {
       // Tope 3/3 (DRAW-4) o pool agotado (DECK-2): copia exacta del hint.
@@ -526,12 +721,16 @@
     const reviewBtn = el("button", "btn btn--secondary", "Ver tirada");
     reviewBtn.type = "button";
     reviewBtn.disabled = state.drawn.length === 0;
-    reviewBtn.addEventListener("click", () => dispatch({ type: "REVIEW_OPEN" }));
+    reviewBtn.addEventListener("click", () =>
+      transitionDispatch({ type: "REVIEW_OPEN" }, "forward")
+    );
     actions.appendChild(reviewBtn);
     // T12 (Slice 3): "Nueva tirada" — reset instantáneo también desde reveal.
     const resetBtn = el("button", "btn btn--ghost", "Nueva tirada");
     resetBtn.type = "button";
-    resetBtn.addEventListener("click", () => dispatch({ type: "RESET" }));
+    resetBtn.addEventListener("click", () =>
+      transitionDispatch({ type: "RESET" }, "back")
+    );
     actions.appendChild(resetBtn);
 
     section.appendChild(actions);
@@ -576,11 +775,13 @@
     section.appendChild(el("p", "spread-kicker", "Tu tirada"));
 
     const list = el("ol", "spread-list");
+    const col = collection();
+    const imgFolder = col.images_folder || "";
+
     state.drawn.forEach((d, i) => {
       const cardData = deck().cards.find((c) => c.id === d.cardId);
       if (!cardData) return; // defensivo: nunca debe ocurrir
       const position = deck().positions[i] || ""; // DECK-3: etiqueta por índice
-      const number = deck().cards.indexOf(cardData) + 1;
 
       const li = el("li", "spread-item");
       li.style.setProperty("--i", String(i)); // entrada escalonada (CSS)
@@ -593,7 +794,28 @@
       );
 
       const face = el("span", "spread-face");
-      face.appendChild(el("span", "face-num", roman(number)));
+      // Miniatura de la carta: imagen base + ilustración
+      if (col.front_image) {
+        const frontBg = el("img", "spread-face-bg");
+        frontBg.src = `${imgFolder}/${col.front_image}`;
+        frontBg.alt = "";
+        frontBg.draggable = false;
+        face.appendChild(frontBg);
+      }
+      if (cardData.image && imgFolder) {
+        const artImg = el("img", "spread-face-art");
+        artImg.src = cardData._imagePath || `${imgFolder}/${cardData.image}`;
+        artImg.alt = "";
+        artImg.draggable = false;
+        applyImagePadding(artImg, col);
+        face.appendChild(artImg);
+      }
+      const faceTitle = el("span", "spread-face-title", formatTitle(cardData, col));
+      if (col.title_font) faceTitle.style.fontFamily = col.title_font;
+      applyTitleSize(faceTitle, col);
+      applyTitlePadding(faceTitle, col);
+      face.appendChild(faceTitle);
+
       const caption = el("span", "spread-caption");
       caption.appendChild(el("span", "spread-pos", position));
       caption.appendChild(el("span", "spread-title", cardData.title));
@@ -609,11 +831,15 @@
     const actions = el("div", "spread-actions");
     const backBtn = el("button", "btn btn--secondary", "Volver");
     backBtn.type = "button";
-    backBtn.addEventListener("click", () => dispatch({ type: "REVIEW_BACK" }));
+    backBtn.addEventListener("click", () =>
+      transitionDispatch({ type: "REVIEW_BACK" }, "back")
+    );
     actions.appendChild(backBtn);
     const resetBtn = el("button", "btn btn--ghost", "Nueva tirada");
     resetBtn.type = "button";
-    resetBtn.addEventListener("click", () => dispatch({ type: "RESET" }));
+    resetBtn.addEventListener("click", () =>
+      transitionDispatch({ type: "RESET" }, "back")
+    );
     actions.appendChild(resetBtn);
     section.appendChild(actions);
 
@@ -664,6 +890,94 @@
   }
 
   /* ------------------------------------------------------------------------
+   * Transiciones entre vistas — View Transitions API + fallback CSS
+   * ---------------------------------------------------------------------- */
+
+  /** Limpia el estado visual compartido por las transiciones de navegación. */
+  function finishNavigation(root) {
+    navigationLocked = false;
+    document.documentElement.removeAttribute("data-view-direction");
+    document.body.classList.remove("is-view-changing");
+    if (root) {
+      root.removeAttribute("aria-busy");
+      const section = root.firstElementChild;
+      if (section) {
+        section.classList.remove(
+          "view-enter",
+          "view-enter--forward",
+          "view-enter--back"
+        );
+      }
+    }
+    motionLog("scene:enter-complete");
+  }
+
+  /**
+   * Cambio de esqueleto con continuidad visual. En navegadores compatibles,
+   * document.startViewTransition conserva snapshots del estado anterior y el
+   * siguiente. El fallback espera la salida CSS, renderiza y reparte la nueva
+   * vista con una entrada escalonada; no hay desapariciones instantáneas.
+   */
+  function transitionDispatch(action, direction) {
+    if (navigationLocked) return false;
+    if (prefersReducedMotion() || typeof document === "undefined") {
+      return dispatch(action);
+    }
+
+    const root = document.getElementById("app");
+    const oldSection = root && root.firstElementChild;
+    if (!root || !oldSection) return dispatch(action);
+
+    navigationLocked = true;
+    root.setAttribute("aria-busy", "true");
+    document.documentElement.dataset.viewDirection = direction;
+    document.body.classList.add("is-view-changing");
+    motionLog("scene:exit-start", { action: action.type, direction });
+
+    if (typeof document.startViewTransition === "function") {
+      const viewTransition = document.startViewTransition(() => {
+        const changed = dispatch(action);
+        window.scrollTo(0, 0);
+        motionLog("scene:swap", { action: action.type, native: true });
+        return changed;
+      });
+      viewTransition.finished
+        .catch(() => {})
+        .finally(() => finishNavigation(root));
+      return true;
+    }
+
+    oldSection.classList.add("view-leave", `view-leave--${direction}`);
+    window.setTimeout(() => {
+      const changed = dispatch(action);
+      // La salida ya es invisible: normalizamos el origen de la nueva escena
+      // antes de su primer frame para que el clamp del scroll no sea visible.
+      window.scrollTo(0, 0);
+      motionLog("scene:swap", { action: action.type, native: false });
+      const newSection = root.firstElementChild;
+      if (!changed || !newSection) {
+        oldSection.classList.remove("view-leave", `view-leave--${direction}`);
+        finishNavigation(root);
+        return;
+      }
+
+      newSection.classList.add("view-enter", `view-enter--${direction}`);
+      const cleanup = () => {
+        newSection.removeEventListener("animationend", onEnterEnd);
+        finishNavigation(root);
+      };
+      const onEnterEnd = (event) => {
+        // Las cartas y el caption tienen animaciones hijas que burbujean.
+        // Solo la animación del propio esqueleto cierra la navegación.
+        if (event.target === newSection) cleanup();
+      };
+      newSection.addEventListener("animationend", onEnterEnd);
+      window.setTimeout(cleanup, 760);
+    }, 240);
+    return true;
+  }
+
+  /* ------------------------------------------------------------------------
    * Selección T3 — movimiento imperativo (D11: sin re-render en vuelo)
    * ---------------------------------------------------------------------- */
 
@@ -680,6 +994,10 @@
 
     Cartas.state = next;
 
+    motionRunId += 1;
+    motionStartedAt = motionNow();
+    motionLog("select:commit", { cardId });
+
     if (prefersReducedMotion()) {
       // DRAW-3: el estado avanza al instante, sin animación.
       dispatch({ type: "FLIP_END" });
@@ -691,29 +1009,90 @@
     const selected = root.querySelector(`.card[data-card-id="${cardId}"]`);
     if (!selected) return;
 
-    selected.classList.add("is-flipped");
+    const cards = Array.from(root.querySelectorAll(".card"));
+    const selectedIndex = cards.indexOf(selected);
+    const detached = detachCardFromCarousel(selected);
+    if (!detached) {
+      dispatch({ type: "FLIP_END" });
+      return;
+    }
+
     bindFlipEnd(selected);
+    // La lectura fuerza el estado inicial ya reparentado antes de activar la
+    // clase; así el navegador interpola el giro en lugar de saltar al final.
+    selected.getBoundingClientRect();
+    selected.classList.add("is-flipped");
+    motionLog("flip:start", {
+      cardId,
+      card: compactRect(selected),
+      layer: compactRect(detached.layer),
+      flight: compactRect(detached.flight)
+    });
 
     const sunk = [];
-    for (const card of root.querySelectorAll(".card")) {
+    for (const card of cards) {
       if (card !== selected) {
+        const distance = Math.abs(cards.indexOf(card) - selectedIndex);
+        card.style.setProperty("--sink-delay", `${Math.min(distance * 18, 180)}ms`);
         card.classList.add("is-sunk");
         sunk.push(card);
       }
     }
-    // Gate Slice 2 — backstop alineado con el estirón máximo: la última
-    // carta en hundirse tarda (N-1)*45ms de retardo + 450ms de duración
-    // (12 cartas → 945ms). Un barrido menor retiraría cartas a media
-    // animación; este cubre el peor caso y solo rescata rezagadas (el
-    // transitionend ya retira a las que terminan antes).
-    const sinkBackstop = Math.max(700, sunk.length * 45 + 450 + 60);
+    // El delay parte de la distancia a la elegida y queda acotado: todas las
+    // cartas terminan antes de que acabe el giro, evitando cortar el sink.
+    const sinkBackstop = 680;
     for (const card of sunk) bindSinkRemoval(card, sinkBackstop);
+    motionLog("siblings:sink-start", { count: sunk.length });
   }
 
   /**
-   * T4: al terminar el transform del flip (transitionend) o por backstop
-   * (~800ms) se despacha FLIP_END → el render pasa a reveal. El atajo de
-   * reduced-motion hace este camino instantáneo desde selectCard.
+   * Saca la carta del árbol scrollable antes de moverla. El item queda como
+   * placeholder de idéntico tamaño para que el abanico no se recalcule.
+   */
+  function detachCardFromCarousel(card) {
+    const item = card.closest(".carousel-item");
+    if (!item) return null;
+
+    const visualRect = card.getBoundingClientRect();
+    const width = card.offsetWidth;
+    const height = card.offsetHeight;
+    const left = visualRect.left + visualRect.width / 2 - width / 2;
+    const top = visualRect.top + visualRect.height / 2 - height / 2;
+
+    item.classList.add("carousel-item--placeholder");
+    item.style.width = `${width}px`;
+    item.style.height = `${height}px`;
+    const section = item.closest(".carousel-section");
+    if (section) section.classList.add("is-selecting");
+
+    const layer = el("div", "selection-layer");
+    layer.setAttribute("aria-hidden", "true");
+    const flight = el("div", "card-flight");
+    flight.style.left = `${left}px`;
+    flight.style.top = `${top}px`;
+    flight.style.width = `${width}px`;
+    flight.style.height = `${height}px`;
+    layer.appendChild(flight);
+    document.body.appendChild(layer);
+
+    card.classList.add("card--detached");
+    flight.appendChild(card);
+    motionLog("select:detached", {
+      visualBefore: {
+        x: Number(visualRect.x.toFixed(1)),
+        y: Number(visualRect.y.toFixed(1)),
+        width: Number(visualRect.width.toFixed(1)),
+        height: Number(visualRect.height.toFixed(1))
+      },
+      flight: compactRect(flight),
+      placeholder: compactRect(item)
+    });
+    return { layer, flight };
+  }
+
+  /**
+   * T4: al terminar el transform del flip se enlaza la geometría de la carta
+   * ya desacoplada con su hueco definitivo en el reveal.
    */
   function bindFlipEnd(card) {
     const inner = card.querySelector(".card-inner");
@@ -724,19 +1103,126 @@
       settled = true;
       inner.removeEventListener("transitionend", onEnd);
       clearTimeout(timer);
-      dispatch({ type: "FLIP_END" });
+      motionLog("flip:complete", { card: compactRect(card) });
+      revealSelectedCard(card);
     };
     const onEnd = (event) => {
-      if (event.propertyName === "transform") finish();
+      if (event.target === inner && event.propertyName === "transform") finish();
     };
     inner.addEventListener("transitionend", onEnd);
-    const timer = setTimeout(finish, 800); // backstop (D6)
+    const timer = setTimeout(finish, 760); // backstop (D6)
+  }
+
+  /** Continúa el recorrido con el mismo nodo que se desacopló del carrusel. */
+  function revealSelectedCard(card) {
+    if (!card || prefersReducedMotion()) {
+      dispatch({ type: "FLIP_END" });
+      return;
+    }
+
+    flyCardToReveal(card);
+  }
+
+  /**
+   * Shared element manual: renderiza el destino como hueco invisible, mueve
+   * el wrapper fijo hasta allí y reintroduce la MISMA carta en el nuevo DOM.
+   */
+  function flyCardToReveal(card) {
+    const flight = card.closest(".card-flight");
+    const layer = card.closest(".selection-layer");
+    if (!flight || !layer) {
+      dispatch({ type: "FLIP_END" });
+      return;
+    }
+
+    const sourceRect = flight.getBoundingClientRect();
+    const sourceNumber = card.querySelector(".face--front .face-num");
+    const sourceNumberSize = sourceNumber
+      ? parseFloat(window.getComputedStyle(sourceNumber).fontSize)
+      : 0;
+
+    dispatch({ type: "FLIP_END" });
+    window.scrollTo(0, 0);
+    const reveal = document.querySelector(".reveal");
+    const target = reveal && reveal.querySelector(".reveal-card");
+    if (!reveal || !target) {
+      layer.remove();
+      return;
+    }
+
+    reveal.classList.add("is-card-arriving");
+    const targetRect = target.getBoundingClientRect();
+    const targetNumber = target.querySelector(".face-num");
+    const targetNumberSize = targetNumber
+      ? parseFloat(window.getComputedStyle(targetNumber).fontSize)
+      : 0;
+    const scaleX = targetRect.width / sourceRect.width;
+    const numberScale =
+      sourceNumberSize > 0 && targetNumberSize > 0
+        ? targetNumberSize / (sourceNumberSize * scaleX)
+        : 1;
+    flight.style.setProperty("--flight-x", `${targetRect.left - sourceRect.left}px`);
+    flight.style.setProperty("--flight-y", `${targetRect.top - sourceRect.top}px`);
+    flight.style.setProperty("--flight-sx", String(scaleX));
+    flight.style.setProperty("--flight-sy", String(targetRect.height / sourceRect.height));
+    flight.style.setProperty("--flight-num-scale", String(numberScale));
+    card.classList.add("is-settling");
+    motionLog("flight:prepared", {
+      source: compactRect(flight),
+      target: compactRect(target),
+      scaleX: Number(scaleX.toFixed(4)),
+      scaleY: Number((targetRect.height / sourceRect.height).toFixed(4)),
+      numberScale: Number(numberScale.toFixed(4))
+    });
+
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        flight.classList.add("is-flying");
+        reveal.classList.add("is-content-arriving");
+        motionLog("flight:start", { card: compactRect(card) });
+      });
+    });
+
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      flight.removeEventListener("transitionend", onEnd);
+      landSelectedCard(card, flight, layer, target, reveal, sourceNumber);
+    };
+    const onEnd = (event) => {
+      if (event.target === flight && event.propertyName === "transform") finish();
+    };
+    flight.addEventListener("transitionend", onEnd);
+    window.setTimeout(finish, 760);
+  }
+
+  /** Reintroduce la carta en el reveal sin fundido ni sustitución visual. */
+  function landSelectedCard(card, flight, layer, target, reveal, sourceNumber) {
+    motionLog("flight:complete", {
+      flight: compactRect(flight),
+      target: compactRect(target)
+    });
+
+    card.classList.add("reveal-card", "card--revealed");
+    card.classList.remove("card--detached", "is-flipped", "is-settling");
+    card.disabled = true;
+    card.tabIndex = -1;
+    card.removeAttribute("aria-label");
+    card.setAttribute("aria-hidden", "true");
+    if (sourceNumber) sourceNumber.style.removeProperty("font-size");
+
+    target.replaceWith(card);
+    flight.remove();
+    layer.remove();
+    reveal.classList.remove("is-card-arriving", "is-content-arriving");
+    motionLog("landing:complete", { card: compactRect(card) });
   }
 
   /**
    * T6: cada carta hundida se retira del DOM al terminar su transitionend,
    * con un barrido backstop alineado al estirón máximo de la tanda (D7,
-   * DRAW-3; gate Slice 2): `backstopMs` >= (N-1)*45 + 450 + margen, para no
+   * DRAW-3): `backstopMs` cubre la duración más el retardo acotado para no
    * retirar cartas a media animación. El estado no cambia; solo el DOM.
    * @param {HTMLElement} card carta hundida
    * @param {number} [backstopMs] milisegundos del barrido (default 700)
@@ -893,8 +1379,31 @@
     dialog.setAttribute("aria-modal", "true");
     dialog.setAttribute("aria-labelledby", "dialog-title");
 
+    const col = collection();
+    const imgFolder = col.images_folder || "";
+
     const face = el("span", "dialog-face");
-    face.appendChild(el("span", "face-num", roman(deck().cards.indexOf(card) + 1)));
+    // Cara frontal de la carta en el diálogo: imagen base + ilustración + título
+    if (col.front_image) {
+      const frontBg = el("img", "dialog-face-bg");
+      frontBg.src = `${imgFolder}/${col.front_image}`;
+      frontBg.alt = "";
+      frontBg.draggable = false;
+      face.appendChild(frontBg);
+    }
+    if (card.image && imgFolder) {
+      const artImg = el("img", "dialog-face-art");
+      artImg.src = card._imagePath || `${imgFolder}/${card.image}`;
+      artImg.alt = "";
+      artImg.draggable = false;
+      applyImagePadding(artImg, col);
+      face.appendChild(artImg);
+    }
+    const dialogTitle = el("span", "dialog-face-title", formatTitle(card, col));
+    if (col.title_font) dialogTitle.style.fontFamily = col.title_font;
+    applyTitleSize(dialogTitle, col, 0.9);
+    applyTitlePadding(dialogTitle, col);
+    face.appendChild(dialogTitle);
 
     const actions = el("div", "dialog-actions");
     const closeBtn = el("button", "btn btn--secondary", "Cerrar");
@@ -915,14 +1424,17 @@
     setInert(true); // REVIEW-2: fondo inerte; el diálogo (hermano) sigue vivo
     unbindDialogTrap();
     bindDialogTrap(); // REVIEW-3: Tab/Shift+Tab ciclan dentro del diálogo
-    closeBtn.focus(); // REVIEW-2: el foco entra al diálogo
 
     // DRAW-7 (Slice 3): el diálogo anuncia título + posición por aria-live,
     // mismo patrón que el reveal — contexto claro para lectores de pantalla.
     announce(`${card.title} — ${position}`);
 
-    // CSS es dueño del movimiento: la clase is-open dispara el fundido/entrada.
-    window.requestAnimationFrame(() => root.classList.add("is-open"));
+    // La clase vuelve visible el diálogo antes de mover el foco. Enfocar un
+    // descendiente con visibility:hidden falla silenciosamente en Chromium.
+    window.requestAnimationFrame(() => {
+      root.classList.add("is-open");
+      closeBtn.focus({ preventScroll: true });
+    });
   }
 
   /**
@@ -1027,7 +1539,11 @@
     return true;
   }
 
-  function init() {
+  async function init() {
+    // Carga la colección por defecto antes de renderizar
+    if (Cartas.loadCollection && !Cartas.collection) {
+      await Cartas.loadCollection();
+    }
     // Recarga → home (sin persistencia; DRAW-1, REVIEW-5).
     Cartas.state = createInitialState();
     setInert(false); // defensivo: ningún estado previo deja #app inert

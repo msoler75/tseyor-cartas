@@ -12,7 +12,7 @@
  * Slice 1: shell (100vh/100dvh + safe-area), home, tira del carousel con
  * scroll-snap y touch-action, esqueleto 3D de la carta, ≥44px,
  * centrado de escritorio (DRAW-8).
- * Slice 2: flip-elevate 3D (~600ms) + hundimiento escalonado (--i * 45ms),
+ * Slice 2: flip-elevate 3D (~640ms) + hundimiento por distancia a la elegida,
  * carta agrandada del reveal (min(72vw, 340px)), panel de detalle de hasta
  * 65ch con revelado por scroll, atajo de prefers-reduced-motion (DRAW-3/5/8).
  * Slice 3: spread de revisión (pila móvil / fila ≥1024px, REVIEW-6), diálogo
@@ -42,6 +42,8 @@
 
   --card-radius: 12px;
   --focus-outline: 2px solid var(--accent);
+  --ease-out-quart: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 /* ---------------------------------------------------------------------------
@@ -55,6 +57,13 @@
 
 html {
   height: 100%;
+  /* El resultado necesita scroll y el abanico no. Mantener el canal presente
+     evita que el viewport pierda ~15 px en mitad del vuelo. */
+  overflow-y: scroll;
+  overflow-anchor: none;
+  /* Reserva el canal antes de que el reveal alargue la página. Así el centro
+     geométrico no cambia durante el vuelo de la carta. */
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -74,6 +83,7 @@ body {
   padding-right: env(safe-area-inset-right);
   padding-bottom: env(safe-area-inset-bottom);
   -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
 }
 
 .app-header {
@@ -98,12 +108,90 @@ body {
   letter-spacing: 0.02em;
 }
 
+.app-header {
+  transition:
+    opacity 0.24s ease,
+    transform 0.36s var(--ease-out-quart);
+}
+
+body.is-view-changing .app-header {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
 .app-stage {
   flex: 1;
   min-height: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  view-transition-name: app-stage;
+}
+
+/* ---------------------------------------------------------------------------
+ * Navegación fluida entre esqueletos
+ * ------------------------------------------------------------------------- */
+.view-leave {
+  pointer-events: none;
+  animation: view-leave-forward 0.24s ease-in both;
+}
+
+.view-leave--back {
+  animation-name: view-leave-back;
+}
+
+.view-enter {
+  animation: view-enter-forward 0.52s var(--ease-out-quart) both;
+}
+
+.view-enter--back {
+  animation-name: view-enter-back;
+}
+
+@keyframes view-leave-forward {
+  to {
+    opacity: 0;
+    transform: translateY(-14px) scale(0.985);
+  }
+}
+
+@keyframes view-leave-back {
+  to {
+    opacity: 0;
+    transform: translateY(12px) scale(0.985);
+  }
+}
+
+@keyframes view-enter-forward {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+  }
+}
+
+@keyframes view-enter-back {
+  from {
+    opacity: 0;
+    transform: translateY(-14px) scale(0.985);
+  }
+}
+
+/* View Transitions API: mejora progresiva. El fallback anterior reproduce la
+   misma dirección y cadencia cuando la API no existe. */
+::view-transition-old(app-stage) {
+  animation: view-leave-forward 0.24s ease-in both;
+}
+
+::view-transition-new(app-stage) {
+  animation: view-enter-forward 0.52s var(--ease-out-quart) both;
+}
+
+html[data-view-direction="back"]::view-transition-old(app-stage) {
+  animation-name: view-leave-back;
+}
+
+html[data-view-direction="back"]::view-transition-new(app-stage) {
+  animation-name: view-enter-back;
 }
 
 .visually-hidden {
@@ -235,6 +323,9 @@ body {
   display: flex;
   gap: clamp(10px, 2.5vw, 24px);
   overflow-x: auto;
+  /* overflow-x:auto convertiría el otro eje en auto según la especificación.
+     Lo cerramos explícitamente: la carta elegida se desacopla antes de girar. */
+  overflow-y: hidden;
   /* R4-W1: pan-x pan-y — el gesto horizontal pertenece a la tira (swipe de
      cartas) y el vertical a la página (scroll del reveal). La página del
      reveal no restringe touch-action, así que el desplazamiento vertical
@@ -262,9 +353,48 @@ body {
   border-radius: 999px;
 }
 
+/* Durante la elección el scroll ya no tiene utilidad: las cartas se hunden y
+   la seleccionada vive en el overlay. El indicador se desvanece con ellas. */
+.carousel-section.is-selecting .carousel {
+  scrollbar-color: transparent transparent;
+}
+
+.carousel-section.is-selecting .carousel::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
 .carousel-item {
   flex: 0 0 auto;
   scroll-snap-align: center;
+}
+
+.carousel-item--placeholder {
+  pointer-events: none;
+}
+
+/* Al volver desde un reveal, el abanico se reparte en vez de materializarse
+   de golpe. La duración total queda acotada aunque haya muchas cartas. */
+.view-enter .carousel-caption {
+  animation: carousel-caption-in 0.42s var(--ease-out-quart) both;
+}
+
+.view-enter .carousel-item {
+  animation: card-deal-in 0.48s var(--ease-out-quart) both;
+  animation-delay: min(calc(var(--i, 0) * 24ms), 240ms);
+}
+
+@keyframes carousel-caption-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes card-deal-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.94);
+  }
 }
 
 /* ---------------------------------------------------------------------------
@@ -284,6 +414,7 @@ body {
   perspective: 900px;
   transition: transform 0.18s ease;
   -webkit-tap-highlight-color: transparent;
+  container-type: inline-size;
 }
 
 @media (hover: hover) {
@@ -311,10 +442,23 @@ body {
 .face--back {
   background: var(--paper-deep);
   border: 2px solid var(--ink);
+  overflow: hidden;
   box-shadow:
     inset 0 0 0 3px var(--paper),
     inset 0 0 0 5px var(--line),
     0 10px 24px rgba(38, 34, 28, 0.2);
+}
+
+/* Cuando hay imagen de fondo, el dorso se adapta */
+.face--back:has(.face-img) {
+  background: transparent;
+  border: none;
+}
+
+/* Oculta los pseudo-elementos decorativos cuando hay imagen */
+.face--back:has(.face-img)::before,
+.face--back:has(.face-img)::after {
+  display: none;
 }
 
 .face--back::before {
@@ -334,13 +478,25 @@ body {
   background: var(--accent);
 }
 
-/* Frente: número grande (placeholder del arte futuro, DECK-2) */
+/* Frente: imagen base + ilustración + título (o número grande si no hay imagen) */
 .face--front {
   display: grid;
   place-items: center;
   background: var(--paper-deep);
   border: 2px solid var(--ink);
   transform: rotateY(180deg);
+  overflow: hidden;
+  box-shadow:
+    inset 0 0 0 3px var(--paper),
+    inset 0 0 0 5px var(--line),
+    0 10px 24px rgba(38, 34, 28, 0.2);
+}
+
+/* Cuando hay imagen de fondo, la cara frontal se adapta */
+.face--front:has(.face-bg) {
+  background: transparent;
+  border: none;
+  box-shadow: 0 10px 24px rgba(38, 34, 28, 0.2);
 }
 
 .face-num {
@@ -351,22 +507,239 @@ body {
 }
 
 /* ---------------------------------------------------------------------------
+ * Caras con imagen (colecciones)
+ * La cara frontal (.face--back o .face--front) contiene:
+ *   .face-img / .face-bg — imagen de fondo (diseño base, ocupa toda la cara)
+ *   .face-art            — ilustración de la carta, centrada dentro de la caja
+ *                          definida por --pad-top/right/bottom/left
+ *   .face-title          — título superpuesto
+ * Las variables --pad-* se calculan en JS a partir de image_padding del JSON.
+ * ------------------------------------------------------------------------- */
+.face-img,
+.face-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.face-art {
+  position: relative;
+  padding-top: var(--pad-top, 0);
+  padding-right: var(--pad-right, 0);
+  padding-bottom: var(--pad-bottom, 0);
+  padding-left: var(--pad-left, 0);
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.face-title {
+  position: absolute;
+  top: var(--title-pad-top, 0);
+  right: var(--title-pad-right, 0);
+  bottom: var(--title-pad-bottom, 0);
+  left: var(--title-pad-left, 0);
+  z-index: 2;
+  text-align: center;
+  font-size: var(--title-cqw, 3cqw);
+  color: var(--ink);
+  text-shadow: 0 1px 3px rgba(242, 234, 217, 0.7);
+  line-height: 1.2;
+  pointer-events: none;
+  /* font-family se aplica inline desde la config */
+}
+
+/* Frente con imagen: oculta el .face-num por defecto */
+.face--front .face-num:empty {
+  display: none;
+}
+
+/* --- Reveal: carta agrandada con imagen --- */
+.reveal-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.reveal-card-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.reveal-card-art {
+  position: relative;
+  padding-top: var(--pad-top, 0);
+  padding-right: var(--pad-right, 0);
+  padding-bottom: var(--pad-bottom, 0);
+  padding-left: var(--pad-left, 0);
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.reveal-card-title {
+  position: absolute;
+  top: var(--title-pad-top, 0);
+  right: var(--title-pad-right, 0);
+  bottom: var(--title-pad-bottom, 0);
+  left: var(--title-pad-left, 0);
+  z-index: 2;
+  text-align: center;
+  font-size: var(--title-cqw, 3cqw);
+  color: var(--ink);
+  text-shadow: 0 1px 4px rgba(242, 234, 217, 0.8);
+  line-height: 1.2;
+  pointer-events: none;
+  /* font-family se aplica inline desde la config */
+}
+
+/* --- Spread: miniaturas con imagen --- */
+.spread-face {
+  position: relative;
+  overflow: hidden;
+}
+
+.spread-face-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.spread-face-art {
+  position: relative;
+  padding-top: var(--pad-top, 0);
+  padding-right: var(--pad-right, 0);
+  padding-bottom: var(--pad-bottom, 0);
+  padding-left: var(--pad-left, 0);
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.spread-face-title {
+  position: absolute;
+  top: var(--title-pad-top, 0);
+  right: var(--title-pad-right, 0);
+  bottom: var(--title-pad-bottom, 0);
+  left: var(--title-pad-left, 0);
+  z-index: 2;
+  text-align: center;
+  font-size: var(--title-cqw, 3cqw);
+  color: var(--ink);
+  text-shadow: 0 1px 3px rgba(242, 234, 217, 0.7);
+  line-height: 1.2;
+  pointer-events: none;
+}
+
+/* Oculta .face-num del spread cuando hay imagen */
+.spread-face .face-num:empty {
+  display: none;
+}
+
+/* --- Diálogo: carta con imagen --- */
+.dialog-face {
+  position: relative;
+  width: min(60vw, 260px);
+  aspect-ratio: 3 / 4.6;
+  margin: 0 auto 1.2rem;
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  box-shadow: 0 8px 28px rgba(38, 34, 28, 0.25);
+}
+
+.dialog-face-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.dialog-face-art {
+  position: relative;
+  padding-top: var(--pad-top, 0);
+  padding-right: var(--pad-right, 0);
+  padding-bottom: var(--pad-bottom, 0);
+  padding-left: var(--pad-left, 0);
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.dialog-face-title {
+  position: absolute;
+  top: var(--title-pad-top, 0);
+  right: var(--title-pad-right, 0);
+  bottom: var(--title-pad-bottom, 0);
+  left: var(--title-pad-left, 0);
+  z-index: 2;
+  text-align: center;
+  font-size: var(--title-cqw, 3cqw);
+  color: var(--ink);
+  text-shadow: 0 1px 4px rgba(242, 234, 217, 0.8);
+  line-height: 1.2;
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------------------
  * Flip-elevate + hundimiento (Slice 2, D4/D5/D7 — DRAW-3)
  * La elección (T3) marca .is-flipped en la carta elegida y .is-sunk en los
  * hermanos. CSS es dueño de TODO el movimiento: solo transform/opacity.
  * ------------------------------------------------------------------------- */
 .card-inner {
-  transition: transform 0.6s ease-in-out;
+  transition: transform 0.64s var(--ease-in-out-soft);
 }
 
-/* La carta elegida se eleva y gira 180° (~600ms); will-change SOLO mientras
+/* La carta elegida se eleva y gira 180° (~640ms); will-change SOLO mientras
    anima (contrato de rendimiento del proposal). */
 .card.is-flipped .card-inner {
   transform: translateY(-14%) scale(1.08) rotateY(180deg);
   will-change: transform;
 }
 
-/* Los hermanos se hunden escalonados (--i * 45ms). El hundimiento compone el
+.card.is-flipped {
+  z-index: 3;
+  transform: none;
+  transition: transform 0.64s var(--ease-in-out-soft);
+}
+
+/* Ya fuera del carrusel: ocupa su wrapper fijo sin generar layout ni overflow. */
+.card--detached {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+}
+
+/* Durante el vuelo, el relieve del flip vuelve suavemente a plano mientras el
+   wrapper crece hasta las medidas definitivas. */
+.card.is-flipped.is-settling .card-inner {
+  transform: rotateY(180deg);
+  transition: transform 0.68s var(--ease-out-quart);
+}
+
+/* Los hermanos se hunden según su distancia a la elegida. El movimiento compone el
    jitter (--rx/--rz/--tilt) para no "saltar" de pose al empezar; con
    pointer-events:none dejan de ser interactivos mientras se hunden (D7). */
 .card.is-sunk {
@@ -374,8 +747,8 @@ body {
     rotateY(var(--tilt, 0deg)) translateY(24%) scale(0.92);
   opacity: 0;
   transition:
-    transform 0.45s ease-in calc(var(--i, 0) * 45ms),
-    opacity 0.45s ease-in calc(var(--i, 0) * 45ms);
+    transform 0.42s ease-in var(--sink-delay, 0ms),
+    opacity 0.42s ease-in var(--sink-delay, 0ms);
   will-change: transform, opacity;
   pointer-events: none;
 }
@@ -418,6 +791,7 @@ body {
 /* Carta agrandada estática, sin transición (D6); tope de lectura DRAW-8:
    min(72vw, 340px) centrado — funciona en móvil y en escritorio. */
 .reveal-card {
+  position: relative;
   display: grid;
   place-items: center;
   width: min(72vw, 340px);
@@ -425,14 +799,115 @@ body {
   background: var(--paper-deep);
   border: 2px solid var(--ink);
   border-radius: var(--card-radius);
+  overflow: hidden;
+  box-shadow:
+    inset 0 0 0 3px var(--paper),
+    inset 0 0 0 5px var(--line),
+    0 18px 44px rgba(38, 34, 28, 0.3);
+  container-type: inline-size;
+}
+
+/* Cuando hay imagen de fondo, el reveal se adapta */
+.reveal-card:has(.reveal-card-bg) {
+  background: transparent;
+  border: none;
+}
+
+.reveal-card .face-num {
+  font-size: clamp(4rem, 20vw, 7rem);
+}
+
+/* Oculta .face-num del reveal cuando hay imagen */
+.reveal-card .face-num:empty {
+  display: none;
+}
+
+/* La capa fija desacopla por completo la carta del overflow del carrusel. Es
+   un overlay de viewport, no un contenedor scrollable. */
+.selection-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  overflow: clip;
+  contain: strict;
+}
+
+/* Shared element real: este wrapper contiene el botón/carta original desde el
+   click hasta que se reintroduce en .reveal-card-wrap. */
+.card-flight {
+  position: fixed;
+  pointer-events: none;
+  transform-origin: top left;
+  transform: translate3d(0, 0, 0) scale(1);
+  transition: transform 0.68s var(--ease-out-quart);
+  will-change: transform;
+}
+
+.card-flight.is-flying {
+  transform: translate3d(var(--flight-x), var(--flight-y), 0)
+    scale(var(--flight-sx), var(--flight-sy));
+}
+
+.card-flight .face--front {
   box-shadow:
     inset 0 0 0 3px var(--paper),
     inset 0 0 0 5px var(--line),
     0 18px 44px rgba(38, 34, 28, 0.3);
 }
 
-.reveal-card .face-num {
-  font-size: clamp(4rem, 20vw, 7rem);
+.card-flight .face-num {
+  transform: scale(1);
+  transition: transform 0.68s var(--ease-out-quart);
+}
+
+.card-flight.is-flying .face-num {
+  transform: scale(var(--flight-num-scale, 1));
+}
+
+.reveal.is-card-arriving .reveal-card {
+  opacity: 0;
+}
+
+.reveal.is-card-arriving > :not(.reveal-card-wrap) {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.reveal.is-card-arriving.is-content-arriving > :not(.reveal-card-wrap) {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.52s ease 0.16s,
+    transform 0.6s var(--ease-out-quart) 0.16s;
+}
+
+/* Estado final de la misma carta que salió del carrusel. Conserva su sistema
+   3D, pero deja de ser interactiva y se integra en el layout del reveal. */
+.card.reveal-card.card--revealed {
+  width: min(72vw, 340px);
+  height: auto;
+  aspect-ratio: 3 / 4.6;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  cursor: default;
+  pointer-events: none;
+  transform: none;
+  transition: none;
+}
+
+.card--revealed .card-inner {
+  transform: rotateY(180deg);
+  transition: none;
+}
+
+.card--revealed .face--front {
+  box-shadow:
+    inset 0 0 0 3px var(--paper),
+    inset 0 0 0 5px var(--line),
+    0 18px 44px rgba(38, 34, 28, 0.3);
 }
 
 /* Panel de detalle: se revela al entrar en el viewport (IO, DRAW-5).
@@ -554,6 +1029,7 @@ body {
 }
 
 .spread-face {
+  position: relative;
   display: grid;
   place-items: center;
   width: clamp(150px, 52vw, 220px);
@@ -561,10 +1037,18 @@ body {
   background: var(--paper-deep);
   border: 2px solid var(--ink);
   border-radius: var(--card-radius);
+  overflow: hidden;
   box-shadow:
     inset 0 0 0 3px var(--paper),
     inset 0 0 0 5px var(--line),
     0 14px 34px rgba(38, 34, 28, 0.25);
+  container-type: inline-size;
+}
+
+/* Cuando hay imagen de fondo, el spread se adapta */
+.spread-face:has(.spread-face-bg) {
+  background: transparent;
+  border: none;
 }
 
 .spread-face .face-num {
@@ -680,6 +1164,7 @@ body {
 
 /* Cara de la carta dentro del diálogo. */
 .dialog-face {
+  position: relative;
   display: grid;
   place-items: center;
   width: min(44vw, 150px);
@@ -688,14 +1173,27 @@ body {
   background: var(--paper-deep);
   border: 2px solid var(--ink);
   border-radius: var(--card-radius);
+  overflow: hidden;
   box-shadow:
     inset 0 0 0 3px var(--paper),
     inset 0 0 0 5px var(--line),
     0 14px 34px rgba(38, 34, 28, 0.25);
+  container-type: inline-size;
+}
+
+/* Cuando hay imagen de fondo, el diálogo se adapta */
+.dialog-face:has(.dialog-face-bg) {
+  background: transparent;
+  border: none;
 }
 
 .dialog-face .face-num {
   font-size: clamp(2.4rem, 13vw, 3.6rem);
+}
+
+/* Oculta .face-num del diálogo cuando hay imagen */
+.dialog-face .face-num:empty {
+  display: none;
 }
 
 /* El detalle reutiliza las clases del reveal (D10): dentro del diálogo
@@ -798,5 +1296,9 @@ body {
     animation: none;
     opacity: 1;
     transform: none;
+  }
+
+  .card-flight {
+    display: none;
   }
 }

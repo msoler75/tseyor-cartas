@@ -1,4 +1,17 @@
-[
+{
+  "deck": "Cartas de Uommo",
+  "images_folder": "/assets/uommo",
+  "back_image": "reverso.jpg",
+  "front_image": "dorso.jpg",
+  "width": 764,
+  "height": 1110,
+  "image_padding": [150, 100, 360, 100],
+  "title_padding": [880, 100, 120, 100],
+  "title_font": "Arial",
+  "title_size": "63px",
+  "title_format": "%ID%. %TITLE%",
+  "positions": ["Situación actual", "Desafío", "Consejo"],
+  "cards": [
   {
     "id": 1,
     "title": "Conexión",
@@ -175,3 +188,4 @@
     "image": "comodin.jpg"
   }
 ]
+}
