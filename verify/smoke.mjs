@@ -132,6 +132,22 @@ if (global.window.Cartas.deck) {
 }
 checkDeck(miniDeck, "mini fixture (2 cards)");
 
+loadScript("card-renderer.js");
+const containedFit = global.window.Cartas.cardRenderer.imageRect(
+  550,
+  745,
+  { x: 112, y: 210, width: 540, height: 690 }
+);
+check(
+  "canvas renderer: art is centered and maximized inside the image_padding box",
+  containedFit &&
+    Math.round(containedFit.width) === 509 &&
+    Math.round(containedFit.height) === 690 &&
+    Math.round(containedFit.x) === 127 &&
+    containedFit.y === 210,
+  JSON.stringify(containedFit)
+);
+
 /* ------------------------------------------------------------------ */
 /* B. Pure transition() core — T1 RELOAD, T2 DRAW_START                */
 /* ------------------------------------------------------------------ */

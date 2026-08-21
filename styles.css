@@ -573,13 +573,13 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
 }
 
 /* Cuando hay imagen de fondo, el dorso se adapta */
-.face--back:has(.face-img) {
+.face--back.has-card-canvas {
   background: transparent;
 }
 
 /* Oculta los pseudo-elementos decorativos cuando hay imagen */
-.face--back:has(.face-img)::before,
-.face--back:has(.face-img)::after {
+.face--back.has-card-canvas::before,
+.face--back.has-card-canvas::after {
   display: none;
 }
 
@@ -615,7 +615,7 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
 }
 
 /* Cuando hay imagen de fondo, la cara frontal se adapta */
-.face--front:has(.face-bg) {
+.face--front.has-card-canvas {
   background: transparent;
   border: none;
   box-shadow: 0 10px 24px rgba(38, 34, 28, 0.2);
@@ -629,260 +629,16 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
 }
 
 /* ---------------------------------------------------------------------------
- * Caras con imagen (colecciones)
- * La cara frontal (.face--back o .face--front) contiene:
- *   .face-img / .face-bg — imagen de fondo (diseño base, ocupa toda la cara)
- *   .face-art            — ilustración de la carta, centrada dentro de la caja
- *                          definida por --pad-top/right/bottom/left
- *   .face-title          — título superpuesto
- * Las variables --pad-* se calculan en JS a partir de image_padding del JSON.
+ * Superficie visual unificada. Fondo, ilustración y textos se componen en
+ * card-renderer.js; CSS solo escala el bitmap y conserva el layout.
  * ------------------------------------------------------------------------- */
-.face-img,
-.face-bg {
+.card-canvas {
   position: absolute;
   inset: 0;
+  display: block;
   width: 100%;
   height: 100%;
   border-radius: inherit;
-  pointer-events: none;
-}
-
-.face-art {
-  position: relative;
-  padding-top: var(--pad-top, 0);
-  padding-right: var(--pad-right, 0);
-  padding-bottom: var(--pad-bottom, 0);
-  padding-left: var(--pad-left, 0);
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  object-fit: contain;
-  pointer-events: none;
-}
-
-.face-title {
-  position: absolute;
-  top: var(--title-pad-top, 0);
-  right: var(--title-pad-right, 0);
-  bottom: var(--title-pad-bottom, 0);
-  left: var(--title-pad-left, 0);
-  display: grid;
-  place-items: center;
-  z-index: 2;
-  font-size: var(--title-cqw, 3cqw);
-  color: var(--ink);
-  text-shadow: 0 1px 3px rgba(242, 234, 217, 0.7);
-  line-height: 1.2;
-  pointer-events: none;
-}
-
-.face-category {
-  position: absolute;
-  top: var(--cat-pad-top, 0);
-  right: var(--cat-pad-right, 0);
-  bottom: var(--cat-pad-bottom, 0);
-  left: var(--cat-pad-left, 0);
-  display: grid;
-  place-items: center;
-  z-index: 2;
-  color: var(--ink);
-  text-shadow: 0 1px 3px rgba(242, 234, 217, 0.7);
-  line-height: 1.2;
-  pointer-events: none;
-}
-
-/* Frente con imagen: oculta el .face-num por defecto */
-.face--front .face-num:empty {
-  display: none;
-}
-
-/* --- Reveal: carta agrandada con imagen --- */
-.reveal-card {
-  position: relative;
-  overflow: hidden;
-}
-
-.reveal-card-bg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: inherit;
-  pointer-events: none;
-}
-
-.reveal-card-art {
-  position: relative;
-  padding-top: var(--pad-top, 0);
-  padding-right: var(--pad-right, 0);
-  padding-bottom: var(--pad-bottom, 0);
-  padding-left: var(--pad-left, 0);
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  object-fit: contain;
-  pointer-events: none;
-}
-
-.reveal-card-title {
-  position: absolute;
-  top: var(--title-pad-top, 0);
-  right: var(--title-pad-right, 0);
-  bottom: var(--title-pad-bottom, 0);
-  left: var(--title-pad-left, 0);
-  display: grid;
-  place-items: center;
-  z-index: 2;
-  font-size: var(--title-cqw, 3cqw);
-  color: var(--ink);
-  text-shadow: 0 1px 4px rgba(242, 234, 217, 0.8);
-  line-height: 1.2;
-  pointer-events: none;
-}
-
-.reveal-card-category {
-  position: absolute;
-  top: var(--cat-pad-top, 0);
-  right: var(--cat-pad-right, 0);
-  bottom: var(--cat-pad-bottom, 0);
-  left: var(--cat-pad-left, 0);
-  display: grid;
-  place-items: center;
-  z-index: 2;
-  color: var(--ink);
-  text-shadow: 0 1px 4px rgba(242, 234, 217, 0.8);
-  line-height: 1.2;
-  pointer-events: none;
-}
-
-/* --- Spread: miniaturas con imagen --- */
-.spread-face {
-  position: relative;
-  overflow: hidden;
-}
-
-.spread-face-bg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: inherit;
-  pointer-events: none;
-}
-
-.spread-face-art {
-  position: relative;
-  padding-top: var(--pad-top, 0);
-  padding-right: var(--pad-right, 0);
-  padding-bottom: var(--pad-bottom, 0);
-  padding-left: var(--pad-left, 0);
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  object-fit: contain;
-  pointer-events: none;
-}
-
-.spread-face-title {
-  position: absolute;
-  top: var(--title-pad-top, 0);
-  right: var(--title-pad-right, 0);
-  bottom: var(--title-pad-bottom, 0);
-  left: var(--title-pad-left, 0);
-  display: grid;
-  place-items: center;
-  z-index: 2;
-  font-size: var(--title-cqw, 3cqw);
-  color: var(--ink);
-  text-shadow: 0 1px 3px rgba(242, 234, 217, 0.7);
-  line-height: 1.2;
-  pointer-events: none;
-}
-
-.spread-face-category {
-  position: absolute;
-  top: var(--cat-pad-top, 0);
-  right: var(--cat-pad-right, 0);
-  bottom: var(--cat-pad-bottom, 0);
-  left: var(--cat-pad-left, 0);
-  display: grid;
-  place-items: center;
-  z-index: 2;
-  color: var(--ink);
-  text-shadow: 0 1px 3px rgba(242, 234, 217, 0.7);
-  line-height: 1.2;
-  pointer-events: none;
-}
-
-/* Oculta .face-num del spread cuando hay imagen */
-.spread-face .face-num:empty {
-  display: none;
-}
-
-/* --- Diálogo: carta con imagen --- */
-.dialog-face {
-  position: relative;
-  width: min(60vw, 260px);
-  aspect-ratio: var(--card-aspect, 764 / 1110);
-  margin: 0 auto 1.2rem;
-  border-radius: var(--card-radius);
-  overflow: hidden;
-  box-shadow: 0 8px 28px rgba(38, 34, 28, 0.25);
-}
-
-.dialog-face-bg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: inherit;
-  pointer-events: none;
-}
-
-.dialog-face-art {
-  position: relative;
-  padding-top: var(--pad-top, 0);
-  padding-right: var(--pad-right, 0);
-  padding-bottom: var(--pad-bottom, 0);
-  padding-left: var(--pad-left, 0);
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  object-fit: contain;
-  pointer-events: none;
-}
-
-.dialog-face-title {
-  position: absolute;
-  top: var(--title-pad-top, 0);
-  right: var(--title-pad-right, 0);
-  bottom: var(--title-pad-bottom, 0);
-  left: var(--title-pad-left, 0);
-  display: grid;
-  place-items: center;
-  z-index: 2;
-  font-size: var(--title-cqw, 3cqw);
-  color: var(--ink);
-  text-shadow: 0 1px 4px rgba(242, 234, 217, 0.8);
-  line-height: 1.2;
-  pointer-events: none;
-}
-
-.dialog-face-category {
-  position: absolute;
-  top: var(--cat-pad-top, 0);
-  right: var(--cat-pad-right, 0);
-  bottom: var(--cat-pad-bottom, 0);
-  left: var(--cat-pad-left, 0);
-  display: grid;
-  place-items: center;
-  z-index: 2;
-  color: var(--ink);
-  text-shadow: 0 1px 4px rgba(242, 234, 217, 0.8);
-  line-height: 1.2;
   pointer-events: none;
 }
 
@@ -991,7 +747,7 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
 }
 
 /* Cuando hay imagen de fondo, el reveal se adapta */
-.reveal-card:has(.reveal-card-bg) {
+.reveal-card.has-card-canvas {
   background: transparent;
   border: none;
 }
@@ -1359,7 +1115,7 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
 }
 
 /* Cuando hay imagen de fondo, el spread se adapta */
-.spread-face:has(.spread-face-bg) {
+.spread-face.has-card-canvas {
   background: transparent;
   border: none;
 }
@@ -1510,7 +1266,7 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
 }
 
 /* Cuando hay imagen de fondo, el diálogo se adapta */
-.dialog-face:has(.dialog-face-bg) {
+.dialog-face.has-card-canvas {
   background: transparent;
   border: none;
 }

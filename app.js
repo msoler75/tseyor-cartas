@@ -51,103 +51,8 @@
     return mode.max_cards || 3;
   }
 
-  /**
-   * Aplica las variables --pad-top/right/bottom/left a un elemento <img>
-   * a partir del image_padding [top, right, bottom, left] del JSON.
-   * Los valores se convierten a % del tamaño original de la carta.
-   */
-  function applyImagePadding(img, col, card) {
-    const pad = (card && card.image_padding) || col.image_padding;
-    if (!Array.isArray(pad) || pad.length < 4) return;
-    const cw = col.width || 764;
-    const ch = col.height || 1110;
-    img.style.setProperty("--pad-top", `${pad[0] / ch * 100}%`);
-    img.style.setProperty("--pad-right", `${pad[1] / cw * 100}%`);
-    img.style.setProperty("--pad-bottom", `${pad[2] / ch * 100}%`);
-    img.style.setProperty("--pad-left", `${pad[3] / cw * 100}%`);
-  }
-
-  /**
-   * Aplica las variables --title-pad-top/right/bottom/left a un elemento
-   * a partir del title_padding [top, right, bottom, left] del JSON.
-   * Los valores se convierten a % del tamaño original de la carta.
-   */
-  function applyTitlePadding(el, col) {
-    const pad = col.title_padding;
-    if (!Array.isArray(pad) || pad.length < 4) return;
-    const cw = col.width || 764;
-    const ch = col.height || 1110;
-    el.style.setProperty("--title-pad-top", `${pad[0] / ch * 100}%`);
-    el.style.setProperty("--title-pad-right", `${pad[1] / cw * 100}%`);
-    el.style.setProperty("--title-pad-bottom", `${pad[2] / ch * 100}%`);
-    el.style.setProperty("--title-pad-left", `${pad[3] / cw * 100}%`);
-  }
-
-  /**
-   * Aplica los estilos CSS de title_style (string "prop: val; prop: val")
-   * a un elemento. Primero aplica el default de la colección, luego el
-   * particular de la carta (si existe), que lo sobreescribe.
-   */
-  function applyTitleStyle(el, col, cardStyle) {
-    var cw = col.width || 764;
-    if (col.title_style) applyInlineStyle(el, col.title_style, cw);
-    if (cardStyle) applyInlineStyle(el, cardStyle, cw);
-  }
-
-  /**
-   * Aplica las variables --cat-pad-top/right/bottom/left a un elemento
-   * a partir del category_padding [top, right, bottom, left] del JSON.
-   */
-  function applyCategoryPadding(el, col) {
-    const pad = col.category_padding;
-    if (!Array.isArray(pad) || pad.length < 4) return;
-    const cw = col.width || 764;
-    const ch = col.height || 1110;
-    el.style.setProperty("--cat-pad-top", `${pad[0] / ch * 100}%`);
-    el.style.setProperty("--cat-pad-right", `${pad[1] / cw * 100}%`);
-    el.style.setProperty("--cat-pad-bottom", `${pad[2] / ch * 100}%`);
-    el.style.setProperty("--cat-pad-left", `${pad[3] / cw * 100}%`);
-  }
-
-  /**
-   * Aplica category_style a un elemento. px en font-size se convierte a cqw.
-   */
-  function applyCategoryStyle(el, col) {
-    var cw = col.width || 764;
-    if (col.category_style) applyInlineStyle(el, col.category_style, cw);
-  }
-
-  /** Parsea un string CSS "prop: val; prop: val" y lo aplica como inline.
-   *  Si font-size está en px, lo convierte a cqw para que sea proporcional
-   *  al ancho de la carta y no cambie entre estados. */
-  function applyInlineStyle(el, cssText, configWidth) {
-    var cw = configWidth || 764;
-    cssText.split(";").forEach(function (decl) {
-      var parts = decl.split(":");
-      if (parts.length >= 2) {
-        var prop = parts[0].trim();
-        var val = parts.slice(1).join(":").trim();
-        if (prop && val) {
-          if (prop === "font-size" && val.endsWith("px")) {
-            val = (parseFloat(val) / cw * 100) + "cqw";
-          }
-          el.style.setProperty(prop, val);
-        }
-      }
-    });
-  }
-
-  /**
-   * Formatea el título de una carta según el title_format de la colección.
-   * %ID% → id numérico de la carta, %TITLE% → título de la carta.
-   * Si no hay title_format, devuelve el título tal cual.
-   */
   function formatTitle(cardData, col) {
-    const fmt = col.title_format;
-    if (!fmt) return cardData.title;
-    return fmt
-      .replace("%ID%", cardData.id)
-      .replace("%TITLE%", cardData.title);
+    return Cartas.cardRenderer.formatTitle(cardData, col);
   }
 
   /* --- Parámetros de diseño (design.md): jitter ±4–10° / ±2–6°, tilt ∝ offset --- */
@@ -664,49 +569,11 @@
 
       const inner = el("span", "card-inner");
 
-      // Cara trasera: imagen del reverso de la colección
-      const back = el("span", "face face--back");
-      back.setAttribute("aria-hidden", "true");
-      if (col.back_image) {
-        const backImg = el("img", "face-img");
-        backImg.src = `${imgFolder}/${col.back_image}`;
-        backImg.alt = "";
-        backImg.draggable = false;
-        back.appendChild(backImg);
-      }
-
-      // Cara frontal: imagen base + ilustración + título
-      const front = el("span", "face face--front");
-      front.setAttribute("aria-hidden", "true");
-      if (col.front_image) {
-        const frontBg = el("img", "face-bg");
-        frontBg.src = `${imgFolder}/${col.front_image}`;
-        frontBg.alt = "";
-        frontBg.draggable = false;
-        front.appendChild(frontBg);
-      }
-      if (cardData.image && imgFolder) {
-        const artImg = el("img", "face-art");
-        artImg.src = cardData._imagePath || `${imgFolder}/${cardData.image}`;
-        artImg.alt = "";
-        artImg.draggable = false;
-        applyImagePadding(artImg, col, cardData);
-        front.appendChild(artImg);
-      }
-      if (cardData.draw_title !== false) {
-        const titleEl = el("span", "face-title", formatTitle(cardData, col));
-        applyTitleStyle(titleEl, col, cardData.title_style);
-        applyTitlePadding(titleEl, col);
-        front.appendChild(titleEl);
-      }
-      if (cardData.category && cardData.draw_category !== false) {
-        const catEl = el("span", "face-category", cardData.category);
-        applyCategoryStyle(catEl, col);
-        applyCategoryPadding(catEl, col);
-        front.appendChild(catEl);
-      }
-
-      inner.append(back, front);
+      // Cara trasera y frontal generadas desde el helper compartido.
+      inner.append(
+        Cartas.ui.buildCardFace(cardData, col, { kind: "back" }),
+        Cartas.ui.buildCardFace(cardData, col, { kind: "front" })
+      );
       card.appendChild(inner);
       item.appendChild(card);
       carousel.appendChild(item);
@@ -876,40 +743,9 @@
     title.tabIndex = -1; // destino de foco programático tras el flip (DRAW-2)
     section.appendChild(title);
 
-    const col = collection();
-    const imgFolder = col.images_folder || "";
-
     const cardWrap = el("div", "reveal-card-wrap");
     const revealCard = el("div", "reveal-card");
-
-    // Cara frontal de la carta en el reveal: imagen base + ilustración + título
-    if (col.front_image) {
-      const frontBg = el("img", "reveal-card-bg");
-      frontBg.src = `${imgFolder}/${col.front_image}`;
-      frontBg.alt = "";
-      frontBg.draggable = false;
-      revealCard.appendChild(frontBg);
-    }
-    if (cardData.image && imgFolder) {
-      const artImg = el("img", "reveal-card-art");
-      artImg.src = cardData._imagePath || `${imgFolder}/${cardData.image}`;
-      artImg.alt = "";
-      artImg.draggable = false;
-      applyImagePadding(artImg, col, cardData);
-      revealCard.appendChild(artImg);
-    }
-    if (cardData.draw_title !== false) {
-      const revealTitle = el("span", "reveal-card-title", formatTitle(cardData, col));
-      applyTitleStyle(revealTitle, col, cardData.title_style);
-      applyTitlePadding(revealTitle, col);
-      revealCard.appendChild(revealTitle);
-    }
-    if (cardData.category && cardData.draw_category !== false) {
-      const catEl = el("span", "reveal-card-category", cardData.category);
-      applyCategoryStyle(catEl, col);
-      applyCategoryPadding(catEl, col);
-      revealCard.appendChild(catEl);
-    }
+    Cartas.ui.decorateCardFace(revealCard, cardData, collection(), { kind: "reveal" });
 
     cardWrap.appendChild(revealCard);
     section.appendChild(cardWrap);
@@ -993,7 +829,6 @@
 
     const list = el("ol", "spread-list");
     const col = collection();
-    const imgFolder = col.images_folder || "";
     const hasLabels = readingMode().labels !== null;
 
     state.drawn.forEach((d, i) => {
@@ -1012,34 +847,7 @@
       );
 
       const face = el("span", "spread-face");
-      // Miniatura de la carta: imagen base + ilustración
-      if (col.front_image) {
-        const frontBg = el("img", "spread-face-bg");
-        frontBg.src = `${imgFolder}/${col.front_image}`;
-        frontBg.alt = "";
-        frontBg.draggable = false;
-        face.appendChild(frontBg);
-      }
-      if (cardData.image && imgFolder) {
-        const artImg = el("img", "spread-face-art");
-        artImg.src = cardData._imagePath || `${imgFolder}/${cardData.image}`;
-        artImg.alt = "";
-        artImg.draggable = false;
-        applyImagePadding(artImg, col, cardData);
-        face.appendChild(artImg);
-      }
-      if (cardData.draw_title !== false) {
-        const faceTitle = el("span", "spread-face-title", formatTitle(cardData, col));
-        applyTitleStyle(faceTitle, col, cardData.title_style);
-        applyTitlePadding(faceTitle, col);
-        face.appendChild(faceTitle);
-      }
-      if (cardData.category && cardData.draw_category !== false) {
-        const catEl = el("span", "spread-face-category", cardData.category);
-        applyCategoryStyle(catEl, col);
-        applyCategoryPadding(catEl, col);
-        face.appendChild(catEl);
-      }
+      Cartas.ui.decorateCardFace(face, cardData, col, { kind: "spread" });
 
       const caption = el("span", "spread-caption");
       if (hasLabels) {
@@ -1098,13 +906,259 @@
   }
 
   /* -----------------------------------------------------------------------
-   * Captura de tirada — html2canvas + compartir
+   * Captura de tirada — render manual + compartir
    * --------------------------------------------------------------------- */
 
-  /** Abre el panel de captura: construye zona limpia, captura y muestra opciones */
-  function openCapturePanel() {
-    if (typeof html2canvas === "undefined") return;
+  function roundRectPath(ctx, x, y, w, h, r) {
+    const radius = Math.max(0, Math.min(r, Math.min(w, h) / 2));
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.arcTo(x + w, y, x + w, y + h, radius);
+    ctx.arcTo(x + w, y + h, x, y + h, radius);
+    ctx.arcTo(x, y + h, x, y, radius);
+    ctx.arcTo(x, y, x + w, y, radius);
+    ctx.closePath();
+  }
 
+  function drawTextBlock(ctx, text, x, y, maxWidth, lineHeight) {
+    const words = String(text || "").split(/\s+/);
+    const lines = [];
+    let line = "";
+    words.forEach(function (word) {
+      const test = line ? line + " " + word : word;
+      if (ctx.measureText(test).width > maxWidth && line) {
+        lines.push(line);
+        line = word;
+      } else {
+        line = test;
+      }
+    });
+    if (line) lines.push(line);
+    lines.forEach(function (ln, i) {
+      ctx.fillText(ln, x, y + i * lineHeight);
+    });
+    return lines.length;
+  }
+
+  function wrapTextLines(ctx, text, maxWidth) {
+    const words = String(text || "").trim().split(/\s+/).filter(Boolean);
+    if (!words.length) return [];
+    const lines = [];
+    let line = words[0];
+    for (let i = 1; i < words.length; i += 1) {
+      const candidate = line + " " + words[i];
+      if (ctx.measureText(candidate).width <= maxWidth) {
+        line = candidate;
+      } else {
+        lines.push(line);
+        line = words[i];
+      }
+    }
+    lines.push(line);
+    return lines;
+  }
+
+  function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
+    const lines = wrapTextLines(ctx, text, maxWidth);
+    lines.forEach(function (line, index) {
+      ctx.fillText(line, x, y + index * lineHeight);
+    });
+    return lines;
+  }
+
+  function appBodyFontFamily() {
+    if (typeof document === "undefined" || !document.body || !window.getComputedStyle) {
+      return "sans-serif";
+    }
+    const family = window.getComputedStyle(document.body).fontFamily;
+    return family || "sans-serif";
+  }
+
+  function measureCalloutHeight(ctx, text, maxWidth, font, lineHeight, paddingY) {
+    const prevFont = ctx.font;
+    ctx.font = font;
+    const lines = wrapTextLines(ctx, text, maxWidth);
+    ctx.font = prevFont;
+    return Math.max(1, lines.length) * lineHeight;
+  }
+
+  function drawMeaningText(ctx, text, x, y, width, theme) {
+    const prev = {
+      font: ctx.font,
+      fillStyle: ctx.fillStyle,
+      textAlign: ctx.textAlign,
+      textBaseline: ctx.textBaseline
+    };
+    const lines = wrapTextLines(ctx, text, width);
+    const blockHeight = Math.max(1, lines.length) * theme.lineHeight;
+    const startY = y + blockHeight / 2 - ((lines.length - 1) * theme.lineHeight) / 2;
+
+    ctx.save();
+    ctx.fillStyle = theme.textColor;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.font = theme.font;
+    lines.forEach(function (line, index) {
+      ctx.fillText(line, x, startY + index * theme.lineHeight);
+    });
+    ctx.restore();
+
+    ctx.font = prev.font;
+    ctx.fillStyle = prev.fillStyle;
+    ctx.textAlign = prev.textAlign;
+    ctx.textBaseline = prev.textBaseline;
+    return blockHeight;
+  }
+
+  async function buildShareCanvas() {
+    const state = Cartas.state;
+    const col = collection();
+    const mode = readingMode();
+    const drawn = state.drawn || [];
+    const question = (state.question || "").trim();
+    const now = new Date();
+    const dateStr = now.toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" });
+    const margin = 56;
+    const showLabels = mode.labels !== null;
+    const isDesktopLayout = typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(min-width: 1024px)").matches;
+    const cardGap = isDesktopLayout ? 40 : 24;
+    const cardWidth = isDesktopLayout ? 360 : 280;
+    const cardHeight = Math.round(cardWidth * (col.height || 1110) / (col.width || 764));
+    const headerHeight = question ? 210 : 160;
+    const footerHeight = 90;
+    const canvas = document.createElement("canvas");
+    const cardCount = drawn.length;
+    const bodyFontFamily = appBodyFontFamily();
+    const labelFont = `600 18px ${bodyFontFamily}`;
+    const extraFont = `italic 18px ${bodyFontFamily}`;
+    const meaningWidth = isDesktopLayout ? 300 : 240;
+    const labelLineHeight = 24;
+    const extraLineHeight = 24;
+    const labelGap = 14;
+    const extraGap = 10;
+    const meaningTheme = {
+      font: extraFont,
+      lineHeight: extraLineHeight,
+      textColor: "#6d6353"
+    };
+
+    const cardList = [];
+    for (let idx = 0; idx < drawn.length; idx += 1) {
+      const d = drawn[idx];
+      const cardData = deck().cards.find(function (c) { return c.id === d.cardId; });
+      if (!cardData) continue;
+      const position = positionLabels()[idx] || "";
+      const extraMeaning = showLabels ? getExtraMeaning(cardData, position) : null;
+      cardList.push({ cardData, position, extraMeaning });
+    }
+
+    const rowWidth = margin * 2 + (cardCount * cardWidth) + Math.max(0, cardCount - 1) * cardGap;
+    canvas.width = Math.max(860, rowWidth);
+    canvas.height = 1;
+    const ctx = canvas.getContext("2d");
+    if (document.fonts && document.fonts.ready) await document.fonts.ready;
+
+    ctx.font = labelFont;
+    const cardMeta = cardList.map(function (item) {
+      let extraHeight = 0;
+      if (item.extraMeaning) {
+        extraHeight = measureCalloutHeight(
+          ctx,
+          item.extraMeaning,
+          meaningWidth,
+          extraFont,
+          meaningTheme.lineHeight,
+          0
+        );
+      }
+      const labelHeight = showLabels && item.position ? labelLineHeight : 0;
+      const topCaption = labelHeight ? labelLineHeight + labelGap : 0;
+      const bottomCaption = extraHeight ? extraGap + extraHeight : 0;
+      return {
+        ...item,
+        labelHeight,
+        extraHeight,
+        topCaption,
+        bottomCaption,
+        blockHeight: topCaption + cardHeight + bottomCaption
+      };
+    });
+
+    const baseY = margin + headerHeight - 20;
+    const tallestBlock = cardMeta.reduce(function (max, item) {
+      return Math.max(max, item.blockHeight);
+    }, 0);
+    const contentHeight = baseY + tallestBlock + footerHeight + margin;
+    cardMeta.forEach(function (item) {
+      item.y = baseY;
+    });
+
+    canvas.height = contentHeight;
+    ctx.fillStyle = "#f2ead9";
+    ctx.fillRect(0, 0, canvas.width, contentHeight);
+
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#6d6353";
+    ctx.font = `700 30px ${bodyFontFamily}`;
+    ctx.fillText(col.deck || "Cartas Tseyor", canvas.width / 2, margin + 18);
+    ctx.font = `400 18px ${bodyFontFamily}`;
+    ctx.fillText(dateStr, canvas.width / 2, margin + 54);
+    if (question) {
+      ctx.fillStyle = "#26221c";
+      ctx.font = `italic 24px ${bodyFontFamily}`;
+      drawTextBlock(ctx, "« " + question + " »", canvas.width / 2, margin + 96, canvas.width - 140, 30);
+    }
+
+    for (let idx = 0; idx < cardMeta.length; idx++) {
+      const item = cardMeta[idx];
+      const x = Math.round((canvas.width - rowWidth) / 2) + margin + idx * (cardWidth + cardGap);
+      const y = item.y;
+      const renderedCard = await Cartas.cardRenderer.renderCard(item.cardData, col, { face: "front" });
+
+      if (showLabels && item.position) {
+        ctx.fillStyle = "#6d6353";
+        ctx.font = labelFont;
+        ctx.fillText(item.position.toUpperCase(), x + cardWidth / 2, y - 14);
+      }
+
+      ctx.save();
+      ctx.shadowColor = "rgba(38, 34, 28, 0.25)";
+      ctx.shadowBlur = 24;
+      ctx.shadowOffsetY = 10;
+      roundRectPath(ctx, x, y, cardWidth, cardHeight, 18);
+      ctx.fillStyle = "#e9dfc8";
+      ctx.fill();
+      ctx.restore();
+
+      ctx.save();
+      roundRectPath(ctx, x, y, cardWidth, cardHeight, 18);
+      ctx.clip();
+      ctx.drawImage(renderedCard, x, y, cardWidth, cardHeight);
+      ctx.restore();
+
+      if (item.extraMeaning) {
+        const extraY = y + cardHeight + extraGap;
+        drawMeaningText(
+          ctx,
+          item.extraMeaning,
+          x + cardWidth / 2,
+          extraY,
+          meaningWidth,
+          meaningTheme
+        );
+      }
+    }
+
+    ctx.fillStyle = "#6d6353";
+    ctx.font = `400 18px ${bodyFontFamily}`;
+    ctx.fillText(mode.name, canvas.width / 2, contentHeight - margin);
+    return canvas;
+  }
+
+  /** Abre el panel de captura: construye zona limpia, captura y muestra opciones */
+  async function openCapturePanel() {
     const state = Cartas.state;
     const col = collection();
     const mode = readingMode();
@@ -1121,170 +1175,85 @@
     const now = new Date();
     const dateStr = now.toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" });
 
-    // Encabezado
-    const header = el("div", "");
-    header.style.cssText = "background:#f2ead9;padding:1.5rem 2rem 0.5rem;text-align:center;font-family:'Bradley Hand ITC TT Bold',serif;";
-    header.appendChild(el("p", "", col.deck || "Cartas Tseyor", "font-size:1.1rem;color:#6d6353;margin:0;"));
-    header.appendChild(el("p", "", dateStr, "margin:0.3rem 0;font-size:0.8rem;color:#6d6353;"));
-    if (question) {
-      header.appendChild(el("p", "", "\u00ab " + question + " \u00bb", "margin:0.5rem 0 0;font-size:1.1rem;font-style:italic;color:#26221c;"));
-    }
-
-    // Pie
-    const footer = el("div", "");
-    footer.style.cssText = "background:#f2ead9;padding:0.5rem 2rem 1.5rem;text-align:center;font-family:'Bradley Hand ITC TT Bold',serif;";
-    footer.appendChild(el("p", "", mode.name, "margin:0;font-size:0.8rem;color:#6d6353;letter-spacing:0.1em;"));
-
-    // Capturar el contenido de #app
-    const source = document.getElementById("app");
-    console.log("[capture] source:", source ? source.tagName + " children:" + source.children.length : "null");
-    if (!source) return;
-
-    // Ocultar botones temporalmente
-    const hidden = [];
-    source.querySelectorAll("button, .reveal-actions, .spread-actions, .spread-capture, .carousel-caption, .home-question").forEach(function (b) {
-      hidden.push({ el: b, prev: b.style.display });
-      b.style.display = "none";
-    });
-    console.log("[capture] hidden", hidden.length, "elements");
-
     // Panel overlay
     const panel = el("div", "capture-panel");
     panel.appendChild(el("p", "capture-loading", "Generando imagen..."));
     document.body.appendChild(panel);
+    try {
+      const final = await buildShareCanvas();
+      panel.innerHTML = "";
 
-    // Log de imágenes
-    const imgs = source.querySelectorAll("img");
-    console.log("[capture] imgs:", imgs.length);
-    imgs.forEach(function (img, i) {
-      console.log("[capture]   img[" + i + "]:", img.src.split("/").pop(), "complete:", img.complete, "natural:", img.naturalWidth + "x" + img.naturalHeight);
-    });
+      const preview = el("div", "capture-preview");
+      final.classList.add("capture-img");
+      preview.appendChild(final);
+      panel.appendChild(preview);
 
-    // Capturar
-    html2canvas(source, { backgroundColor: "#f2ead9", scale: 2, useCORS: true, allowTaint: true, foreignObjectRendering: false })
-      .then(function (sourceCanvas) {
-        console.log("[capture] sourceCanvas:", sourceCanvas.width + "x" + sourceCanvas.height);
-        // Verificar píxeles
-        const checkCtx = sourceCanvas.getContext("2d");
-        const px = checkCtx.getImageData(0, 0, sourceCanvas.width, sourceCanvas.height).data;
-        let filled = 0;
-        for (let i = 3; i < px.length; i += 4) { if (px[i] > 0) filled++; }
-        console.log("[capture] filled pixels:", filled, "/", px.length / 4, "(", (filled / (px.length / 4) * 100).toFixed(1), "%)");
-        // Restaurar
-        hidden.forEach(function (h) { h.el.style.display = h.prev; });
+      const actions = el("div", "capture-actions");
+      const shareText = (col.deck || "Cartas Tseyor") + " \u2014 " + mode.name + (question ? " \u2014 \u00ab" + question + "\u00bb" : "");
 
-        // Componer imagen final con header + source + footer
-        const headerH = 80;
-        const footerH = 50;
-        const w = sourceCanvas.width;
-        const h = headerH + sourceCanvas.height + footerH;
-
-        const final = document.createElement("canvas");
-        final.width = w;
-        final.height = h;
-        const ctx = final.getContext("2d");
-
-        // Fondo
-        ctx.fillStyle = "#f2ead9";
-        ctx.fillRect(0, 0, w, h);
-
-        // Header
-        ctx.textAlign = "center";
-        ctx.fillStyle = "#6d6353";
-        ctx.font = "bold 24px 'Bradley Hand ITC TT Bold', serif";
-        ctx.fillText(col.deck || "Cartas Tseyor", w / 2, 30);
-        ctx.font = "16px 'Bradley Hand ITC TT Bold', serif";
-        ctx.fillText(dateStr, w / 2, 55);
-        if (question) {
-          ctx.fillStyle = "#26221c";
-          ctx.font = "italic 22px 'Bradley Hand ITC TT Bold', serif";
-          ctx.fillText("\u00ab " + question + " \u00bb", w / 2, 78);
-        }
-
-        // Source
-        ctx.drawImage(sourceCanvas, 0, headerH);
-
-        // Footer
-        ctx.fillStyle = "#6d6353";
-        ctx.font = "16px 'Bradley Hand ITC TT Bold', serif";
-        ctx.textAlign = "center";
-        ctx.fillText(mode.name, w / 2, headerH + sourceCanvas.height + 30);
-
-        panel.innerHTML = "";
-
-        const preview = el("div", "capture-preview");
-        final.classList.add("capture-img");
-        preview.appendChild(final);
-        panel.appendChild(preview);
-
-        const actions = el("div", "capture-actions");
-        const shareText = (col.deck || "Cartas Tseyor") + " \u2014 " + mode.name + (question ? " \u2014 \u00ab" + question + "\u00bb" : "");
-
-        const downloadBtn = el("button", "btn btn--primary", "Descargar imagen");
-        downloadBtn.type = "button";
-        downloadBtn.addEventListener("click", function () {
-          const link = document.createElement("a");
-          link.download = "tirada-cartas.png";
-          link.href = final.toDataURL("image/png");
-          link.click();
-        });
-        actions.appendChild(downloadBtn);
-
-        const whatsappBtn = el("button", "btn btn--share share-whatsapp", "WhatsApp");
-        whatsappBtn.type = "button";
-        whatsappBtn.addEventListener("click", function () {
-          final.toBlob(function (blob) {
-            const file = new File([blob], "tirada.png", { type: "image/png" });
-            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-              navigator.share({ files: [file], text: shareText });
-            } else {
-              window.open("https://wa.me/?text=" + encodeURIComponent(shareText), "_blank");
-            }
-          });
-        });
-        actions.appendChild(whatsappBtn);
-
-        const fbBtn = el("button", "btn btn--share share-facebook", "Facebook");
-        fbBtn.type = "button";
-        fbBtn.addEventListener("click", function () {
-          window.open("https://www.facebook.com/sharer/sharer.php?quote=" + encodeURIComponent(shareText), "_blank", "width=626,height=436");
-        });
-        actions.appendChild(fbBtn);
-
-        const twitterBtn = el("button", "btn btn--share share-twitter", "X / Twitter");
-        twitterBtn.type = "button";
-        twitterBtn.addEventListener("click", function () {
-          window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(shareText), "_blank", "width=626,height=436");
-        });
-        actions.appendChild(twitterBtn);
-
-        const copyBtn = el("button", "btn btn--share", "Copiar imagen");
-        copyBtn.type = "button";
-        copyBtn.addEventListener("click", function () {
-          final.toBlob(function (blob) {
-            if (navigator.clipboard && navigator.clipboard.write) {
-              navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]).then(function () {
-                copyBtn.textContent = "Copiada \u2713";
-                setTimeout(function () { copyBtn.textContent = "Copiar imagen"; }, 2000);
-              });
-            }
-          });
-        });
-        actions.appendChild(copyBtn);
-
-        panel.appendChild(actions);
-
-        const closeBtn = el("button", "capture-close", "\u00d7");
-        closeBtn.type = "button";
-        closeBtn.addEventListener("click", function () { panel.remove(); });
-        panel.appendChild(closeBtn);
-      })
-      .catch(function (err) {
-        hidden.forEach(function (h) { h.el.style.display = h.prev; });
-        panel.innerHTML = "<p>Error al generar la imagen</p>";
-        console.error(err);
-        setTimeout(function () { panel.remove(); }, 2000);
+      const downloadBtn = el("button", "btn btn--primary", "Descargar imagen");
+      downloadBtn.type = "button";
+      downloadBtn.addEventListener("click", function () {
+        const link = document.createElement("a");
+        link.download = "tirada-cartas.png";
+        link.href = final.toDataURL("image/png");
+        link.click();
       });
+      actions.appendChild(downloadBtn);
+
+      const whatsappBtn = el("button", "btn btn--share share-whatsapp", "WhatsApp");
+      whatsappBtn.type = "button";
+      whatsappBtn.addEventListener("click", function () {
+        final.toBlob(function (blob) {
+          const file = new File([blob], "tirada.png", { type: "image/png" });
+          if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+            navigator.share({ files: [file], text: shareText });
+          } else {
+            window.open("https://wa.me/?text=" + encodeURIComponent(shareText), "_blank");
+          }
+        });
+      });
+      actions.appendChild(whatsappBtn);
+
+      const fbBtn = el("button", "btn btn--share share-facebook", "Facebook");
+      fbBtn.type = "button";
+      fbBtn.addEventListener("click", function () {
+        window.open("https://www.facebook.com/sharer/sharer.php?quote=" + encodeURIComponent(shareText), "_blank", "width=626,height=436");
+      });
+      actions.appendChild(fbBtn);
+
+      const twitterBtn = el("button", "btn btn--share share-twitter", "X / Twitter");
+      twitterBtn.type = "button";
+      twitterBtn.addEventListener("click", function () {
+        window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(shareText), "_blank", "width=626,height=436");
+      });
+      actions.appendChild(twitterBtn);
+
+      const copyBtn = el("button", "btn btn--share", "Copiar imagen");
+      copyBtn.type = "button";
+      copyBtn.addEventListener("click", function () {
+        final.toBlob(function (blob) {
+          if (navigator.clipboard && navigator.clipboard.write) {
+            navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]).then(function () {
+              copyBtn.textContent = "Copiada \u2713";
+              setTimeout(function () { copyBtn.textContent = "Copiar imagen"; }, 2000);
+            });
+          }
+        });
+      });
+      actions.appendChild(copyBtn);
+
+      panel.appendChild(actions);
+
+      const closeBtn = el("button", "capture-close", "\u00d7");
+      closeBtn.type = "button";
+      closeBtn.addEventListener("click", function () { panel.remove(); });
+      panel.appendChild(closeBtn);
+    } catch (err) {
+      panel.innerHTML = "<p>Error al generar la imagen</p>";
+      console.error(err);
+      setTimeout(function () { panel.remove(); }, 2000);
+    }
   }
 
   /**

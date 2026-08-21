@@ -6,7 +6,7 @@
   "show_titles_in_review": false,
   "width": 764,
   "height": 1110,
-  "image_padding": [275, 112, 390, 112],
+  "image_padding": [210, 112, 210, 112],
   "category_padding": [124,100,900,100],
   "title_padding": [900, 95, 118, 85],
   "category_style": "color: #211; font-family: 'Bradley Hand ITC TT Bold'; font-size: 60px; text-transform: uppercase",
@@ -57,7 +57,7 @@
       "image": "comodin.jpg",
       "draw_title": false,
       "draw_category": false,
-      "image_padding": [180, 112, 390, 112]
+      "image_padding": [120, 112, 120, 112]
     },
   {
     "id": 1,
