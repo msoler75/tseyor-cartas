@@ -1052,6 +1052,44 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   color: var(--ink);
 }
 
+.reveal-card-text {
+  margin: 0 0 1.5rem;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+.reveal-card-text h1,
+.reveal-card-text h2,
+.reveal-card-text h3 {
+  margin: 1.2em 0 0.5em;
+  font-family: var(--font-display);
+  color: var(--ink);
+}
+
+.reveal-card-text h1 { font-size: 1.4rem; }
+.reveal-card-text h2 { font-size: 1.2rem; }
+.reveal-card-text h3 { font-size: 1.05rem; font-weight: 600; }
+
+.reveal-category-text {
+  margin: 1.5rem 0 0;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+.reveal-category-text h1,
+.reveal-category-text h2,
+.reveal-category-text h3 {
+  margin: 1em 0 0.4em;
+  font-family: var(--font-display);
+  color: var(--ink);
+}
+
+.reveal-category-text h1 { font-size: 1.3rem; }
+.reveal-category-text h2 { font-size: 1.1rem; }
+.reveal-category-text h3 { font-size: 1rem; font-weight: 600; }
+
 .reveal-actions {
   display: flex;
   flex-direction: column;

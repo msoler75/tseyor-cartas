@@ -5,187 +5,215 @@
   "front_image": "dorso.jpg",
   "width": 764,
   "height": 1110,
-  "image_padding": [150, 100, 360, 100],
-  "title_padding": [880, 100, 120, 100],
-  "title_font": "Arial",
-  "title_size": "63px",
+  "image_padding": [275, 100, 370, 112],
+  "category_padding": [124,100,900,100],
+  "title_padding": [900, 80, 118, 80],
+  "category_style": "color: #211; font-family: 'Bradley Hand ITC TT Bold'; font-size: 60px; text-transform: uppercase",
+  "title_style": "color: #211; font-family: 'Bradley Hand ITC TT Bold'; font-size: 75px; text-transform: uppercase",
   "title_format": "%ID%. %TITLE%",
   "positions": ["Situación actual", "Desafío", "Consejo"],
+  "categories": {
+  "ciencia": {
+    "meaning": "## CAFÉ TRASCENDENTAL: CIENCIA\n\nLa ciencia del CAFÉ Trascendental es la Ciencia del Yo Absoluto, diferente de la ciencia del yo temporal.\n\nEn la Ciencia del Yo Absoluto todo está unido e interrelacionado, pues responde al arquetipo de la Unidad de Todo y de Todos.\n\nEsta ciencia, al ser traída del mundo de las ideas al mundo de la dualidad se divide, se diversifica, se expande como las ramas de un árbol, el Árbol de las Ciencias, en la que todo parte de un tronco común que se despliega en grandes ramas y de cada rama salen ramas menores y de cada rama menor ramitas y hojas, flores y después frutos.\n\nIgualmente, el conocimiento abiótico no está fragmentado en disciplinas, sino que está integrado. Por eso en el CAFÉ Trascendental las cuatro ramas o columnas no son independientes, sino distintas caras de una misma Realidad o vías de acceso a ella, pero en cada una de ellas están igualmente implicados los restantes componentes.\n\nLa Ciencia es artística, filosófica y espiritual al mismo tiempo. El Arte es científico, filosófico y espiritual. La Filosofía es científica, artística y espiritual. La Espiritualidad es científica, artística y filosófica.\n\nEn la dualidad del mundo 3D en el que vivimos, si despojamos cada una de estas ramas o columnas del contacto con las demás, caemos en el dogmatismo científico, en la exclusividad artística, en la especulación filosófica o en el fanatismo espiritual.\n\nLa presentación de la Ciencia en las Cartas de Uommo, como en las demás columnas o ramas, se hace en 7 momentos, respondiendo al valor numerológico, cromático y simbólico del 7, en que se establecen siete pautas, siete pasos, 7 estadios para el acceso o recorrido espacio-temporal de la Ciencia.\n\nEllo obedece a las leyes del mundo de manifestación que, a través del Fractal, crea una ilusión espacio-temporal para desplegar los potenciales creativos y permitir una experiencia pormenorizada de lo que en esencia es Uno y está unido.\n\nEllo posibilita la experimentación, la comprensión y la transmutación del ego hacia el Yo, el recorrido simbólico e iniciático del conocimiento gnóstico. Las Cartas de Uommo nos darán una referencia individual del momento en que se halle nuestro deambular"
+  },
+    "arte":  {
+      "meaning": "## CAFÉ TRASCENDENTAL: ARTE\n\nEl Arte del CAFÉ Transcendental nos remite a todas las artes y al arte en sí mismo, como expresión de la belleza, la armonía, la forma y el sentido profundo que encierra la imaginación creativa, que se recrea de instante en instante.\n\nPor tanto, arte es la música de las esferas, la danza consciente, la pintura de inspiración trascendente, la escultura sagrada, la arquitectura de los templos adimensionales, la creación literaria inspirada y la cinematografía que contiene un mensaje adimensional.\n\nEl Arte trascendental es un arte conectado con el mundo de la creatividad, donde la imaginación ya ha conformado toda clase de expresiones en todas las posibilidades, a las que nos podemos acercar desde una extrapolación consciencia y obtener visiones y percepciones sublimes y creativas de instante en instante.\n\nEl propio cosmos y la naturaleza misma, en su manifestación, se reviste de belleza y arte, en el mundo mineral, vegetal, animal, humano y cósmico, donde el canon del cuerpo humano, microcosmos, y la geometría sagrada han sabido descubrir en la naturaleza las reglas de arte y belleza transcendental que informan toda creación.\n\nPara alcanzar ese arte interior hay que activar el silencio mental, para acceder a la imaginación creativa en cualquiera de las manifestaciones del Arte Universal, y poder gozar de esta maravillosa experiencia.\n\nLos artistas son esos seres despiertos, capaces de acceder a ese mundo de la imaginación creativa y trasladar a este plano 3D las obras que han contemplado. En realidad, más que creadores son recreadores o canales inspirados por el soplo del espíritu.\n\nEsta creatividad receptiva está al alcance de todos, si bien para plasmar la creatividad expresiva en este plano hay que desarrollar habilidades técnicas en cada especialidad. Y esto se consigue con esfuerzo y dedicación, pero al mismo tiempo es motivo de una gran satisfacción poder compartir lo que se ha atisbado en la realidad de los mundos.\n\nLas 7 cartas de ARTE nos muestran un repertorio del arte y de las habilidades artísticas que es preciso integrar en nuestro deambular, ya que todos somos en el fondo artistas, al igual que científicos, filósofos y espiritualistas."
+    },
+    "filosofia":  {
+      "meaning": "## CAFÉ TRASCENDENTAL: FILOSOFÍA\n\nLa filosofía de Tseyor plantea una visión trascendental del origen del Universo y de los seres conscientes. A veces contenida en bellos relatos, como el de la Partícula curiosa y FractalOm y otras en exposiciones brillantes y sugerentes sobre el ser y el no ser, que siendo no es y no siendo es.\n\nSe parte siempre del Absoluto y la manifestación, como la realidad última y suprema y el espacio donde el Absoluto se vuelca través de su manifestación para dar su consciencia y darse a sí mismo a través de los seres que son réplicas de Él mismo, y como tal contienen en su esencia las propiedades del Absoluto, que podrán ir descubriendo en un proceso de experimentación y retroalimentación, siempre con la añoranza de volver al hogar, a su origen primigenio.\n\nEn la medida en que la consciencia se reconoce en la manifestación, se da cuenta que siendo no es, y en la medida que se reconoce en lo inmanifestado se apercibe de que no siendo es. La micropartícula recorre intermitentemente el espacio que va desde su origen a la manifestación y desde la manifestación a su origen, y con ello se recarga de vida y consciencia, por medio de la intermitencia cuántica.\n\nLa manifestación, a su vez, se organiza en dos planos, el plano atómico denso, y el plano de las partículas y micropartículas, siendo el primero la agregación de las partículas del segundo, dando lugar a la apariencia de densidad, peso, espacio y tiempo diferenciados por la dualidad y el contraste.\n\nEn este plano dual se experimentan propiedades que no es posible experimentar en los mundos sutiles, y por tanto es idóneo para aprender por contraste, y comprender, integrar y transmutar, alcanzando cada vez mayores niveles de consciencia y vibración.\n\nY este contraste entre el Yo permanente y el yo temporal, permite experienciar y alcanzar mayores niveles de vibración y por tanto de participación en el Todo, que no es otra cosa que la Nada en su potencial creador.\n\nEstos y otros conceptos e ideas son sugerencias que permiten orientarnos en un Universo que parece enigmático y a veces incomprensible, pero que contiene una gran sabiduría y belleza."
+    },
+    "espiritualidad":  {
+      "meaning": "## CAFÉ TRASCENDENTAL: ESPIRITUALIDAD\n\nLa espiritualidad nace del reconocimiento del valor que tiene el espíritu en el Universo y en nosotros mismos, sabiendo que somos seres espirituales, habitando en un cuerpo material, pero que nuestra esencia profunda es trascendente, eterna e inmutable, donde la experiencia material no es más que una escuela de experimentación y aprendizaje para descubrir nuestra esencia divina.\n\nCuando en nosotros se despierta la consciencia de nuestra esencia espiritual, la materia y la forma se ven como una ilusión de los sentidos, que debemos respetar y trabajar, pero que es transitoria y mutable.\n\nEn la dualidad materia y espíritu, instituida por las ideas informadas por una manifestación dual algo espesa e ignorante de sus orígenes, marcar uno de los polos como dominante, en desprecio del otro, nos llevaría a un desequilibrio, pues la consciencia no excluye ni pone barreras, sino que integra, no enjuicia, acepta, y al amar comprende y trasciende, pues en el fondo la materia no es más que un componente espiritual enajenado y pendiente de sublimar.\n\nPor tanto, la espiritualidad tiene que trabajar continuamente en la aceptación, la comprensión, la integración, la transmutación y la asunción de una nueva y mayor consciencia, en un proceso de sublimación constante.\n\nPor eso, el trabajo espiritual es eminentemente alquímico, transmutador, sabe encontrar luz en las sombras y transformar el plomo de la personalidad en el oro del espíritu, donde el oro significa pureza y luminosidad.\n\nEn ese trabajo alquímico actúa decididamente la energía Juul, aportando la dosis de impulso creador suficiente y necesaria para cada etapa del deambular ascendente, desde el 1 al 7, desde el Beh al Ich, recorriendo un sendero que se ha descrito en pasos sucesivos y ascendentes, a modo de una rueda de colores, que va desde el rojo al blanco, pasando por el verde y el azul, con toda la infinita gama de tonalidades, que en el fondo son vibraciones de una escala musical.\n\nLas Cartas de Uommo nos aportan percepciones de este trabajo espiritual y nos dan referencias para llevarlo a cabo, integrando en el mismo los tres factores previos del CAFÉ Trascendental, la Ciencia, el Arte y la Filosofía."
+    }
+  },
   "cards": [
+    {
+      "id": 0,
+      "title": "Comodín",
+      "category": "-",
+      "meaning": "# EL TEMPLO DEL CAFÉ TRASCENDENTAL\n\nLas cartas son un medio de acceso a los arquetipos de información trascendente, tienen un carácter iniciático.\n\n## Las cuatro columnas\n\nLas cartas van ordenadas en cuatro series, de acuerdo a las cuatro columnas del CAFÉ Trascendental, pues responden a esas vías de acceso a la adimensionalidad.\n\n### Cartas de Información Trascendente\n\nSon arcanos de información para ser contemplados y puertas adimensionales. El comodín contiene el potencial de todos los significados.",
+      "image": "comodin.jpg",
+      "draw_title": false
+    },
   {
     "id": 1,
     "title": "Conexión",
     "category": "Ciencia",
-    "text": ""
+    "meaning": "## Nº 1 – ROJO - EL VINO - BEH - SENDERO DE INTROSPECCIÓN\n\n### Significado\nEl conocimiento de la Ciencia Trascendental parte de una conexión con la Fuente, con el mundo de las ideas y de las causas, con la Unidad original. Esta conexión es interior y nos vincula con el cosmos, con nuestra réplica genuina, con nuestro lugar de procedencia, que ancestralmente es Uommo.\n\n### Numerología\nEl 1 como punto de partida, el 66 como la totalidad del 12 fragmentada en dos conjuntos: 6+6 por efecto de la dualidad.\n\n### Simbología\nEl rostro concentrado en autoobservación, la antena de conexión trascendental, el gato blanco como observador interdimensional, el ratón a sus pies como la dispersión controlada, la carta que nos llega de Uommo, la llave de apertura del canal que está en la base, la Jota del Juul como energía que se pone en movimiento, el tridente, que integra lo diverso en lo Uno como un accionar crístico."
   },
   {
     "id": 2,
     "title": "Eficacia",
     "category": "Ciencia",
-    "text": ""
+    "meaning": "## Nº 2 – ROSA - EL PAN - SAYAB – MANANTIAL DE LUZ\n\n### Significado\nEl conocimiento científico trascendental traído de la abiótica revela toda su Eficacia al plasmarse en la 3D, pues en él está contenida la solución de tantas necesidades para el deambular tridimensional.\n\n### Numerología\nEl 2 es la proyección del 1 en el espejo de la manifestación como contraparte femenina. El 5 en la parte superior revela que todo consiste en andar el camino que nos lleva al conocimiento y a la autorrealización. En 71 contiene el punto de llegada 7 y el punto de partida 1, entraña un gran conocimiento del proceso en su conjunto.\n\n### Simbología\nUn pez sirve de pedestal, en él están nuestros orígenes y réplicas genuinas, dos llaves ascendentes nos dan idea de caminar con equilibrio, llevando en cada mano los símbolos iniciáticos: el tridente y el triángulo, la misma idea desplegada de dos formas distintas, todo unificado en un gran 5 con una llave de cinco muescas. Un caminar eficaz basado en el conocimiento iniciático."
   },
   {
     "id": 3,
     "title": "Monje y Guerrero",
+    "title_style": "font-size: 52px",
     "category": "Ciencia",
-    "text": ""
+    "meaning": "## Nº 3 – VERDE – EL PEZ – TSEEK – PREDICAR, DIVULGAR\n\n### Significado\nEl iniciado conoce su naturaleza dual de Monje, sabio, y Guerrero, persona activa. Esta dualidad interna-externa la concilia y equilibra con la energía crística, el guerrero vestido de verde, el color del Tseek.\n\n### Numerología\nEl 3 es el resultado de la fusión del 1+2=3. En esa fusión se alcanza la tríada creadora que opera desde el Fractal. El 3 verde es la tríada crística.\n\n### Simbología\nDos figuras, dos cuerpos, uno externo y otro interno, uno Guerrero y otro Monje, miran en direcciones contrarias, uno hacia dentro, el interior a la izquierda, y otro hacia fuera, a divulgar. Este tiene un bastón en que apoyarse, pero la mente-consciencia es la misma para ambos, una mente pájaro y un soporte sólido y bien asentado en suelo, el del conocimiento y la experiencia. La energía Juul los sostiene, pues ha llegado al Tseek y desde ahí los impulsa de forma ascendente."
   },
   {
     "id": 4,
     "title": "Sabiduría",
     "category": "Ciencia",
-    "text": ""
+    "meaning": "## Nº 4 – VERDE CLARO – EL MANTO – SUUT – DEVOLVER OSCURIDAD\n\n### Significado\nLa Ciencia Trascendental contiene una Sabiduría aquilatada por la experiencia en esta preparación del camino iniciático y de la divulgación.\n\n### Numerología\nEl 4 significa la preparación en un momento de dificultad o desconocimiento, sabiendo cuáles son los pasos del 1 a 7, y la importancia del 3 como tríada creadora, y reconociendo que el 6 es como una espiral que se despliega e invita a tutelar a todas las réplicas.\n\n### Simbología\nEn la laguna de la base están los principales elementos de la preparación: pirámide, caracol, tortuga, delfín, células, cromosomas, elementos Espirituales, que ascienden con la energía Juul, de un blanco muy puro, hasta el cerebro para despertar el potencial encerrado en la espiral, con el que hay que tutelar a los autóctonos, el rostro que mira hacia abajo, desorientados en su existencia tridimensional, pero de un gran corazón."
   },
   {
     "id": 5,
     "title": "Origen",
     "category": "Ciencia",
-    "text": ""
+    "meaning": "## Nº 5 – AZUL – LAS SANDALIAS – KAT – ARCILLA CREADORA\n\n### Significado\nNuestro origen viene de las estrellas, vinculado con la constelación del Pez. La separación de sexos ha permitido dinamizar nuestro camino, no sin contrariedades.\n\n### Numerología\nEl 5 es la puesta en marcha, inspirada por el 3 crístico.\n\n### Simbología\nLa base es la nave Underkraft, venida de las estrellas para apoyar nuestro deambular, seres del cosmos nos señalan su origen estelar, y nos muestran la llave del despertar, son seres de distintas morfologías, pero de un gran conocimiento del genoma, la manzana, la semilla. El dedo señala la estrella de su origen. Hay una espiral que desarrollar en el camino del despertar, de la ascensión y recuperación de nuestro interior crístico, la llave del verde Tseek sobre un fondo morado: la transmutación."
   },
   {
     "id": 6,
     "title": "La llamada",
     "category": "Ciencia",
-    "text": ""
+    "meaning": "## Nº 6 – AZUL CLARO – EL BÁCULO – OKSAH - INTRODUCIR\n\n### Significado\nHemos recibido la Llamada para tutelar a todas las réplicas en nuestro deambular, desarrollando los potenciales en consonancia con las realidades cuánticas.\n\n### Numerología\nEl 6, el desarrollo del proyecto, incluye la consciencia del 7 como objetivo, unión del 7+Z, la Z, el final, hay conocimiento para un deambular, 5, con consciencia de la meta, 7, el Ich.\n\n### Simbología\nUn gran rostro pensante de iniciado que sabe, está bien calzado y posee el conocimiento, ha recibido y atendido la llamada, y está conectado con la energía Juul, teléfono blanco y cable que lo conecta con el Juul, donde está su réplica superior, atenta y despierta, rostro superior, vinculada y conectada con el mundo de las ideas y de los arquetipos, y que posee el conocimiento abiótico que necesitamos rescatar para facilitar nuestro deambular."
   },
   {
     "id": 7,
     "title": "Regeneración",
+    "title_style": "font-size: 66px",
     "category": "Ciencia",
-    "text": ""
+    "meaning": "## Nº 7 – BLANCO – EL ARCA – ICH – FAZ, ROSTRO TRANSMUTADO\n\n### Significado\nLa Regeneración de nuestros cuerpos y mentes y las de los autóctonos se basa en la Revolución de la consciencia sobre la base del conocimiento gnóstico y la sabiduría crística.\n\n### Numerología\nEl 7 es la culminación del camino, se alcanza en un 7 blanco, inmaculado, apoyado en un 5 también blanco, que ha sabido desplegar el potencial del 6, apoyándose en la base del 3 crístico, verde.\n\n### Simbología\nUn rostro enmarcado por una mano marrón muestra la cara de un autóctono que necesita reconocerse, rompiendo apegos, el cuchillo, activando la Revolución de la consciencia, la R, regenerando el ADN y cromosomas, enmarcados por una Juul blanca que acaba en un cerebro. Un perfil de rostro superior derecho muestra en su cabeza la espiral por desplegar que activará el genoma, la manzana y que le permitirá salir de su encierro 3D, la ventana que muestra un cielo externo con la Luna."
   },
   {
     "id": 8,
     "title": "Inspiración",
     "category": "Arte",
-    "text": ""
+    "meaning": "## Nº 1+7=8 – ROJO - EL VINO - BEH - SENDERO DE INTROSPECCIÓN\n\n### Significado\nEl punto de partida del arte es la Inspiración trascendental, que impulsa toda actuación creativa. Si bien la inspiración tiene diversas vertientes una más tridimensional y otra más adimensional, esta última es más difícil de alcanzar al situarnos en esta 3D tan limitada.\n\n### Numerología\nEl 8 es el resultado de esta segunda vuelta hacia el Ich por el sendero del arte, con el fundamento del 3 se puede seguir la senda del 5 para andar hacia la realidad de los mundos imaginativos y creativos.\n\n### Simbología\nUna gran arma tiene en su interior el fuego y la guadaña, apoyada en la dualidad, pedestal rojo y verde, un gran rostro sin ojos, a ciegas, se apoya en ella, encerrado en su mundo, la ventana que da al exterior, guardado por un ojo reptil vigilante, dotado de poderosos dientes al acecho. Siguiendo el camino de la inspiración y con la mente en blanco, podrá llegar a un despertar vigilante y consciente, rostro superior."
   },
   {
     "id": 9,
     "title": "Transformación",
+    "title_style": "font-size: 55px",
     "category": "Arte",
-    "text": ""
+    "meaning": "## Nº 2+7=9 – ROSA - EL PAN - SAYAB – MANANTIAL DE LUZ\n\n### Significado\nTransformar el mundo por medio del Arte tiene muchas posibilidades y retos, pues hay acechantes diablillos que nos pueden hacer trastabillar.\n\n### Numerología\nEl 9 es producto del 2 y el 7 del circuito anterior de la Ciencia, hay que seguir firme en el trayecto con la consciencia de la Unidad y el deambular por un camino limpio y seguro, el 51.\n\n### Simbología\nUna serie de instrumentos creativos, internos, basados en el potencial del genoma, nos pueden permitir superar los obstáculos del caminar por el sendero del Arte, lleno de peligros egoicos y de divinidades diabólicas, señaladas por el dedo, que toma el arte como una apropiación posesiva, mano que coge un cuadro. Pero el logro está asegurado por la comprensión creativa y la transmutación, que nos permitirá despertar."
   },
   {
     "id": 10,
     "title": "Confianza",
     "category": "Arte",
-    "text": ""
+    "meaning": "## Nº 3+7=10 – VERDE – EL PEZ – TSEEK – PREDICAR, DIVULGAR\n\n### Significado\nLa Confianza en conseguir el éxito lo hace posible, usando los recursos de la atención vigilante y un buen fundamento creativo.\n\n### Numerología\nEl 10 asegura el logro, el poder superar los obstáculos está marcado en el tiempo y en espacio. El 5 asegura un caminar hacia el logro, desplegando la energía del 6, el desarrollo hacia el éxito, por medio del atento caracol.\n\n### Simbología\nUn rostro oculto por un reloj que marca las 10 h. y un dedo que señala hacia un caracol muy vigilante y atento, en cuyo seno está la espiral generativa, inspira a este creador, le da confianza y seguridad en su trabajo de dedicación al desarrollo del Juul en su faceta crística. Posee claves creativas e inspiración."
   },
   {
     "id": 11,
     "title": "Visión",
     "category": "Arte",
-    "text": ""
+    "meaning": "## Nº 4+7=11 – VERDE CLARO – EL MANTO – SUUT – DEVOLVER OSCURIDAD\n\n### Significado\nLa Visión creativa e inspirada enfocada hacia la realidad de los mundos, con sabia dedicación y utilizando los instrumentos y las claves adecuadas, permite alcanza el vuelo de la creatividad.\n\n### Numerología\nEl 4 más el 7 del recorrido anterior, nos da el 11 del creador atento y consciente, que posee la clave del 7, el objetivo, y el apoyo del 3 crístico.\n\n### Simbología\nUn rostro con visión frontal de artista inspirado por el Juul y la intuición generativa, que conoce su mundo de origen, jeroglífico sobre fondo blanco, posee la base del conocimiento, la pirámide, integra el tridente del equilibrio transmutador, utiliza la visión estereoscópica, el gato blanco mirando de frente, y alcanza una órbita trascendente. Este artista creador es un forzado, la F, y posee unas grandes dotes."
   },
   {
     "id": 12,
     "title": "Totalidad",
     "category": "Arte",
-    "text": ""
+    "meaning": "## Nº 5+7=12 – AZUL – LAS SANDALIAS – KAT – ARCILLA CREADORA\n\n### Significado\nLa inspiración de la Totalidad se alcanza en el camino del Arte, con una base interdimensional muy amplia, que permite reconocer muchas realidades, no siempre concordantes.\n\n### Numerología\nEste 12 integra la experiencia de la Ciencia y alcanza una Totalidad integradora.\n\n### Simbología\nSobre esta totalidad de seres, los numerosos ojos y morfologías aglutinadas en la lámina, destacan dos rostros contrapuestos, uno de apariencia napoleónica dominante y engreído y otro observador y modesto pero que ha recibido una carta de la adimensionalidad, que le ha traído una paloma blanca. El primero tiene una mente posesiva y dominante, y el segundo se inspira en el mundo interior y la sabiduría. La rata está debajo del primero y las aves debajo del segundo, que se ve apoyado por las energías ascendentes del Juul, el genoma, la manzana, y los dos genios que se miran uno a otro."
   },
   {
     "id": 13,
     "title": "Éxito",
     "category": "Arte",
-    "text": ""
+    "meaning": "## Nº 6+7=13 – AZUL CLARO – EL BÁCULO – OKSAH - INTRODUCIR\n\n### Significado\nEl Éxito de la obra bien hecha alcanza al creador perseverante, que indica cuáles han sido sus medios y fines, señalándolos con la mano.\n\n### Numerología\nEl desarrollo de la acción creativa se ve colmada por el éxito, 6+7, el 53 significa la abundancia obtenida por la sabia aplicación de la energía creadora del 3. El 6 azul indica el bello y logrado camino creador.\n\n### Simbología\nLa creatividad que utiliza las formas, los colores, la armonía combinatoria, la elegancia, el equilibrio está abocada a alcanzar el éxito y el reconocimiento, a pesar de todas las dificultades, que han sido transmutadas, pues está apoyada por la energía del Juul, la Jota blanca arriba, que despliega el potencial de la espiral que contiene todo lo que está por desplegarse y proyectarse."
   },
   {
     "id": 14,
     "title": "Fascinación",
+    "title_style": "font-size: 66px",
     "category": "Arte",
-    "text": ""
+    "meaning": "## Nº 7+7=14 – BLANCO – EL ARCA – ICH – FAZ, ROSTRO TRANSMUTADO\n\n### Significado\nEl éxito creativo y artístico logra la Fascinación de la obra bien hecha. Pero esta fascinación puede derivar en un culto a la forma, que no es lo que se pretende, sino mostrar el brillo de la imaginación creativa.\n\n### Numerología\nLa suma del Ich de la Ciencia y del Ich del Arte produce una gran fascinación, en la que no hay que quedarse atrapado. El artista muestra en su paleta de pintor sobre la que hay un 21, la unión y la versatilidad de los dos primeros dígitos, que facilitan el éxito creador. El 5 opera como un velo seductor o como un inspirado 5 crístico, verde.\n\n### Simbología\nSaliendo de un túnel adimensional aparece el artista con su paleta de pintor y su pincel en la mano, instrumentos con los que dar vida a las formas y mostrar el universo de la imaginación creativa en este mundo, que lleva a la ilusión y a la fascinación, en cuya apariencia no hay que quedarse atrapados. Dos rostros femeninos, uno angustiado y atormentado, otro velado y oculto, pero sabio y versátil."
   },
   {
     "id": 15,
     "title": "Observación",
+    "title_style": "font-size: 66px",
     "category": "Filosofía",
-    "text": ""
+    "meaning": "## Nº 1+(7+7) – ROJO - EL VINO - BEH - SENDERO DE INTROSPECCIÓN\n\n### Significado\nObservar y reflexionar para conocer y comprobar las propiedades constitutivas de uno mismo, de todo y de todos, en su aparente diversidad, sabiendo que la observación modifica lo observado al aplicarle la consciencia creadora.\n\n### Numerología\nEl 15 contiene en sí al 1 y al doble paso por la Ciencia y el Arte, y el 3 casi escondido integra y abarca, con su potencial crístico, esta observación atenta y consciente.\n\n### Simbología\nMuchos rostros de personas de distintos colores y expresiones muestran la variedad aparente de los observadores de sí mismos y del mundo, tratando de descubrir el secreto escondido en la manifestación, descubrir quiénes son, de dónde vienen y a dónde van. Para ello tienen la referencia de un libro, el potencial de un ave, la energía del Juul y el poder del pensamiento."
   },
   {
     "id": 16,
     "title": "Discernimiento",
+    "title_style": "font-size: 58px",
     "category": "Filosofía",
-    "text": ""
+    "meaning": "## Nº 2+(7+7) – ROSA - EL PAN - SAYAB – MANANTIAL DE LUZ\n\n### Significado\nEl conjunto de los fenómenos tienen que apreciarse sabiendo discernir, diferenciar su origen y sentido profundo, más allá de las apariencias.\n\n### Numerología\nEl 16 contiene la versatilidad del 2 más la experiencia de la realización de la Ciencia y del Arte. El 1 como principio, el 2 como complemento del 1, el 3 como síntesis de ambos nos introduce en el Tseek crístico, que está también en el fundamento de todo.\n\n### Simbología\nHay claves para el discernimiento, está el blanco de la energía Juul con su pureza, hay rostros pensativos que observan y se autoobservan, la tortuga paciente está caminando hacia abajo, buscando el fundamento y el sentido de todo, pues hay enigmas encerrados y pendientes de desplegar su significado. La inspiración de la Espiritualidad, la J con la E unidas, puede brindar una buena referencia para ese discernimiento."
   },
   {
     "id": 17,
     "title": "Dogmatismo",
+    "title_style": "font-size: 65px",
     "category": "Filosofía",
-    "text": ""
+    "meaning": "## Nº 3+(7+7) – VERDE – EL PEZ – TSEEK – PREDICAR, DIVULGAR\n\n### Significado\nEl conocimiento que se cree seguro y bien asentado puede acabar convirtiéndose en dogma y ser motivo de fanática persecución de los que piensan de otra forma, pues el dogmatismo no admite la diferencia.\n\n### Numerología\nEl 3 como tríada ha recibido la consciencia de la Ciencia y el Arte realizados, eso puede llevar a una ingenua y fanática realización del tutelar, el 6, persiguiendo con saña a los opositores, olvidando la integración crística del 3.\n\n### Simbología\nEl fundamento crístico que supone el 3, como Tseek, puede quedar desvirtuado, si la energía del Juul sostiene otras energías más autosuficientes y egoicas, que muestran su denuncia y saña persecutoria. Todo ello mostrando a su vez en otro rostro contrariado, enmarcado en verde, que trata de transmutar su descontento y separación de esas actitudes equivocas."
   },
   {
     "id": 18,
     "title": "La caverna",
     "category": "Filosofía",
-    "text": ""
+    "meaning": "## Nº 4+(7+7) – VERDE CLARO – EL MANTO – SUUT – DEVOLVER OSCURIDAD\n\n### Significado\nLa autolimitación egoica del pensamiento nos lleva a encerrarnos en la caverna de esta matrix 3D, en donde los verdaderos significados se han reducido a sombras.\n\n### Numerología\nEl 18 contiene al 4 como preparación a un repertorio limitado que a pesar del recorrido anterior (7+7) ha caído en el oscurantismo de la ignorancia, como resultado de la entropía.\n\n### Simbología\nUn rostro mira asustado el mundo de formas empequeñecido en su apariencia material, un dedo señala una pirámide achatada, una gran sombra parece dominar esta caverna del sentido, donde se ha perdido la claridad y la ignorancia se señorea, preparándose para el despertar y el autodescubrimiento, pasando por un proceso de extrañamiento y angustia."
   },
   {
     "id": 19,
     "title": "Vuelo",
     "category": "Filosofía",
-    "text": ""
+    "meaning": "## Nº 5+(7+7) – AZUL – LAS SANDALIAS – KAT – ARCILLA CREADORA\n\n### Significado\nTras el paso por las sombras, la consciencia alza su vuelo para seguir el camino del autodescubrimiento, sabiendo que el camino del despertar no se acaba nunca.\n\n### Numerología\nEl 19 integra el 5 con la experiencia del 7 de la Ciencia y el 7 del Arte. Ese 5 de diferentes colores en su recorrido interminable por el sendero de la experiencia en el mundo de las formas.\n\n### Simbología\nUn ave, de un verde crístico, como síntesis, en pleno vuelo sostiene toda la imagen. El mundo de las ideas se proyecta hacia abajo con su dedo índice señalando el proceso que se lleva a cabo, de transformación de la experiencia en conocimiento y sabiduría. Hay un gran dinamismo y una correspondencia entre el mundo inmanente, abajo, y el mundo trascendente, arriba."
   },
   {
     "id": 20,
     "title": "Divergencia",
+    "title_style": "font-size: 68px",
     "category": "Filosofía",
-    "text": ""
+    "meaning": "## Nº 6+(7+7) – AZUL CLARO – EL BÁCULO – OKSAH - INTRODUCIR\n\n### Significado\nEn el proceso de tutelar a todas las réplicas por el sendero del conocimiento se produce la Divergencia, como efecto de la dualidad, y ello lleva a la separación por dos caminos: uno más amenazador, el cocodrilo con sus afilados dientes, y otro más reflexivo y contemplativo.\n\n### Numerología\nEl 20 contiene al 6 con la experiencia de dos recorridos previos por el 7. El desarrollo del 6 en la senda del pensamiento lleva a la Divergencia, a la división informada por la dualidad del mundo de manifestación.\n\n### Simbología\nUn ave blanca voladora, el ave del pensamiento libre y creativo, se ve amenazada por una tenaz serpiente que abre su boca devoradora, un rostro pensativo contempla esta dualidad y piensa la manera de trascenderla y adentrarse en la realidad de los mundos, pero antes hay que equilibrar e integrar los factores de la divergencia."
   },
   {
     "id": 21,
     "title": "Liberación",
     "category": "Filosofía",
-    "text": ""
+    "meaning": "## Nº 7(7+7) – BLANCO – EL ARCA – ICH – FAZ, ROSTRO TRANSMUTADO\n\n### Significado\nFinalmente se produce la Liberación y se alcanza el Ich del pensamiento que permite acceder a la realidad de los mundos, gracias al esfuerzo de caminar por un sendero equilibrado.\n\n### Numerología\nEl 21 supone un gran logro, pues conjuga la suma de tres números 7. Un 5 azul muestra el resultado de su andadura y el haber sorteado los peligros del camino.\n\n### Simbología\nToda la figura es a modo del cuerpo de una persona que muestra abajo sus pies, enredados en una figura roja de la identificación, con una Juul blanca, cuya energía le ayuda a liberarse de ese apego. Esta figura señala con su mano el número 5, por la importancia que ha tenido en su caminar, una vez que ha alcanzado la liberación del pensamiento y la consciencia ascendida."
   },
   {
     "id": 22,
     "title": "La clave",
     "category": "Espiritualidad",
-    "text": ""
+    "meaning": "## Nº 1(7+7+7) – ROJO - EL VINO - BEH - SENDERO DE INTROSPECCIÓN\n\n### Significado\nLa primera carta de la Espiritualidad nos proporciona la Clave, una llave hermética que se conjuga con el caminar en base a la energía Juul y en una sintonía crística.\n\n### Numerología\nEl 22 contiene la inspiración y el idealismo de los tres 7 y su experiencia acumulada, que ahora adopta una intuición mística. La marcha ascendente sigue presente, el 5, y la preparación, el 4, ha alcanzado un gran nivel que espera desplegarse. El 2 aporta su plasticidad.\n\n### Simbología\nEn la base hay un dragón, el dragón de la materia, que hay que sublimar en el trabajo espiritual del Juul crístico, la J verde. Hay una clave muy bien expuesta, la consciencia aplicada en la autoobservación, y si bien hay obstáculos, la flecha roja, estos pueden transmutarse con el aporte de la energía Juul, hasta alcanzar la sublimación y la creatividad."
   },
   {
     "id": 23,
     "title": "Transmutación",
+    "title_style": "font-size: 57px",
     "category": "Espiritualidad",
-    "text": ""
+    "meaning": "## Nº 2+(7+7+7) – ROSA - EL PAN - SAYAB – MANANTIAL DE LUZ\n\n### Significado\nLa Transmutación es la clave alquímica que el ego rechaza porque en ella cree perder lo logrado, pero que si deja paso a la transmutación podrá disfrutar del pan de la comunión.\n\n### Numerología\nEl 22 tiene un gran potencial transmutador, el 2 sobre la experiencia adquirida de la Ciencia, el Arte y la Filosofía. El 63 contiene en sí la energía del 6 como desarrollo basado en el impulso del 3 crístico, del Tseek. El 5 sigue operando en su caminar crístico integrador y sublimador.\n\n### Simbología\nHay símbolos alquímicos como la redoma o alambique donde se opera la alquimia transmutadora, con una base blanca, pura. En la cima de la figura se ve el proceso sublimado, como un alimento espiritual, y una serie de energías que han impulsado ese ascenso."
   },
   {
     "id": 24,
     "title": "Amor",
     "category": "Espiritualidad",
-    "text": ""
+    "meaning": "## Nº 3+(7+7+7) – VERDE – EL PEZ – TSEEK – PREDICAR, DIVULGAR\n\n### Significado\nLa consciencia del Amor trascendental se hace patente en la Espiritualidad, dando paso a un rostro sublimado.\n\n### Numerología\nEl 24 es la expresión de un equilibrio logrado en base al tripe 7, de los recorridos previos, y el 3 como tríada creadora.\n\n### Simbología\nUna gran ballena soporta al conjunto, con su gran fuerza y consciencia que sirve de anclaje para elevar la energía hacia el amor trascendente, el corazón. Un rostro místico iluminado contempla la manifestación con una mirada comprensiva y amorosa, que integra el papel de la manifestación animal instintiva en la consciencia de la Unidad suprema, el ojo superior enmarcado en blanco y dorado."
   },
   {
     "id": 25,
     "title": "Cambio",
     "category": "Espiritualidad",
-    "text": ""
+    "meaning": "## Nº 4+(7+7+7) - VERDE CLARO - EL MANTO – SUUT DEVOLVER OSCURIDAD\n\n### Significado\nEl Cambio supone la activación de la consciencia de nuestros orígenes cósmicos, pues vinimos de las estrellas, y ese cambio es una transformación de toda la humanidad.\n\n### Numerología\nEl 25 contiene la preparación del 4 con la experiencia del triple recorrido del 7, en un número que equilibra lo pasivo con lo activo, el 25, el 2 y el 5.\n\n### Simbología\nUna gran nave en la base muestra la vinculación con el cosmos y nuestro origen, sobre ese fundamento es fácil que opere la energía Juul, la J blanca, el caminar inspirado en la consciencia crística, el rostro con un pensamiento verde, la sublimación de la energía, la J roja, y el ascenso vibratorio preparado para acoger a todos los autóctonos, representados por la Luna en la parte superior, que han utilizado la llave del despertar."
   },
   {
     "id": 26,
     "title": "Compromiso",
+    "title_style": "font-size: 68px",
     "category": "Espiritualidad",
-    "text": ""
+    "meaning": "## Nº 5+(7+7+7) – AZUL – LAS SANDALIAS – KAT – ARCILLA CREADORA\n\n### Significado\nEl caminar por el sendero de la espiritualidad es la manifestación del Compromiso adquirido voluntariamente.\n\n### Numerología\nEl 26 integra el 5, caminar consciente, con la experiencia de previos recorridos en la espiral ascendente del 7. Este 5 azul abarcado por la J del Juul, adquiere consciencia de Unidad, el 1 superior equilibrado con el 3.\n\n### Simbología\nUn gran cetáceo sostiene el conjunto, en donde se muestran energías que caminan en sentido ascendente, con el equilibrio de la Y griega y el concurso del tridente que refuerza la energía triple creadora, un rostro superior es consciente del proceso que sigue y divulga su deambular encaminado a la trascendencia, donde el pez crístico navega."
   },
   {
     "id": 27,
     "title": "Comprensión",
+    "title_style": "font-size: 66px",
     "category": "Espiritualidad",
-    "text": ""
+    "meaning": "## Nº 6+(7+7+7) – AZUL CLARO – EL BÁCULO – OKSAH - INTRODUCIR\n\n### Significado\nLa Comprensión transmutadora está realizando su propósito de tutelar a todas las réplicas hacia la realidad de los mundos.\n\n### Numerología\nEl 27 muestra un gran equilibrio y propósito en la realización, el 5 rojo impulsa, el 6 se despliega como flecha ascendente, en la cumbre aparece el 1, 2, 6 y 3, las energías que han alcanzado la cima del deambular.\n\n### Simbología\nUn pie bien calzado y verde sostiene el conjunto de este tutelar a las réplicas que tienen todavía mucho que desplegar, espiral enrollada, impulsadas por el Juul verde, una serpiente abre su boca en vano, pues no encuentra qué morder. La flecha del cambio y la transmutación apunta en una línea ascendente."
   },
   {
     "id": 28,
     "title": "Consciencia",
+    "title_style": "font-size: 68px",
     "category": "Espiritualidad",
-    "text": ""
-  },
-  {
-    "id": 29,
-    "title": "Comodín",
-    "category": "-",
-    "text": "",
-    "image": "comodin.jpg"
+    "meaning": "## Nº 7+(7+7+7) – BLANCO – EL ARCA – ICH – FAZ, ROSTRO TRANSMUTADO\n\n### Significado\nSe ha alcanzado la meta de la Consciencia adquirida en el proceso de andar el camino de la transmutación integradora.\n\n### Numerología\nEl 28 contiene a los cuatro 7 del CAFÉ Trascendental. El 5 blanco superior, englobado en el cisne azul del espíritu, ha conseguido su propósito de lograr la libertad de la consciencia, en su duro caminar.\n\n### Simbología\nUn rostro bien calzado, cuyo zapato de tacón rojo está enmarcado por la silueta de un gato blanco, muestra que la boca del reptil vigilante no ha impedido realizar el trabajo alquímico, y sus dientes se abren en vano, pues el tridente de la integración y el equilibrio ha hecho su trabajo. Han quedado abajo rostros animalizados, y egos frustrados, que no han sublimado o que se encuentran contrariados, pues no han sabido andar el camino de transmutación."
   }
 ]
 }

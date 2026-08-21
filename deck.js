@@ -176,7 +176,7 @@ window.Cartas = window.Cartas || {};
         title: c.title || "",
         category: c.category || "",
         keywords: c.category || "",
-        meaning: c.text || "",
+        meaning: c.meaning || "",
         description: "",
         image: imgId,
         draw_title: c.draw_title,

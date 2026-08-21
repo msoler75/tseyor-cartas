@@ -685,13 +685,48 @@
    * @returns {{kicker: HTMLElement, title: HTMLElement, detail: HTMLElement}}
    */
   function renderDetail(card, position) {
+    const col = collection();
     const kicker = el("p", "reveal-kicker", `Posición · ${position || ""}`);
     const title = el("h2", "reveal-title", card.title);
     const detail = el("div", "reveal-detail");
-    detail.appendChild(el("p", "reveal-keywords", card.keywords));
-    detail.appendChild(el("p", "reveal-meaning", card.meaning));
-    detail.appendChild(el("p", "reveal-description", card.description));
+
+    // Texto de la carta
+    if (card.meaning) {
+      const cardText = el("div", "reveal-card-text");
+      cardText.innerHTML = renderMarkdown(card.meaning);
+      detail.appendChild(cardText);
+    }
+
+    // Texto de la categoría
+    const catKey = (card.category || "").toLowerCase();
+    const categories = col.categories || {};
+    const catObj = categories[catKey];
+    if (catObj && catObj.meaning) {
+      const catSection = el("div", "reveal-category-text");
+      catSection.innerHTML = renderMarkdown(catObj.meaning);
+      detail.appendChild(catSection);
+    }
+
     return { kicker, title, detail };
+  }
+
+  /** Convierte markdown básico a HTML: ##, ###, **, párrafos */
+  function renderMarkdown(text) {
+    return text
+      .split("\n\n")
+      .map(function (block) {
+        block = block.trim();
+        if (!block) return "";
+        if (block.startsWith("### "))
+          return "<h3>" + block.slice(4) + "</h3>";
+        if (block.startsWith("## "))
+          return "<h2>" + block.slice(3) + "</h2>";
+        if (block.startsWith("# "))
+          return "<h1>" + block.slice(2) + "</h1>";
+        block = block.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+        return "<p>" + block.replace(/\n/g, "<br>") + "</p>";
+      })
+      .join("");
   }
 
   /**
