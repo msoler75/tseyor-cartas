@@ -965,12 +965,12 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   opacity: 0;
 }
 
-.reveal.is-card-arriving > :not(.reveal-card-wrap) {
+.reveal.is-card-arriving > :not(.reveal-card-wrap):not(.reveal-detail) {
   opacity: 0;
   transform: translateY(12px);
 }
 
-.reveal.is-card-arriving.is-content-arriving > :not(.reveal-card-wrap) {
+.reveal.is-card-arriving.is-content-arriving > :not(.reveal-card-wrap):not(.reveal-detail) {
   opacity: 1;
   transform: none;
   transition:
@@ -1177,6 +1177,7 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
     inset 0 0 0 5px var(--line),
     0 14px 34px rgba(38, 34, 28, 0.25);
   container-type: inline-size;
+  transition: transform 0.2s ease;
 }
 
 /* Cuando hay imagen de fondo, el spread se adapta */
@@ -1209,6 +1210,7 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   font-weight: 600;
   letter-spacing: 0.02em;
   color: var(--ink);
+  transition: color 0.2s ease;
 }
 
 @media (hover: hover) {

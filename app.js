@@ -687,7 +687,7 @@
   function renderDetail(card, position) {
     const col = collection();
     const kicker = el("p", "reveal-kicker", `Posición · ${position || ""}`);
-    const title = el("h2", "reveal-title", card.title);
+    const title = el("h2", "reveal-title", formatTitle(card, col));
     const detail = el("div", "reveal-detail");
 
     // Texto de la carta
@@ -699,8 +699,10 @@
 
     // Texto de la categoría
     const catKey = (card.category || "").toLowerCase();
-    const categories = col.categories || {};
-    const catObj = categories[catKey];
+    const categories = col.categories || [];
+    const catObj = categories.find(function (c) {
+      return (c.label || "").toLowerCase() === catKey;
+    });
     if (catObj && catObj.meaning) {
       const catSection = el("div", "reveal-category-text");
       catSection.innerHTML = renderMarkdown(catObj.meaning);
@@ -835,12 +837,12 @@
     // DRAW-2: el h2 recibe el foco sin saltar el scroll del viewport.
     title.focus({ preventScroll: true });
 
-    // DRAW-5: el detalle se revela al entrar al viewport (IO); con
-    // reduced-motion queda visible al instante (DRAW-3).
+    // DRAW-5: el detalle se revela al entrar al viewport (IO);
+    // se retrasa para que no aparezca durante el vuelo de la carta.
     if (prefersReducedMotion()) {
       detail.classList.add("is-visible");
     } else {
-      observeDetail(detail);
+      window.setTimeout(() => observeDetail(detail), 800);
     }
   }
 
@@ -915,7 +917,9 @@
 
       const caption = el("span", "spread-caption");
       caption.appendChild(el("span", "spread-pos", position));
-      caption.appendChild(el("span", "spread-title", cardData.title));
+      if (col.show_titles_in_review !== false) {
+        caption.appendChild(el("span", "spread-title", cardData.title));
+      }
 
       btn.append(face, caption);
       li.appendChild(btn);
