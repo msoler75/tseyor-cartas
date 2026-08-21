@@ -254,7 +254,13 @@
    */
   function poolFor(state) {
     const drawnIds = new Set((state.drawn || []).map((d) => d.cardId));
-    return deck().cards.filter((c) => !drawnIds.has(c.id));
+    const pool = deck().cards.filter((c) => !drawnIds.has(c.id));
+    // Fisher-Yates shuffle
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    return pool;
   }
 
   /**
@@ -735,6 +741,14 @@
     const title = el("h2", "reveal-title", formatTitle(card, col));
     const detail = el("div", "reveal-detail");
 
+    // Extra meaning del modo de lectura (no colapsable, prominente)
+    const extraMeaning = getExtraMeaning(card, position);
+    if (extraMeaning) {
+      const extraEl = el("div", "reveal-extra-meaning");
+      extraEl.innerHTML = renderMarkdown(extraMeaning);
+      detail.appendChild(extraEl);
+    }
+
     // Texto de la carta (colapsable)
     if (card.meaning) {
       const wrap = el("div", "collapse-wrap");
@@ -765,6 +779,21 @@
     }
 
     return { kicker, title, detail };
+  }
+
+  /**
+   * Obtiene el extra meaning para una carta en una posición según el modo de lectura.
+   * Estructura: reading_modes_extra[modo.nombre][cardId][posicionLabel]
+   */
+  function getExtraMeaning(card, position) {
+    const col = collection();
+    const mode = readingMode();
+    const extra = col.reading_modes_extra || {};
+    const modeExtra = extra[mode.name];
+    if (!modeExtra) return null;
+    const cardExtra = modeExtra[String(card.id)];
+    if (!cardExtra) return null;
+    return cardExtra[position] || null;
   }
 
   /** Chevron SVG para los botones de colapsar */
@@ -1012,6 +1041,13 @@
       caption.appendChild(el("span", "spread-pos", position));
       if (col.show_titles_in_review !== false) {
         caption.appendChild(el("span", "spread-title", cardData.title));
+      }
+
+      // Extra meaning del modo de lectura (más pequeño en spread)
+      const extraMeaning = getExtraMeaning(cardData, position);
+      if (extraMeaning) {
+        const extraEl = el("p", "spread-extra-meaning", extraMeaning);
+        caption.appendChild(extraEl);
       }
 
       btn.append(face, caption);

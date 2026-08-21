@@ -1127,6 +1127,34 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
 .reveal-category-text h2 { font-size: 1.1rem; }
 .reveal-category-text h3 { font-size: 1rem; font-weight: 600; }
 
+/* Extra meaning del modo de lectura (revelado: prominente) */
+.reveal-extra-meaning {
+  margin: 0 0 1.5rem;
+  padding: 0.8rem 1rem;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--accent-strong);
+  border-left: 3px solid var(--accent);
+  background: rgba(179, 64, 31, 0.05);
+  border-radius: 0 6px 6px 0;
+}
+
+.reveal-extra-meaning p {
+  margin: 0;
+}
+
+/* Extra meaning en spread (más pequeño) */
+.spread-extra-meaning {
+  margin: 0.3rem 0 0;
+  font-size: 0.78rem;
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--muted);
+  text-align: center;
+}
+
 /* Collapse: secciones colapsables */
 .collapse-wrap {
   overflow: hidden;
