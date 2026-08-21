@@ -19,12 +19,6 @@
     <!-- El render de app.js reemplaza el contenido de #app según el estado. -->
     <main id="app" class="app-stage"></main>
 
-    <!-- Diálogo de revisión: HERMANO de #app (hijo directo de <body>,
-         position:fixed). Así #app puede quedar inert con el diálogo abierto
-         (REVIEW-2/3) sin inerte el propio diálogo. El contenido lo construye
-         app.js de forma imperativa (T9 abrir / T10 cerrar). -->
-    <div id="dialog-root" class="dialog-root"></div>
-
     <!-- Región aria-live persistente, fuera de #app para que el render no la toque. -->
     <div id="live" class="visually-hidden" aria-live="polite"></div>
 

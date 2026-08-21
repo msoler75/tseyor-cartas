@@ -471,51 +471,28 @@ const reveal2 = {
   );
 }
 
-/* T9 — tap en una carta del spread abre el detalle (selectedId). */
+/* T9 — tap en una carta del spread → draw/reveal (vista de carta ampliada). */
 {
   const spread = transition(reveal2, { type: "REVIEW_OPEN" });
-  const tapped = transition(spread, { type: "REVIEW_TAP", cardId: "sol" });
+  const focused = transition(spread, { type: "FOCUS_CARD", cardId: "sol" });
   check(
-    "T9 REVIEW_TAP → selectedId sol, mode/phase intactos (dialog open)",
-    tapped.mode === "review" &&
-      tapped.phase === "spread" &&
-      tapped.selectedId === "sol",
-    JSON.stringify(tapped)
+    "T9 FOCUS_CARD → draw/reveal con selectedId sol",
+    focused.mode === "draw" &&
+      focused.phase === "reveal" &&
+      focused.selectedId === "sol",
+    JSON.stringify(focused)
   );
   check(
     "T9 refuses a card not in drawn (same reference)",
-    transition(spread, { type: "REVIEW_TAP", cardId: "vuelo" }) === spread
-  );
-  check(
-    "T9 refuses a second tap while the dialog is open (no-op)",
-    transition(tapped, { type: "REVIEW_TAP", cardId: "luna" }) === tapped
+    transition(spread, { type: "FOCUS_CARD", cardId: "vuelo" }) === spread
   );
   check(
     "T9 refuses tap outside review/spread (same reference)",
-    transition(reveal2, { type: "REVIEW_TAP", cardId: "sol" }) === reveal2
+    transition(reveal2, { type: "FOCUS_CARD", cardId: "sol" }) === reveal2
   );
 }
 
-/* T10 — "Cerrar" cierra el diálogo; sin diálogo es no-op. */
-{
-  const spread = transition(reveal2, { type: "REVIEW_OPEN" });
-  const open = transition(spread, { type: "REVIEW_TAP", cardId: "luna" });
-  const closed = transition(open, { type: "REVIEW_CLOSE" });
-  check(
-    "T10 REVIEW_CLOSE → selectedId null, spread y drawn intactos",
-    closed.mode === "review" &&
-      closed.phase === "spread" &&
-      closed.selectedId === null &&
-      closed.drawn.length === 2,
-    JSON.stringify(closed)
-  );
-  check(
-    "T10 REVIEW_CLOSE without an open dialog is a no-op (same reference)",
-    transition(spread, { type: "REVIEW_CLOSE" }) === spread
-  );
-}
-
-/* T11 — "Volver" sin diálogo reanuda en el ÚLTIMO reveal (REVIEW-4). */
+/* T11 — "Volver" reanuda en el ÚLTIMO reveal (REVIEW-4). */
 {
   const spread = transition(reveal2, { type: "REVIEW_OPEN" });
   const back = transition(spread, { type: "REVIEW_BACK" });
@@ -532,13 +509,6 @@ const reveal2 = {
     JSON.stringify(back.drawn) === JSON.stringify(reveal2.drawn) &&
       back.drawn[0].cardId === "sol" &&
       back.drawn[1].cardId === "luna"
-  );
-  check(
-    "T11 REVIEW_BACK with the dialog open is a no-op (close first)",
-    transition(
-      transition(spread, { type: "REVIEW_TAP", cardId: "sol" }),
-      { type: "REVIEW_BACK" }
-    ).selectedId === "sol"
   );
 
   const spreadEmpty = { mode: "review", phase: "spread", drawn: [], selectedId: null };
@@ -561,18 +531,12 @@ const reveal2 = {
   );
 }
 
-/* ESCAPE — T10 si hay diálogo, T11 si no, T13 no-op en fases de draw. */
+/* ESCAPE — T11 en review/spread, T13 no-op en fases de draw. */
 {
   const spread = transition(reveal2, { type: "REVIEW_OPEN" });
-  const open = transition(spread, { type: "REVIEW_TAP", cardId: "sol" });
-  const escClose = transition(open, { type: "ESCAPE" });
-  check(
-    "ESCAPE with dialog open closes it (T10): selectedId null",
-    escClose.mode === "review" && escClose.phase === "spread" && escClose.selectedId === null
-  );
   const escBack = transition(spread, { type: "ESCAPE" });
   check(
-    "ESCAPE in review without dialog goes back to reveal (T11)",
+    "ESCAPE in review/spread goes back to reveal (T11)",
     escBack.mode === "draw" && escBack.phase === "reveal" && escBack.selectedId === "luna"
   );
   check(

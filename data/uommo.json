@@ -3,29 +3,51 @@
   "images_folder": "/assets/uommo",
   "back_image": "reverso.jpg",
   "front_image": "dorso.jpg",
+  "show_titles_in_review": false,
   "width": 764,
   "height": 1110,
-  "image_padding": [275, 100, 370, 112],
+  "image_padding": [275, 112, 390, 112],
   "category_padding": [124,100,900,100],
-  "title_padding": [900, 80, 118, 80],
+  "title_padding": [900, 95, 118, 85],
   "category_style": "color: #211; font-family: 'Bradley Hand ITC TT Bold'; font-size: 60px; text-transform: uppercase",
   "title_style": "color: #211; font-family: 'Bradley Hand ITC TT Bold'; font-size: 75px; text-transform: uppercase",
   "title_format": "%ID%. %TITLE%",
-  "positions": ["Situación actual", "Desafío", "Consejo"],
-  "categories": {
-  "ciencia": {
+  "reading_modes": [
+    {
+        "name": "Tirada libre",
+        "labels": null,
+        "num_cards": -1,
+        "max_cards": 3
+    },
+    {
+      "name": "Pasado, presente y futuro",
+      "labels":["Pasado", "Presente", "Futuro"],
+      "num_cards": 3
+    },
+    {
+      "name": "Desafío y Consejo",
+      "labels":["Situación actual", "Desafío", "Consejo"],
+      "num_cards": 3
+    }
+  ],
+  "categories": [
+  {
+    "label": "Ciencia",
     "meaning": "## CAFÉ TRASCENDENTAL: CIENCIA\n\nLa ciencia del CAFÉ Trascendental es la Ciencia del Yo Absoluto, diferente de la ciencia del yo temporal.\n\nEn la Ciencia del Yo Absoluto todo está unido e interrelacionado, pues responde al arquetipo de la Unidad de Todo y de Todos.\n\nEsta ciencia, al ser traída del mundo de las ideas al mundo de la dualidad se divide, se diversifica, se expande como las ramas de un árbol, el Árbol de las Ciencias, en la que todo parte de un tronco común que se despliega en grandes ramas y de cada rama salen ramas menores y de cada rama menor ramitas y hojas, flores y después frutos.\n\nIgualmente, el conocimiento abiótico no está fragmentado en disciplinas, sino que está integrado. Por eso en el CAFÉ Trascendental las cuatro ramas o columnas no son independientes, sino distintas caras de una misma Realidad o vías de acceso a ella, pero en cada una de ellas están igualmente implicados los restantes componentes.\n\nLa Ciencia es artística, filosófica y espiritual al mismo tiempo. El Arte es científico, filosófico y espiritual. La Filosofía es científica, artística y espiritual. La Espiritualidad es científica, artística y filosófica.\n\nEn la dualidad del mundo 3D en el que vivimos, si despojamos cada una de estas ramas o columnas del contacto con las demás, caemos en el dogmatismo científico, en la exclusividad artística, en la especulación filosófica o en el fanatismo espiritual.\n\nLa presentación de la Ciencia en las Cartas de Uommo, como en las demás columnas o ramas, se hace en 7 momentos, respondiendo al valor numerológico, cromático y simbólico del 7, en que se establecen siete pautas, siete pasos, 7 estadios para el acceso o recorrido espacio-temporal de la Ciencia.\n\nEllo obedece a las leyes del mundo de manifestación que, a través del Fractal, crea una ilusión espacio-temporal para desplegar los potenciales creativos y permitir una experiencia pormenorizada de lo que en esencia es Uno y está unido.\n\nEllo posibilita la experimentación, la comprensión y la transmutación del ego hacia el Yo, el recorrido simbólico e iniciático del conocimiento gnóstico. Las Cartas de Uommo nos darán una referencia individual del momento en que se halle nuestro deambular"
   },
-    "arte":  {
+    {
+      "label": "Arte",
       "meaning": "## CAFÉ TRASCENDENTAL: ARTE\n\nEl Arte del CAFÉ Transcendental nos remite a todas las artes y al arte en sí mismo, como expresión de la belleza, la armonía, la forma y el sentido profundo que encierra la imaginación creativa, que se recrea de instante en instante.\n\nPor tanto, arte es la música de las esferas, la danza consciente, la pintura de inspiración trascendente, la escultura sagrada, la arquitectura de los templos adimensionales, la creación literaria inspirada y la cinematografía que contiene un mensaje adimensional.\n\nEl Arte trascendental es un arte conectado con el mundo de la creatividad, donde la imaginación ya ha conformado toda clase de expresiones en todas las posibilidades, a las que nos podemos acercar desde una extrapolación consciencia y obtener visiones y percepciones sublimes y creativas de instante en instante.\n\nEl propio cosmos y la naturaleza misma, en su manifestación, se reviste de belleza y arte, en el mundo mineral, vegetal, animal, humano y cósmico, donde el canon del cuerpo humano, microcosmos, y la geometría sagrada han sabido descubrir en la naturaleza las reglas de arte y belleza transcendental que informan toda creación.\n\nPara alcanzar ese arte interior hay que activar el silencio mental, para acceder a la imaginación creativa en cualquiera de las manifestaciones del Arte Universal, y poder gozar de esta maravillosa experiencia.\n\nLos artistas son esos seres despiertos, capaces de acceder a ese mundo de la imaginación creativa y trasladar a este plano 3D las obras que han contemplado. En realidad, más que creadores son recreadores o canales inspirados por el soplo del espíritu.\n\nEsta creatividad receptiva está al alcance de todos, si bien para plasmar la creatividad expresiva en este plano hay que desarrollar habilidades técnicas en cada especialidad. Y esto se consigue con esfuerzo y dedicación, pero al mismo tiempo es motivo de una gran satisfacción poder compartir lo que se ha atisbado en la realidad de los mundos.\n\nLas 7 cartas de ARTE nos muestran un repertorio del arte y de las habilidades artísticas que es preciso integrar en nuestro deambular, ya que todos somos en el fondo artistas, al igual que científicos, filósofos y espiritualistas."
     },
-    "filosofia":  {
+    {
+      "label": "Filosofía",
       "meaning": "## CAFÉ TRASCENDENTAL: FILOSOFÍA\n\nLa filosofía de Tseyor plantea una visión trascendental del origen del Universo y de los seres conscientes. A veces contenida en bellos relatos, como el de la Partícula curiosa y FractalOm y otras en exposiciones brillantes y sugerentes sobre el ser y el no ser, que siendo no es y no siendo es.\n\nSe parte siempre del Absoluto y la manifestación, como la realidad última y suprema y el espacio donde el Absoluto se vuelca través de su manifestación para dar su consciencia y darse a sí mismo a través de los seres que son réplicas de Él mismo, y como tal contienen en su esencia las propiedades del Absoluto, que podrán ir descubriendo en un proceso de experimentación y retroalimentación, siempre con la añoranza de volver al hogar, a su origen primigenio.\n\nEn la medida en que la consciencia se reconoce en la manifestación, se da cuenta que siendo no es, y en la medida que se reconoce en lo inmanifestado se apercibe de que no siendo es. La micropartícula recorre intermitentemente el espacio que va desde su origen a la manifestación y desde la manifestación a su origen, y con ello se recarga de vida y consciencia, por medio de la intermitencia cuántica.\n\nLa manifestación, a su vez, se organiza en dos planos, el plano atómico denso, y el plano de las partículas y micropartículas, siendo el primero la agregación de las partículas del segundo, dando lugar a la apariencia de densidad, peso, espacio y tiempo diferenciados por la dualidad y el contraste.\n\nEn este plano dual se experimentan propiedades que no es posible experimentar en los mundos sutiles, y por tanto es idóneo para aprender por contraste, y comprender, integrar y transmutar, alcanzando cada vez mayores niveles de consciencia y vibración.\n\nY este contraste entre el Yo permanente y el yo temporal, permite experienciar y alcanzar mayores niveles de vibración y por tanto de participación en el Todo, que no es otra cosa que la Nada en su potencial creador.\n\nEstos y otros conceptos e ideas son sugerencias que permiten orientarnos en un Universo que parece enigmático y a veces incomprensible, pero que contiene una gran sabiduría y belleza."
     },
-    "espiritualidad":  {
+     {
+       "label": "Espiritualidad",
       "meaning": "## CAFÉ TRASCENDENTAL: ESPIRITUALIDAD\n\nLa espiritualidad nace del reconocimiento del valor que tiene el espíritu en el Universo y en nosotros mismos, sabiendo que somos seres espirituales, habitando en un cuerpo material, pero que nuestra esencia profunda es trascendente, eterna e inmutable, donde la experiencia material no es más que una escuela de experimentación y aprendizaje para descubrir nuestra esencia divina.\n\nCuando en nosotros se despierta la consciencia de nuestra esencia espiritual, la materia y la forma se ven como una ilusión de los sentidos, que debemos respetar y trabajar, pero que es transitoria y mutable.\n\nEn la dualidad materia y espíritu, instituida por las ideas informadas por una manifestación dual algo espesa e ignorante de sus orígenes, marcar uno de los polos como dominante, en desprecio del otro, nos llevaría a un desequilibrio, pues la consciencia no excluye ni pone barreras, sino que integra, no enjuicia, acepta, y al amar comprende y trasciende, pues en el fondo la materia no es más que un componente espiritual enajenado y pendiente de sublimar.\n\nPor tanto, la espiritualidad tiene que trabajar continuamente en la aceptación, la comprensión, la integración, la transmutación y la asunción de una nueva y mayor consciencia, en un proceso de sublimación constante.\n\nPor eso, el trabajo espiritual es eminentemente alquímico, transmutador, sabe encontrar luz en las sombras y transformar el plomo de la personalidad en el oro del espíritu, donde el oro significa pureza y luminosidad.\n\nEn ese trabajo alquímico actúa decididamente la energía Juul, aportando la dosis de impulso creador suficiente y necesaria para cada etapa del deambular ascendente, desde el 1 al 7, desde el Beh al Ich, recorriendo un sendero que se ha descrito en pasos sucesivos y ascendentes, a modo de una rueda de colores, que va desde el rojo al blanco, pasando por el verde y el azul, con toda la infinita gama de tonalidades, que en el fondo son vibraciones de una escala musical.\n\nLas Cartas de Uommo nos aportan percepciones de este trabajo espiritual y nos dan referencias para llevarlo a cabo, integrando en el mismo los tres factores previos del CAFÉ Trascendental, la Ciencia, el Arte y la Filosofía."
     }
-  },
+  ],
   "cards": [
     {
       "id": 0,
@@ -33,187 +55,602 @@
       "category": "-",
       "meaning": "# EL TEMPLO DEL CAFÉ TRASCENDENTAL\n\nLas cartas son un medio de acceso a los arquetipos de información trascendente, tienen un carácter iniciático.\n\n## Las cuatro columnas\n\nLas cartas van ordenadas en cuatro series, de acuerdo a las cuatro columnas del CAFÉ Trascendental, pues responden a esas vías de acceso a la adimensionalidad.\n\n### Cartas de Información Trascendente\n\nSon arcanos de información para ser contemplados y puertas adimensionales. El comodín contiene el potencial de todos los significados.",
       "image": "comodin.jpg",
-      "draw_title": false
+      "draw_title": false,
+      "draw_category": false,
+      "image_padding": [180, 112, 390, 112]
     },
   {
     "id": 1,
     "title": "Conexión",
     "category": "Ciencia",
-    "meaning": "## Nº 1 – ROJO - EL VINO - BEH - SENDERO DE INTROSPECCIÓN\n\n### Significado\nEl conocimiento de la Ciencia Trascendental parte de una conexión con la Fuente, con el mundo de las ideas y de las causas, con la Unidad original. Esta conexión es interior y nos vincula con el cosmos, con nuestra réplica genuina, con nuestro lugar de procedencia, que ancestralmente es Uommo.\n\n### Numerología\nEl 1 como punto de partida, el 66 como la totalidad del 12 fragmentada en dos conjuntos: 6+6 por efecto de la dualidad.\n\n### Simbología\nEl rostro concentrado en autoobservación, la antena de conexión trascendental, el gato blanco como observador interdimensional, el ratón a sus pies como la dispersión controlada, la carta que nos llega de Uommo, la llave de apertura del canal que está en la base, la Jota del Juul como energía que se pone en movimiento, el tridente, que integra lo diverso en lo Uno como un accionar crístico."
+    "meaning": "## Nº 1 – ROJO - EL VINO - BEH - SENDERO DE INTROSPECCIÓN\n\n**Significado:** El conocimiento de la Ciencia Trascendental parte de una conexión con la Fuente, con el mundo de las ideas y de las causas, con la Unidad original. Esta conexión es interior y nos vincula con el cosmos, con nuestra réplica genuina, con nuestro lugar de procedencia, que ancestralmente es Uommo.\n\n**Numerología:** El 1 como punto de partida, el 66 como la totalidad del 12 fragmentada en dos conjuntos: 6+6 por efecto de la dualidad.\n\n**Simbología:** El rostro concentrado en autoobservación, la antena de conexión trascendental, el gato blanco como observador interdimensional, el ratón a sus pies como la dispersión controlada, la carta que nos llega de Uommo, la llave de apertura del canal que está en la base, la Jota del Juul como energía que se pone en movimiento, el tridente, que integra lo diverso en lo Uno como un accionar crístico."
   },
   {
     "id": 2,
     "title": "Eficacia",
     "category": "Ciencia",
-    "meaning": "## Nº 2 – ROSA - EL PAN - SAYAB – MANANTIAL DE LUZ\n\n### Significado\nEl conocimiento científico trascendental traído de la abiótica revela toda su Eficacia al plasmarse en la 3D, pues en él está contenida la solución de tantas necesidades para el deambular tridimensional.\n\n### Numerología\nEl 2 es la proyección del 1 en el espejo de la manifestación como contraparte femenina. El 5 en la parte superior revela que todo consiste en andar el camino que nos lleva al conocimiento y a la autorrealización. En 71 contiene el punto de llegada 7 y el punto de partida 1, entraña un gran conocimiento del proceso en su conjunto.\n\n### Simbología\nUn pez sirve de pedestal, en él están nuestros orígenes y réplicas genuinas, dos llaves ascendentes nos dan idea de caminar con equilibrio, llevando en cada mano los símbolos iniciáticos: el tridente y el triángulo, la misma idea desplegada de dos formas distintas, todo unificado en un gran 5 con una llave de cinco muescas. Un caminar eficaz basado en el conocimiento iniciático."
+    "meaning": "## Nº 2 – ROSA - EL PAN - SAYAB – MANANTIAL DE LUZ\n\n**Significado:** El conocimiento científico trascendental traído de la abiótica revela toda su Eficacia al plasmarse en la 3D, pues en él está contenida la solución de tantas necesidades para el deambular tridimensional.\n\n**Numerología:** El 2 es la proyección del 1 en el espejo de la manifestación como contraparte femenina. El 5 en la parte superior revela que todo consiste en andar el camino que nos lleva al conocimiento y a la autorrealización. En 71 contiene el punto de llegada 7 y el punto de partida 1, entraña un gran conocimiento del proceso en su conjunto.\n\n**Simbología:** Un pez sirve de pedestal, en él están nuestros orígenes y réplicas genuinas, dos llaves ascendentes nos dan idea de caminar con equilibrio, llevando en cada mano los símbolos iniciáticos: el tridente y el triángulo, la misma idea desplegada de dos formas distintas, todo unificado en un gran 5 con una llave de cinco muescas. Un caminar eficaz basado en el conocimiento iniciático."
   },
   {
     "id": 3,
     "title": "Monje y Guerrero",
-    "title_style": "font-size: 52px",
+    "title_style": "font-size: 50px",
     "category": "Ciencia",
-    "meaning": "## Nº 3 – VERDE – EL PEZ – TSEEK – PREDICAR, DIVULGAR\n\n### Significado\nEl iniciado conoce su naturaleza dual de Monje, sabio, y Guerrero, persona activa. Esta dualidad interna-externa la concilia y equilibra con la energía crística, el guerrero vestido de verde, el color del Tseek.\n\n### Numerología\nEl 3 es el resultado de la fusión del 1+2=3. En esa fusión se alcanza la tríada creadora que opera desde el Fractal. El 3 verde es la tríada crística.\n\n### Simbología\nDos figuras, dos cuerpos, uno externo y otro interno, uno Guerrero y otro Monje, miran en direcciones contrarias, uno hacia dentro, el interior a la izquierda, y otro hacia fuera, a divulgar. Este tiene un bastón en que apoyarse, pero la mente-consciencia es la misma para ambos, una mente pájaro y un soporte sólido y bien asentado en suelo, el del conocimiento y la experiencia. La energía Juul los sostiene, pues ha llegado al Tseek y desde ahí los impulsa de forma ascendente."
+    "meaning": "## Nº 3 – VERDE – EL PEZ – TSEEK – PREDICAR, DIVULGAR\n\n**Significado:** El iniciado conoce su naturaleza dual de Monje, sabio, y Guerrero, persona activa. Esta dualidad interna-externa la concilia y equilibra con la energía crística, el guerrero vestido de verde, el color del Tseek.\n\n**Numerología:** El 3 es el resultado de la fusión del 1+2=3. En esa fusión se alcanza la tríada creadora que opera desde el Fractal. El 3 verde es la tríada crística.\n\n**Simbología:** Dos figuras, dos cuerpos, uno externo y otro interno, uno Guerrero y otro Monje, miran en direcciones contrarias, uno hacia dentro, el interior a la izquierda, y otro hacia fuera, a divulgar. Este tiene un bastón en que apoyarse, pero la mente-consciencia es la misma para ambos, una mente pájaro y un soporte sólido y bien asentado en suelo, el del conocimiento y la experiencia. La energía Juul los sostiene, pues ha llegado al Tseek y desde ahí los impulsa de forma ascendente."
   },
   {
     "id": 4,
     "title": "Sabiduría",
     "category": "Ciencia",
-    "meaning": "## Nº 4 – VERDE CLARO – EL MANTO – SUUT – DEVOLVER OSCURIDAD\n\n### Significado\nLa Ciencia Trascendental contiene una Sabiduría aquilatada por la experiencia en esta preparación del camino iniciático y de la divulgación.\n\n### Numerología\nEl 4 significa la preparación en un momento de dificultad o desconocimiento, sabiendo cuáles son los pasos del 1 a 7, y la importancia del 3 como tríada creadora, y reconociendo que el 6 es como una espiral que se despliega e invita a tutelar a todas las réplicas.\n\n### Simbología\nEn la laguna de la base están los principales elementos de la preparación: pirámide, caracol, tortuga, delfín, células, cromosomas, elementos Espirituales, que ascienden con la energía Juul, de un blanco muy puro, hasta el cerebro para despertar el potencial encerrado en la espiral, con el que hay que tutelar a los autóctonos, el rostro que mira hacia abajo, desorientados en su existencia tridimensional, pero de un gran corazón."
+    "meaning": "## Nº 4 – VERDE CLARO – EL MANTO – SUUT – DEVOLVER OSCURIDAD\n\n**Significado:** La Ciencia Trascendental contiene una Sabiduría aquilatada por la experiencia en esta preparación del camino iniciático y de la divulgación.\n\n**Numerología:** El 4 significa la preparación en un momento de dificultad o desconocimiento, sabiendo cuáles son los pasos del 1 a 7, y la importancia del 3 como tríada creadora, y reconociendo que el 6 es como una espiral que se despliega e invita a tutelar a todas las réplicas.\n\n**Simbología:** En la laguna de la base están los principales elementos de la preparación: pirámide, caracol, tortuga, delfín, células, cromosomas, elementos Espirituales, que ascienden con la energía Juul, de un blanco muy puro, hasta el cerebro para despertar el potencial encerrado en la espiral, con el que hay que tutelar a los autóctonos, el rostro que mira hacia abajo, desorientados en su existencia tridimensional, pero de un gran corazón."
   },
   {
     "id": 5,
     "title": "Origen",
     "category": "Ciencia",
-    "meaning": "## Nº 5 – AZUL – LAS SANDALIAS – KAT – ARCILLA CREADORA\n\n### Significado\nNuestro origen viene de las estrellas, vinculado con la constelación del Pez. La separación de sexos ha permitido dinamizar nuestro camino, no sin contrariedades.\n\n### Numerología\nEl 5 es la puesta en marcha, inspirada por el 3 crístico.\n\n### Simbología\nLa base es la nave Underkraft, venida de las estrellas para apoyar nuestro deambular, seres del cosmos nos señalan su origen estelar, y nos muestran la llave del despertar, son seres de distintas morfologías, pero de un gran conocimiento del genoma, la manzana, la semilla. El dedo señala la estrella de su origen. Hay una espiral que desarrollar en el camino del despertar, de la ascensión y recuperación de nuestro interior crístico, la llave del verde Tseek sobre un fondo morado: la transmutación."
+    "meaning": "## Nº 5 – AZUL – LAS SANDALIAS – KAT – ARCILLA CREADORA\n\n**Significado:** Nuestro origen viene de las estrellas, vinculado con la constelación del Pez. La separación de sexos ha permitido dinamizar nuestro camino, no sin contrariedades.\n\n**Numerología:** El 5 es la puesta en marcha, inspirada por el 3 crístico.\n\n**Simbología:** La base es la nave Underkraft, venida de las estrellas para apoyar nuestro deambular, seres del cosmos nos señalan su origen estelar, y nos muestran la llave del despertar, son seres de distintas morfologías, pero de un gran conocimiento del genoma, la manzana, la semilla. El dedo señala la estrella de su origen. Hay una espiral que desarrollar en el camino del despertar, de la ascensión y recuperación de nuestro interior crístico, la llave del verde Tseek sobre un fondo morado: la transmutación."
   },
   {
     "id": 6,
     "title": "La llamada",
     "category": "Ciencia",
-    "meaning": "## Nº 6 – AZUL CLARO – EL BÁCULO – OKSAH - INTRODUCIR\n\n### Significado\nHemos recibido la Llamada para tutelar a todas las réplicas en nuestro deambular, desarrollando los potenciales en consonancia con las realidades cuánticas.\n\n### Numerología\nEl 6, el desarrollo del proyecto, incluye la consciencia del 7 como objetivo, unión del 7+Z, la Z, el final, hay conocimiento para un deambular, 5, con consciencia de la meta, 7, el Ich.\n\n### Simbología\nUn gran rostro pensante de iniciado que sabe, está bien calzado y posee el conocimiento, ha recibido y atendido la llamada, y está conectado con la energía Juul, teléfono blanco y cable que lo conecta con el Juul, donde está su réplica superior, atenta y despierta, rostro superior, vinculada y conectada con el mundo de las ideas y de los arquetipos, y que posee el conocimiento abiótico que necesitamos rescatar para facilitar nuestro deambular."
+    "meaning": "## Nº 6 – AZUL CLARO – EL BÁCULO – OKSAH - INTRODUCIR\n\n**Significado:** Hemos recibido la Llamada para tutelar a todas las réplicas en nuestro deambular, desarrollando los potenciales en consonancia con las realidades cuánticas.\n\n**Numerología:** El 6, el desarrollo del proyecto, incluye la consciencia del 7 como objetivo, unión del 7+Z, la Z, el final, hay conocimiento para un deambular, 5, con consciencia de la meta, 7, el Ich.\n\n**Simbología:** Un gran rostro pensante de iniciado que sabe, está bien calzado y posee el conocimiento, ha recibido y atendido la llamada, y está conectado con la energía Juul, teléfono blanco y cable que lo conecta con el Juul, donde está su réplica superior, atenta y despierta, rostro superior, vinculada y conectada con el mundo de las ideas y de los arquetipos, y que posee el conocimiento abiótico que necesitamos rescatar para facilitar nuestro deambular."
   },
   {
     "id": 7,
     "title": "Regeneración",
-    "title_style": "font-size: 66px",
+    "title_style": "font-size: 64px",
     "category": "Ciencia",
-    "meaning": "## Nº 7 – BLANCO – EL ARCA – ICH – FAZ, ROSTRO TRANSMUTADO\n\n### Significado\nLa Regeneración de nuestros cuerpos y mentes y las de los autóctonos se basa en la Revolución de la consciencia sobre la base del conocimiento gnóstico y la sabiduría crística.\n\n### Numerología\nEl 7 es la culminación del camino, se alcanza en un 7 blanco, inmaculado, apoyado en un 5 también blanco, que ha sabido desplegar el potencial del 6, apoyándose en la base del 3 crístico, verde.\n\n### Simbología\nUn rostro enmarcado por una mano marrón muestra la cara de un autóctono que necesita reconocerse, rompiendo apegos, el cuchillo, activando la Revolución de la consciencia, la R, regenerando el ADN y cromosomas, enmarcados por una Juul blanca que acaba en un cerebro. Un perfil de rostro superior derecho muestra en su cabeza la espiral por desplegar que activará el genoma, la manzana y que le permitirá salir de su encierro 3D, la ventana que muestra un cielo externo con la Luna."
+    "meaning": "## Nº 7 – BLANCO – EL ARCA – ICH – FAZ, ROSTRO TRANSMUTADO\n\n**Significado:** La Regeneración de nuestros cuerpos y mentes y las de los autóctonos se basa en la Revolución de la consciencia sobre la base del conocimiento gnóstico y la sabiduría crística.\n\n**Numerología:** El 7 es la culminación del camino, se alcanza en un 7 blanco, inmaculado, apoyado en un 5 también blanco, que ha sabido desplegar el potencial del 6, apoyándose en la base del 3 crístico, verde.\n\n**Simbología:** Un rostro enmarcado por una mano marrón muestra la cara de un autóctono que necesita reconocerse, rompiendo apegos, el cuchillo, activando la Revolución de la consciencia, la R, regenerando el ADN y cromosomas, enmarcados por una Juul blanca que acaba en un cerebro. Un perfil de rostro superior derecho muestra en su cabeza la espiral por desplegar que activará el genoma, la manzana y que le permitirá salir de su encierro 3D, la ventana que muestra un cielo externo con la Luna."
   },
   {
     "id": 8,
     "title": "Inspiración",
     "category": "Arte",
-    "meaning": "## Nº 1+7=8 – ROJO - EL VINO - BEH - SENDERO DE INTROSPECCIÓN\n\n### Significado\nEl punto de partida del arte es la Inspiración trascendental, que impulsa toda actuación creativa. Si bien la inspiración tiene diversas vertientes una más tridimensional y otra más adimensional, esta última es más difícil de alcanzar al situarnos en esta 3D tan limitada.\n\n### Numerología\nEl 8 es el resultado de esta segunda vuelta hacia el Ich por el sendero del arte, con el fundamento del 3 se puede seguir la senda del 5 para andar hacia la realidad de los mundos imaginativos y creativos.\n\n### Simbología\nUna gran arma tiene en su interior el fuego y la guadaña, apoyada en la dualidad, pedestal rojo y verde, un gran rostro sin ojos, a ciegas, se apoya en ella, encerrado en su mundo, la ventana que da al exterior, guardado por un ojo reptil vigilante, dotado de poderosos dientes al acecho. Siguiendo el camino de la inspiración y con la mente en blanco, podrá llegar a un despertar vigilante y consciente, rostro superior."
+    "meaning": "## Nº 1+7=8 – ROJO - EL VINO - BEH - SENDERO DE INTROSPECCIÓN\n\n**Significado:** El punto de partida del arte es la Inspiración trascendental, que impulsa toda actuación creativa. Si bien la inspiración tiene diversas vertientes una más tridimensional y otra más adimensional, esta última es más difícil de alcanzar al situarnos en esta 3D tan limitada.\n\n**Numerología:** El 8 es el resultado de esta segunda vuelta hacia el Ich por el sendero del arte, con el fundamento del 3 se puede seguir la senda del 5 para andar hacia la realidad de los mundos imaginativos y creativos.\n\n**Simbología:** Una gran arma tiene en su interior el fuego y la guadaña, apoyada en la dualidad, pedestal rojo y verde, un gran rostro sin ojos, a ciegas, se apoya en ella, encerrado en su mundo, la ventana que da al exterior, guardado por un ojo reptil vigilante, dotado de poderosos dientes al acecho. Siguiendo el camino de la inspiración y con la mente en blanco, podrá llegar a un despertar vigilante y consciente, rostro superior."
   },
   {
     "id": 9,
     "title": "Transformación",
-    "title_style": "font-size: 55px",
+    "title_style": "font-size: 53px",
     "category": "Arte",
-    "meaning": "## Nº 2+7=9 – ROSA - EL PAN - SAYAB – MANANTIAL DE LUZ\n\n### Significado\nTransformar el mundo por medio del Arte tiene muchas posibilidades y retos, pues hay acechantes diablillos que nos pueden hacer trastabillar.\n\n### Numerología\nEl 9 es producto del 2 y el 7 del circuito anterior de la Ciencia, hay que seguir firme en el trayecto con la consciencia de la Unidad y el deambular por un camino limpio y seguro, el 51.\n\n### Simbología\nUna serie de instrumentos creativos, internos, basados en el potencial del genoma, nos pueden permitir superar los obstáculos del caminar por el sendero del Arte, lleno de peligros egoicos y de divinidades diabólicas, señaladas por el dedo, que toma el arte como una apropiación posesiva, mano que coge un cuadro. Pero el logro está asegurado por la comprensión creativa y la transmutación, que nos permitirá despertar."
+    "meaning": "## Nº 2+7=9 – ROSA - EL PAN - SAYAB – MANANTIAL DE LUZ\n\n**Significado:** Transformar el mundo por medio del Arte tiene muchas posibilidades y retos, pues hay acechantes diablillos que nos pueden hacer trastabillar.\n\n**Numerología:** El 9 es producto del 2 y el 7 del circuito anterior de la Ciencia, hay que seguir firme en el trayecto con la consciencia de la Unidad y el deambular por un camino limpio y seguro, el 51.\n\n**Simbología:** Una serie de instrumentos creativos, internos, basados en el potencial del genoma, nos pueden permitir superar los obstáculos del caminar por el sendero del Arte, lleno de peligros egoicos y de divinidades diabólicas, señaladas por el dedo, que toma el arte como una apropiación posesiva, mano que coge un cuadro. Pero el logro está asegurado por la comprensión creativa y la transmutación, que nos permitirá despertar."
   },
   {
     "id": 10,
     "title": "Confianza",
     "category": "Arte",
-    "meaning": "## Nº 3+7=10 – VERDE – EL PEZ – TSEEK – PREDICAR, DIVULGAR\n\n### Significado\nLa Confianza en conseguir el éxito lo hace posible, usando los recursos de la atención vigilante y un buen fundamento creativo.\n\n### Numerología\nEl 10 asegura el logro, el poder superar los obstáculos está marcado en el tiempo y en espacio. El 5 asegura un caminar hacia el logro, desplegando la energía del 6, el desarrollo hacia el éxito, por medio del atento caracol.\n\n### Simbología\nUn rostro oculto por un reloj que marca las 10 h. y un dedo que señala hacia un caracol muy vigilante y atento, en cuyo seno está la espiral generativa, inspira a este creador, le da confianza y seguridad en su trabajo de dedicación al desarrollo del Juul en su faceta crística. Posee claves creativas e inspiración."
+    "meaning": "## Nº 3+7=10 – VERDE – EL PEZ – TSEEK – PREDICAR, DIVULGAR\n\n**Significado:** La Confianza en conseguir el éxito lo hace posible, usando los recursos de la atención vigilante y un buen fundamento creativo.\n\n**Numerología:** El 10 asegura el logro, el poder superar los obstáculos está marcado en el tiempo y en espacio. El 5 asegura un caminar hacia el logro, desplegando la energía del 6, el desarrollo hacia el éxito, por medio del atento caracol.\n\n**Simbología:** Un rostro oculto por un reloj que marca las 10 h. y un dedo que señala hacia un caracol muy vigilante y atento, en cuyo seno está la espiral generativa, inspira a este creador, le da confianza y seguridad en su trabajo de dedicación al desarrollo del Juul en su faceta crística. Posee claves creativas e inspiración."
   },
   {
     "id": 11,
     "title": "Visión",
     "category": "Arte",
-    "meaning": "## Nº 4+7=11 – VERDE CLARO – EL MANTO – SUUT – DEVOLVER OSCURIDAD\n\n### Significado\nLa Visión creativa e inspirada enfocada hacia la realidad de los mundos, con sabia dedicación y utilizando los instrumentos y las claves adecuadas, permite alcanza el vuelo de la creatividad.\n\n### Numerología\nEl 4 más el 7 del recorrido anterior, nos da el 11 del creador atento y consciente, que posee la clave del 7, el objetivo, y el apoyo del 3 crístico.\n\n### Simbología\nUn rostro con visión frontal de artista inspirado por el Juul y la intuición generativa, que conoce su mundo de origen, jeroglífico sobre fondo blanco, posee la base del conocimiento, la pirámide, integra el tridente del equilibrio transmutador, utiliza la visión estereoscópica, el gato blanco mirando de frente, y alcanza una órbita trascendente. Este artista creador es un forzado, la F, y posee unas grandes dotes."
+    "meaning": "## Nº 4+7=11 – VERDE CLARO – EL MANTO – SUUT – DEVOLVER OSCURIDAD\n\n**Significado:** La Visión creativa e inspirada enfocada hacia la realidad de los mundos, con sabia dedicación y utilizando los instrumentos y las claves adecuadas, permite alcanza el vuelo de la creatividad.\n\n**Numerología:** El 4 más el 7 del recorrido anterior, nos da el 11 del creador atento y consciente, que posee la clave del 7, el objetivo, y el apoyo del 3 crístico.\n\n**Simbología:** Un rostro con visión frontal de artista inspirado por el Juul y la intuición generativa, que conoce su mundo de origen, jeroglífico sobre fondo blanco, posee la base del conocimiento, la pirámide, integra el tridente del equilibrio transmutador, utiliza la visión estereoscópica, el gato blanco mirando de frente, y alcanza una órbita trascendente. Este artista creador es un forzado, la F, y posee unas grandes dotes."
   },
   {
     "id": 12,
     "title": "Totalidad",
     "category": "Arte",
-    "meaning": "## Nº 5+7=12 – AZUL – LAS SANDALIAS – KAT – ARCILLA CREADORA\n\n### Significado\nLa inspiración de la Totalidad se alcanza en el camino del Arte, con una base interdimensional muy amplia, que permite reconocer muchas realidades, no siempre concordantes.\n\n### Numerología\nEste 12 integra la experiencia de la Ciencia y alcanza una Totalidad integradora.\n\n### Simbología\nSobre esta totalidad de seres, los numerosos ojos y morfologías aglutinadas en la lámina, destacan dos rostros contrapuestos, uno de apariencia napoleónica dominante y engreído y otro observador y modesto pero que ha recibido una carta de la adimensionalidad, que le ha traído una paloma blanca. El primero tiene una mente posesiva y dominante, y el segundo se inspira en el mundo interior y la sabiduría. La rata está debajo del primero y las aves debajo del segundo, que se ve apoyado por las energías ascendentes del Juul, el genoma, la manzana, y los dos genios que se miran uno a otro."
+    "meaning": "## Nº 5+7=12 – AZUL – LAS SANDALIAS – KAT – ARCILLA CREADORA\n\n**Significado:** La inspiración de la Totalidad se alcanza en el camino del Arte, con una base interdimensional muy amplia, que permite reconocer muchas realidades, no siempre concordantes.\n\n**Numerología:** Este 12 integra la experiencia de la Ciencia y alcanza una Totalidad integradora.\n\n**Simbología:** Sobre esta totalidad de seres, los numerosos ojos y morfologías aglutinadas en la lámina, destacan dos rostros contrapuestos, uno de apariencia napoleónica dominante y engreído y otro observador y modesto pero que ha recibido una carta de la adimensionalidad, que le ha traído una paloma blanca. El primero tiene una mente posesiva y dominante, y el segundo se inspira en el mundo interior y la sabiduría. La rata está debajo del primero y las aves debajo del segundo, que se ve apoyado por las energías ascendentes del Juul, el genoma, la manzana, y los dos genios que se miran uno a otro."
   },
   {
     "id": 13,
     "title": "Éxito",
     "category": "Arte",
-    "meaning": "## Nº 6+7=13 – AZUL CLARO – EL BÁCULO – OKSAH - INTRODUCIR\n\n### Significado\nEl Éxito de la obra bien hecha alcanza al creador perseverante, que indica cuáles han sido sus medios y fines, señalándolos con la mano.\n\n### Numerología\nEl desarrollo de la acción creativa se ve colmada por el éxito, 6+7, el 53 significa la abundancia obtenida por la sabia aplicación de la energía creadora del 3. El 6 azul indica el bello y logrado camino creador.\n\n### Simbología\nLa creatividad que utiliza las formas, los colores, la armonía combinatoria, la elegancia, el equilibrio está abocada a alcanzar el éxito y el reconocimiento, a pesar de todas las dificultades, que han sido transmutadas, pues está apoyada por la energía del Juul, la Jota blanca arriba, que despliega el potencial de la espiral que contiene todo lo que está por desplegarse y proyectarse."
+    "meaning": "## Nº 6+7=13 – AZUL CLARO – EL BÁCULO – OKSAH - INTRODUCIR\n\n**Significado:** El Éxito de la obra bien hecha alcanza al creador perseverante, que indica cuáles han sido sus medios y fines, señalándolos con la mano.\n\n**Numerología:** El desarrollo de la acción creativa se ve colmada por el éxito, 6+7, el 53 significa la abundancia obtenida por la sabia aplicación de la energía creadora del 3. El 6 azul indica el bello y logrado camino creador.\n\n**Simbología:** La creatividad que utiliza las formas, los colores, la armonía combinatoria, la elegancia, el equilibrio está abocada a alcanzar el éxito y el reconocimiento, a pesar de todas las dificultades, que han sido transmutadas, pues está apoyada por la energía del Juul, la Jota blanca arriba, que despliega el potencial de la espiral que contiene todo lo que está por desplegarse y proyectarse."
   },
   {
     "id": 14,
     "title": "Fascinación",
-    "title_style": "font-size: 66px",
+    "title_style": "font-size: 64px",
     "category": "Arte",
-    "meaning": "## Nº 7+7=14 – BLANCO – EL ARCA – ICH – FAZ, ROSTRO TRANSMUTADO\n\n### Significado\nEl éxito creativo y artístico logra la Fascinación de la obra bien hecha. Pero esta fascinación puede derivar en un culto a la forma, que no es lo que se pretende, sino mostrar el brillo de la imaginación creativa.\n\n### Numerología\nLa suma del Ich de la Ciencia y del Ich del Arte produce una gran fascinación, en la que no hay que quedarse atrapado. El artista muestra en su paleta de pintor sobre la que hay un 21, la unión y la versatilidad de los dos primeros dígitos, que facilitan el éxito creador. El 5 opera como un velo seductor o como un inspirado 5 crístico, verde.\n\n### Simbología\nSaliendo de un túnel adimensional aparece el artista con su paleta de pintor y su pincel en la mano, instrumentos con los que dar vida a las formas y mostrar el universo de la imaginación creativa en este mundo, que lleva a la ilusión y a la fascinación, en cuya apariencia no hay que quedarse atrapados. Dos rostros femeninos, uno angustiado y atormentado, otro velado y oculto, pero sabio y versátil."
+    "meaning": "## Nº 7+7=14 – BLANCO – EL ARCA – ICH – FAZ, ROSTRO TRANSMUTADO\n\n**Significado:** El éxito creativo y artístico logra la Fascinación de la obra bien hecha. Pero esta fascinación puede derivar en un culto a la forma, que no es lo que se pretende, sino mostrar el brillo de la imaginación creativa.\n\n**Numerología:** La suma del Ich de la Ciencia y del Ich del Arte produce una gran fascinación, en la que no hay que quedarse atrapado. El artista muestra en su paleta de pintor sobre la que hay un 21, la unión y la versatilidad de los dos primeros dígitos, que facilitan el éxito creador. El 5 opera como un velo seductor o como un inspirado 5 crístico, verde.\n\n**Simbología:** Saliendo de un túnel adimensional aparece el artista con su paleta de pintor y su pincel en la mano, instrumentos con los que dar vida a las formas y mostrar el universo de la imaginación creativa en este mundo, que lleva a la ilusión y a la fascinación, en cuya apariencia no hay que quedarse atrapados. Dos rostros femeninos, uno angustiado y atormentado, otro velado y oculto, pero sabio y versátil."
   },
   {
     "id": 15,
     "title": "Observación",
-    "title_style": "font-size: 66px",
+    "title_style": "font-size: 64px",
     "category": "Filosofía",
-    "meaning": "## Nº 1+(7+7) – ROJO - EL VINO - BEH - SENDERO DE INTROSPECCIÓN\n\n### Significado\nObservar y reflexionar para conocer y comprobar las propiedades constitutivas de uno mismo, de todo y de todos, en su aparente diversidad, sabiendo que la observación modifica lo observado al aplicarle la consciencia creadora.\n\n### Numerología\nEl 15 contiene en sí al 1 y al doble paso por la Ciencia y el Arte, y el 3 casi escondido integra y abarca, con su potencial crístico, esta observación atenta y consciente.\n\n### Simbología\nMuchos rostros de personas de distintos colores y expresiones muestran la variedad aparente de los observadores de sí mismos y del mundo, tratando de descubrir el secreto escondido en la manifestación, descubrir quiénes son, de dónde vienen y a dónde van. Para ello tienen la referencia de un libro, el potencial de un ave, la energía del Juul y el poder del pensamiento."
+    "meaning": "## Nº 1+(7+7) – ROJO - EL VINO - BEH - SENDERO DE INTROSPECCIÓN\n\n**Significado:** Observar y reflexionar para conocer y comprobar las propiedades constitutivas de uno mismo, de todo y de todos, en su aparente diversidad, sabiendo que la observación modifica lo observado al aplicarle la consciencia creadora.\n\n**Numerología:** El 15 contiene en sí al 1 y al doble paso por la Ciencia y el Arte, y el 3 casi escondido integra y abarca, con su potencial crístico, esta observación atenta y consciente.\n\n**Simbología:** Muchos rostros de personas de distintos colores y expresiones muestran la variedad aparente de los observadores de sí mismos y del mundo, tratando de descubrir el secreto escondido en la manifestación, descubrir quiénes son, de dónde vienen y a dónde van. Para ello tienen la referencia de un libro, el potencial de un ave, la energía del Juul y el poder del pensamiento."
   },
   {
     "id": 16,
     "title": "Discernimiento",
-    "title_style": "font-size: 58px",
+    "title_style": "font-size: 56px",
     "category": "Filosofía",
-    "meaning": "## Nº 2+(7+7) – ROSA - EL PAN - SAYAB – MANANTIAL DE LUZ\n\n### Significado\nEl conjunto de los fenómenos tienen que apreciarse sabiendo discernir, diferenciar su origen y sentido profundo, más allá de las apariencias.\n\n### Numerología\nEl 16 contiene la versatilidad del 2 más la experiencia de la realización de la Ciencia y del Arte. El 1 como principio, el 2 como complemento del 1, el 3 como síntesis de ambos nos introduce en el Tseek crístico, que está también en el fundamento de todo.\n\n### Simbología\nHay claves para el discernimiento, está el blanco de la energía Juul con su pureza, hay rostros pensativos que observan y se autoobservan, la tortuga paciente está caminando hacia abajo, buscando el fundamento y el sentido de todo, pues hay enigmas encerrados y pendientes de desplegar su significado. La inspiración de la Espiritualidad, la J con la E unidas, puede brindar una buena referencia para ese discernimiento."
+    "meaning": "## Nº 2+(7+7) – ROSA - EL PAN - SAYAB – MANANTIAL DE LUZ\n\n**Significado:** El conjunto de los fenómenos tienen que apreciarse sabiendo discernir, diferenciar su origen y sentido profundo, más allá de las apariencias.\n\n**Numerología:** El 16 contiene la versatilidad del 2 más la experiencia de la realización de la Ciencia y del Arte. El 1 como principio, el 2 como complemento del 1, el 3 como síntesis de ambos nos introduce en el Tseek crístico, que está también en el fundamento de todo.\n\n**Simbología:** Hay claves para el discernimiento, está el blanco de la energía Juul con su pureza, hay rostros pensativos que observan y se autoobservan, la tortuga paciente está caminando hacia abajo, buscando el fundamento y el sentido de todo, pues hay enigmas encerrados y pendientes de desplegar su significado. La inspiración de la Espiritualidad, la J con la E unidas, puede brindar una buena referencia para ese discernimiento."
   },
   {
     "id": 17,
     "title": "Dogmatismo",
-    "title_style": "font-size: 65px",
+    "title_style": "font-size: 63px",
     "category": "Filosofía",
-    "meaning": "## Nº 3+(7+7) – VERDE – EL PEZ – TSEEK – PREDICAR, DIVULGAR\n\n### Significado\nEl conocimiento que se cree seguro y bien asentado puede acabar convirtiéndose en dogma y ser motivo de fanática persecución de los que piensan de otra forma, pues el dogmatismo no admite la diferencia.\n\n### Numerología\nEl 3 como tríada ha recibido la consciencia de la Ciencia y el Arte realizados, eso puede llevar a una ingenua y fanática realización del tutelar, el 6, persiguiendo con saña a los opositores, olvidando la integración crística del 3.\n\n### Simbología\nEl fundamento crístico que supone el 3, como Tseek, puede quedar desvirtuado, si la energía del Juul sostiene otras energías más autosuficientes y egoicas, que muestran su denuncia y saña persecutoria. Todo ello mostrando a su vez en otro rostro contrariado, enmarcado en verde, que trata de transmutar su descontento y separación de esas actitudes equivocas."
+    "meaning": "## Nº 3+(7+7) – VERDE – EL PEZ – TSEEK – PREDICAR, DIVULGAR\n\n**Significado:** El conocimiento que se cree seguro y bien asentado puede acabar convirtiéndose en dogma y ser motivo de fanática persecución de los que piensan de otra forma, pues el dogmatismo no admite la diferencia.\n\n**Numerología:** El 3 como tríada ha recibido la consciencia de la Ciencia y el Arte realizados, eso puede llevar a una ingenua y fanática realización del tutelar, el 6, persiguiendo con saña a los opositores, olvidando la integración crística del 3.\n\n**Simbología:** El fundamento crístico que supone el 3, como Tseek, puede quedar desvirtuado, si la energía del Juul sostiene otras energías más autosuficientes y egoicas, que muestran su denuncia y saña persecutoria. Todo ello mostrando a su vez en otro rostro contrariado, enmarcado en verde, que trata de transmutar su descontento y separación de esas actitudes equivocas."
   },
   {
     "id": 18,
     "title": "La caverna",
+       "title_style": "font-size: 66px",
     "category": "Filosofía",
-    "meaning": "## Nº 4+(7+7) – VERDE CLARO – EL MANTO – SUUT – DEVOLVER OSCURIDAD\n\n### Significado\nLa autolimitación egoica del pensamiento nos lleva a encerrarnos en la caverna de esta matrix 3D, en donde los verdaderos significados se han reducido a sombras.\n\n### Numerología\nEl 18 contiene al 4 como preparación a un repertorio limitado que a pesar del recorrido anterior (7+7) ha caído en el oscurantismo de la ignorancia, como resultado de la entropía.\n\n### Simbología\nUn rostro mira asustado el mundo de formas empequeñecido en su apariencia material, un dedo señala una pirámide achatada, una gran sombra parece dominar esta caverna del sentido, donde se ha perdido la claridad y la ignorancia se señorea, preparándose para el despertar y el autodescubrimiento, pasando por un proceso de extrañamiento y angustia."
+    "meaning": "## Nº 4+(7+7) – VERDE CLARO – EL MANTO – SUUT – DEVOLVER OSCURIDAD\n\n**Significado:** La autolimitación egoica del pensamiento nos lleva a encerrarnos en la caverna de esta matrix 3D, en donde los verdaderos significados se han reducido a sombras.\n\n**Numerología:** El 18 contiene al 4 como preparación a un repertorio limitado que a pesar del recorrido anterior (7+7) ha caído en el oscurantismo de la ignorancia, como resultado de la entropía.\n\n**Simbología:** Un rostro mira asustado el mundo de formas empequeñecido en su apariencia material, un dedo señala una pirámide achatada, una gran sombra parece dominar esta caverna del sentido, donde se ha perdido la claridad y la ignorancia se señorea, preparándose para el despertar y el autodescubrimiento, pasando por un proceso de extrañamiento y angustia."
   },
   {
     "id": 19,
     "title": "Vuelo",
     "category": "Filosofía",
-    "meaning": "## Nº 5+(7+7) – AZUL – LAS SANDALIAS – KAT – ARCILLA CREADORA\n\n### Significado\nTras el paso por las sombras, la consciencia alza su vuelo para seguir el camino del autodescubrimiento, sabiendo que el camino del despertar no se acaba nunca.\n\n### Numerología\nEl 19 integra el 5 con la experiencia del 7 de la Ciencia y el 7 del Arte. Ese 5 de diferentes colores en su recorrido interminable por el sendero de la experiencia en el mundo de las formas.\n\n### Simbología\nUn ave, de un verde crístico, como síntesis, en pleno vuelo sostiene toda la imagen. El mundo de las ideas se proyecta hacia abajo con su dedo índice señalando el proceso que se lleva a cabo, de transformación de la experiencia en conocimiento y sabiduría. Hay un gran dinamismo y una correspondencia entre el mundo inmanente, abajo, y el mundo trascendente, arriba."
+    "meaning": "## Nº 5+(7+7) – AZUL – LAS SANDALIAS – KAT – ARCILLA CREADORA\n\n**Significado:** Tras el paso por las sombras, la consciencia alza su vuelo para seguir el camino del autodescubrimiento, sabiendo que el camino del despertar no se acaba nunca.\n\n**Numerología:** El 19 integra el 5 con la experiencia del 7 de la Ciencia y el 7 del Arte. Ese 5 de diferentes colores en su recorrido interminable por el sendero de la experiencia en el mundo de las formas.\n\n**Simbología:** Un ave, de un verde crístico, como síntesis, en pleno vuelo sostiene toda la imagen. El mundo de las ideas se proyecta hacia abajo con su dedo índice señalando el proceso que se lleva a cabo, de transformación de la experiencia en conocimiento y sabiduría. Hay un gran dinamismo y una correspondencia entre el mundo inmanente, abajo, y el mundo trascendente, arriba."
   },
   {
     "id": 20,
     "title": "Divergencia",
-    "title_style": "font-size: 68px",
+    "title_style": "font-size: 66px",
     "category": "Filosofía",
-    "meaning": "## Nº 6+(7+7) – AZUL CLARO – EL BÁCULO – OKSAH - INTRODUCIR\n\n### Significado\nEn el proceso de tutelar a todas las réplicas por el sendero del conocimiento se produce la Divergencia, como efecto de la dualidad, y ello lleva a la separación por dos caminos: uno más amenazador, el cocodrilo con sus afilados dientes, y otro más reflexivo y contemplativo.\n\n### Numerología\nEl 20 contiene al 6 con la experiencia de dos recorridos previos por el 7. El desarrollo del 6 en la senda del pensamiento lleva a la Divergencia, a la división informada por la dualidad del mundo de manifestación.\n\n### Simbología\nUn ave blanca voladora, el ave del pensamiento libre y creativo, se ve amenazada por una tenaz serpiente que abre su boca devoradora, un rostro pensativo contempla esta dualidad y piensa la manera de trascenderla y adentrarse en la realidad de los mundos, pero antes hay que equilibrar e integrar los factores de la divergencia."
+    "meaning": "## Nº 6+(7+7) – AZUL CLARO – EL BÁCULO – OKSAH - INTRODUCIR\n\n**Significado:** En el proceso de tutelar a todas las réplicas por el sendero del conocimiento se produce la Divergencia, como efecto de la dualidad, y ello lleva a la separación por dos caminos: uno más amenazador, el cocodrilo con sus afilados dientes, y otro más reflexivo y contemplativo.\n\n**Numerología:** El 20 contiene al 6 con la experiencia de dos recorridos previos por el 7. El desarrollo del 6 en la senda del pensamiento lleva a la Divergencia, a la división informada por la dualidad del mundo de manifestación.\n\n**Simbología:** Un ave blanca voladora, el ave del pensamiento libre y creativo, se ve amenazada por una tenaz serpiente que abre su boca devoradora, un rostro pensativo contempla esta dualidad y piensa la manera de trascenderla y adentrarse en la realidad de los mundos, pero antes hay que equilibrar e integrar los factores de la divergencia."
   },
   {
     "id": 21,
     "title": "Liberación",
     "category": "Filosofía",
-    "meaning": "## Nº 7(7+7) – BLANCO – EL ARCA – ICH – FAZ, ROSTRO TRANSMUTADO\n\n### Significado\nFinalmente se produce la Liberación y se alcanza el Ich del pensamiento que permite acceder a la realidad de los mundos, gracias al esfuerzo de caminar por un sendero equilibrado.\n\n### Numerología\nEl 21 supone un gran logro, pues conjuga la suma de tres números 7. Un 5 azul muestra el resultado de su andadura y el haber sorteado los peligros del camino.\n\n### Simbología\nToda la figura es a modo del cuerpo de una persona que muestra abajo sus pies, enredados en una figura roja de la identificación, con una Juul blanca, cuya energía le ayuda a liberarse de ese apego. Esta figura señala con su mano el número 5, por la importancia que ha tenido en su caminar, una vez que ha alcanzado la liberación del pensamiento y la consciencia ascendida."
+    "meaning": "## Nº 7(7+7) – BLANCO – EL ARCA – ICH – FAZ, ROSTRO TRANSMUTADO\n\n**Significado:** Finalmente se produce la Liberación y se alcanza el Ich del pensamiento que permite acceder a la realidad de los mundos, gracias al esfuerzo de caminar por un sendero equilibrado.\n\n**Numerología:** El 21 supone un gran logro, pues conjuga la suma de tres números 7. Un 5 azul muestra el resultado de su andadura y el haber sorteado los peligros del camino.\n\n**Simbología:** Toda la figura es a modo del cuerpo de una persona que muestra abajo sus pies, enredados en una figura roja de la identificación, con una Juul blanca, cuya energía le ayuda a liberarse de ese apego. Esta figura señala con su mano el número 5, por la importancia que ha tenido en su caminar, una vez que ha alcanzado la liberación del pensamiento y la consciencia ascendida."
   },
   {
     "id": 22,
     "title": "La clave",
     "category": "Espiritualidad",
-    "meaning": "## Nº 1(7+7+7) – ROJO - EL VINO - BEH - SENDERO DE INTROSPECCIÓN\n\n### Significado\nLa primera carta de la Espiritualidad nos proporciona la Clave, una llave hermética que se conjuga con el caminar en base a la energía Juul y en una sintonía crística.\n\n### Numerología\nEl 22 contiene la inspiración y el idealismo de los tres 7 y su experiencia acumulada, que ahora adopta una intuición mística. La marcha ascendente sigue presente, el 5, y la preparación, el 4, ha alcanzado un gran nivel que espera desplegarse. El 2 aporta su plasticidad.\n\n### Simbología\nEn la base hay un dragón, el dragón de la materia, que hay que sublimar en el trabajo espiritual del Juul crístico, la J verde. Hay una clave muy bien expuesta, la consciencia aplicada en la autoobservación, y si bien hay obstáculos, la flecha roja, estos pueden transmutarse con el aporte de la energía Juul, hasta alcanzar la sublimación y la creatividad."
+    "meaning": "## Nº 1(7+7+7) – ROJO - EL VINO - BEH - SENDERO DE INTROSPECCIÓN\n\n**Significado:** La primera carta de la Espiritualidad nos proporciona la Clave, una llave hermética que se conjuga con el caminar en base a la energía Juul y en una sintonía crística.\n\n**Numerología:** El 22 contiene la inspiración y el idealismo de los tres 7 y su experiencia acumulada, que ahora adopta una intuición mística. La marcha ascendente sigue presente, el 5, y la preparación, el 4, ha alcanzado un gran nivel que espera desplegarse. El 2 aporta su plasticidad.\n\n**Simbología:** En la base hay un dragón, el dragón de la materia, que hay que sublimar en el trabajo espiritual del Juul crístico, la J verde. Hay una clave muy bien expuesta, la consciencia aplicada en la autoobservación, y si bien hay obstáculos, la flecha roja, estos pueden transmutarse con el aporte de la energía Juul, hasta alcanzar la sublimación y la creatividad."
   },
   {
     "id": 23,
     "title": "Transmutación",
-    "title_style": "font-size: 57px",
+    "title_style": "font-size: 55px",
     "category": "Espiritualidad",
-    "meaning": "## Nº 2+(7+7+7) – ROSA - EL PAN - SAYAB – MANANTIAL DE LUZ\n\n### Significado\nLa Transmutación es la clave alquímica que el ego rechaza porque en ella cree perder lo logrado, pero que si deja paso a la transmutación podrá disfrutar del pan de la comunión.\n\n### Numerología\nEl 22 tiene un gran potencial transmutador, el 2 sobre la experiencia adquirida de la Ciencia, el Arte y la Filosofía. El 63 contiene en sí la energía del 6 como desarrollo basado en el impulso del 3 crístico, del Tseek. El 5 sigue operando en su caminar crístico integrador y sublimador.\n\n### Simbología\nHay símbolos alquímicos como la redoma o alambique donde se opera la alquimia transmutadora, con una base blanca, pura. En la cima de la figura se ve el proceso sublimado, como un alimento espiritual, y una serie de energías que han impulsado ese ascenso."
+    "meaning": "## Nº 2+(7+7+7) – ROSA - EL PAN - SAYAB – MANANTIAL DE LUZ\n\n**Significado:** La Transmutación es la clave alquímica que el ego rechaza porque en ella cree perder lo logrado, pero que si deja paso a la transmutación podrá disfrutar del pan de la comunión.\n\n**Numerología:** El 22 tiene un gran potencial transmutador, el 2 sobre la experiencia adquirida de la Ciencia, el Arte y la Filosofía. El 63 contiene en sí la energía del 6 como desarrollo basado en el impulso del 3 crístico, del Tseek. El 5 sigue operando en su caminar crístico integrador y sublimador.\n\n**Simbología:** Hay símbolos alquímicos como la redoma o alambique donde se opera la alquimia transmutadora, con una base blanca, pura. En la cima de la figura se ve el proceso sublimado, como un alimento espiritual, y una serie de energías que han impulsado ese ascenso."
   },
   {
     "id": 24,
     "title": "Amor",
     "category": "Espiritualidad",
-    "meaning": "## Nº 3+(7+7+7) – VERDE – EL PEZ – TSEEK – PREDICAR, DIVULGAR\n\n### Significado\nLa consciencia del Amor trascendental se hace patente en la Espiritualidad, dando paso a un rostro sublimado.\n\n### Numerología\nEl 24 es la expresión de un equilibrio logrado en base al tripe 7, de los recorridos previos, y el 3 como tríada creadora.\n\n### Simbología\nUna gran ballena soporta al conjunto, con su gran fuerza y consciencia que sirve de anclaje para elevar la energía hacia el amor trascendente, el corazón. Un rostro místico iluminado contempla la manifestación con una mirada comprensiva y amorosa, que integra el papel de la manifestación animal instintiva en la consciencia de la Unidad suprema, el ojo superior enmarcado en blanco y dorado."
+    "meaning": "## Nº 3+(7+7+7) – VERDE – EL PEZ – TSEEK – PREDICAR, DIVULGAR\n\n**Significado:** La consciencia del Amor trascendental se hace patente en la Espiritualidad, dando paso a un rostro sublimado.\n\n**Numerología:** El 24 es la expresión de un equilibrio logrado en base al tripe 7, de los recorridos previos, y el 3 como tríada creadora.\n\n**Simbología:** Una gran ballena soporta al conjunto, con su gran fuerza y consciencia que sirve de anclaje para elevar la energía hacia el amor trascendente, el corazón. Un rostro místico iluminado contempla la manifestación con una mirada comprensiva y amorosa, que integra el papel de la manifestación animal instintiva en la consciencia de la Unidad suprema, el ojo superior enmarcado en blanco y dorado."
   },
   {
     "id": 25,
     "title": "Cambio",
     "category": "Espiritualidad",
-    "meaning": "## Nº 4+(7+7+7) - VERDE CLARO - EL MANTO – SUUT DEVOLVER OSCURIDAD\n\n### Significado\nEl Cambio supone la activación de la consciencia de nuestros orígenes cósmicos, pues vinimos de las estrellas, y ese cambio es una transformación de toda la humanidad.\n\n### Numerología\nEl 25 contiene la preparación del 4 con la experiencia del triple recorrido del 7, en un número que equilibra lo pasivo con lo activo, el 25, el 2 y el 5.\n\n### Simbología\nUna gran nave en la base muestra la vinculación con el cosmos y nuestro origen, sobre ese fundamento es fácil que opere la energía Juul, la J blanca, el caminar inspirado en la consciencia crística, el rostro con un pensamiento verde, la sublimación de la energía, la J roja, y el ascenso vibratorio preparado para acoger a todos los autóctonos, representados por la Luna en la parte superior, que han utilizado la llave del despertar."
+    "meaning": "## Nº 4+(7+7+7) - VERDE CLARO - EL MANTO – SUUT DEVOLVER OSCURIDAD\n\n**Significado:** El Cambio supone la activación de la consciencia de nuestros orígenes cósmicos, pues vinimos de las estrellas, y ese cambio es una transformación de toda la humanidad.\n\n**Numerología:** El 25 contiene la preparación del 4 con la experiencia del triple recorrido del 7, en un número que equilibra lo pasivo con lo activo, el 25, el 2 y el 5.\n\n**Simbología:** Una gran nave en la base muestra la vinculación con el cosmos y nuestro origen, sobre ese fundamento es fácil que opere la energía Juul, la J blanca, el caminar inspirado en la consciencia crística, el rostro con un pensamiento verde, la sublimación de la energía, la J roja, y el ascenso vibratorio preparado para acoger a todos los autóctonos, representados por la Luna en la parte superior, que han utilizado la llave del despertar."
   },
   {
     "id": 26,
     "title": "Compromiso",
-    "title_style": "font-size: 68px",
+    "title_style": "font-size: 66px",
     "category": "Espiritualidad",
-    "meaning": "## Nº 5+(7+7+7) – AZUL – LAS SANDALIAS – KAT – ARCILLA CREADORA\n\n### Significado\nEl caminar por el sendero de la espiritualidad es la manifestación del Compromiso adquirido voluntariamente.\n\n### Numerología\nEl 26 integra el 5, caminar consciente, con la experiencia de previos recorridos en la espiral ascendente del 7. Este 5 azul abarcado por la J del Juul, adquiere consciencia de Unidad, el 1 superior equilibrado con el 3.\n\n### Simbología\nUn gran cetáceo sostiene el conjunto, en donde se muestran energías que caminan en sentido ascendente, con el equilibrio de la Y griega y el concurso del tridente que refuerza la energía triple creadora, un rostro superior es consciente del proceso que sigue y divulga su deambular encaminado a la trascendencia, donde el pez crístico navega."
+    "meaning": "## Nº 5+(7+7+7) – AZUL – LAS SANDALIAS – KAT – ARCILLA CREADORA\n\n**Significado:** El caminar por el sendero de la espiritualidad es la manifestación del Compromiso adquirido voluntariamente.\n\n**Numerología:** El 26 integra el 5, caminar consciente, con la experiencia de previos recorridos en la espiral ascendente del 7. Este 5 azul abarcado por la J del Juul, adquiere consciencia de Unidad, el 1 superior equilibrado con el 3.\n\n**Simbología:** Un gran cetáceo sostiene el conjunto, en donde se muestran energías que caminan en sentido ascendente, con el equilibrio de la Y griega y el concurso del tridente que refuerza la energía triple creadora, un rostro superior es consciente del proceso que sigue y divulga su deambular encaminado a la trascendencia, donde el pez crístico navega."
   },
   {
     "id": 27,
     "title": "Comprensión",
-    "title_style": "font-size: 66px",
+    "title_style": "font-size: 62px",
     "category": "Espiritualidad",
-    "meaning": "## Nº 6+(7+7+7) – AZUL CLARO – EL BÁCULO – OKSAH - INTRODUCIR\n\n### Significado\nLa Comprensión transmutadora está realizando su propósito de tutelar a todas las réplicas hacia la realidad de los mundos.\n\n### Numerología\nEl 27 muestra un gran equilibrio y propósito en la realización, el 5 rojo impulsa, el 6 se despliega como flecha ascendente, en la cumbre aparece el 1, 2, 6 y 3, las energías que han alcanzado la cima del deambular.\n\n### Simbología\nUn pie bien calzado y verde sostiene el conjunto de este tutelar a las réplicas que tienen todavía mucho que desplegar, espiral enrollada, impulsadas por el Juul verde, una serpiente abre su boca en vano, pues no encuentra qué morder. La flecha del cambio y la transmutación apunta en una línea ascendente."
+    "meaning": "## Nº 6+(7+7+7) – AZUL CLARO – EL BÁCULO – OKSAH - INTRODUCIR\n\n**Significado:** La Comprensión transmutadora está realizando su propósito de tutelar a todas las réplicas hacia la realidad de los mundos.\n\n**Numerología:** El 27 muestra un gran equilibrio y propósito en la realización, el 5 rojo impulsa, el 6 se despliega como flecha ascendente, en la cumbre aparece el 1, 2, 6 y 3, las energías que han alcanzado la cima del deambular.\n\n**Simbología:** Un pie bien calzado y verde sostiene el conjunto de este tutelar a las réplicas que tienen todavía mucho que desplegar, espiral enrollada, impulsadas por el Juul verde, una serpiente abre su boca en vano, pues no encuentra qué morder. La flecha del cambio y la transmutación apunta en una línea ascendente."
   },
   {
     "id": 28,
     "title": "Consciencia",
-    "title_style": "font-size: 68px",
+    "title_style": "font-size: 66px",
     "category": "Espiritualidad",
-    "meaning": "## Nº 7+(7+7+7) – BLANCO – EL ARCA – ICH – FAZ, ROSTRO TRANSMUTADO\n\n### Significado\nSe ha alcanzado la meta de la Consciencia adquirida en el proceso de andar el camino de la transmutación integradora.\n\n### Numerología\nEl 28 contiene a los cuatro 7 del CAFÉ Trascendental. El 5 blanco superior, englobado en el cisne azul del espíritu, ha conseguido su propósito de lograr la libertad de la consciencia, en su duro caminar.\n\n### Simbología\nUn rostro bien calzado, cuyo zapato de tacón rojo está enmarcado por la silueta de un gato blanco, muestra que la boca del reptil vigilante no ha impedido realizar el trabajo alquímico, y sus dientes se abren en vano, pues el tridente de la integración y el equilibrio ha hecho su trabajo. Han quedado abajo rostros animalizados, y egos frustrados, que no han sublimado o que se encuentran contrariados, pues no han sabido andar el camino de transmutación."
+    "meaning": "## Nº 7+(7+7+7) – BLANCO – EL ARCA – ICH – FAZ, ROSTRO TRANSMUTADO\n\n**Significado:** Se ha alcanzado la meta de la Consciencia adquirida en el proceso de andar el camino de la transmutación integradora.\n\n**Numerología:** El 28 contiene a los cuatro 7 del CAFÉ Trascendental. El 5 blanco superior, englobado en el cisne azul del espíritu, ha conseguido su propósito de lograr la libertad de la consciencia, en su duro caminar.\n\n**Simbología:** Un rostro bien calzado, cuyo zapato de tacón rojo está enmarcado por la silueta de un gato blanco, muestra que la boca del reptil vigilante no ha impedido realizar el trabajo alquímico, y sus dientes se abren en vano, pues el tridente de la integración y el equilibrio ha hecho su trabajo. Han quedado abajo rostros animalizados, y egos frustrados, que no han sublimado o que se encuentran contrariados, pues no han sabido andar el camino de transmutación."
   }
-]
+],
+"reading_modes_extra": {
+  "Pasado, presente y futuro": {
+    "0": {
+      "title": "Comodín",
+      "category": "-",
+      "Pasado": "Una posibilidad que no llegó a tomar una sola forma puede seguir actuando desde atrás. Algo quedó abierto, sin nombre o sin cerrar, y precisamente por eso aún conserva potencia.",
+      "Presente": "El momento no pide una respuesta única. Varias lecturas pueden ser verdaderas a la vez; observa qué significado aparece primero y cuál surge después, cuando dejas de intentar fijarlo.",
+      "Futuro": "Se abre un territorio todavía sin definir. Lo que venga dependerá menos de una ruta ya trazada que de la forma en que uses las posibilidades que ahora están disponibles."
+    },
+    "1": {
+      "title": "Conexión",
+      "category": "Ciencia",
+      "Pasado": "Una conexión, intuición o vínculo interior parece estar en el origen de lo que hoy vives. Tal vez entonces no comprendiste del todo la señal, pero abrió una puerta.",
+      "Presente": "Algo pide reconexión: contigo, con una idea esencial, con una persona o con aquello que da sentido al conjunto. La respuesta puede estar más cerca de escuchar que de buscar.",
+      "Futuro": "Si mantienes abierto el canal de atención, puede emerger una relación más clara entre piezas que ahora parecen separadas. La conexión futura nace de una escucha presente."
+    },
+    "2": {
+      "title": "Eficacia",
+      "category": "Ciencia",
+      "Pasado": "Hubo una manera de actuar que resolvió, ordenó o hizo avanzar algo importante. Esa eficacia pasada puede seguir siendo una referencia, aunque quizá ya no baste repetirla.",
+      "Presente": "Es momento de comprobar qué funciona de verdad. Menos teoría, más correspondencia entre intención, medios y resultado.",
+      "Futuro": "Puede abrirse una etapa de mayor fluidez si ajustas lo necesario y eliminas lo superfluo. La eficacia aparece cuando cada movimiento sirve al propósito."
+    },
+    "3": {
+      "title": "Monje y Guerrero",
+      "category": "Ciencia",
+      "Pasado": "Una tensión antigua entre recogimiento y acción puede haber dado forma a este momento. Quizá aprendiste a pensar y actuar por separado cuando necesitaban caminar juntos.",
+      "Presente": "Ahora conviven dos fuerzas: una que observa y otra que interviene. La clave no parece elegir entre ambas, sino descubrir cuándo debe hablar cada una.",
+      "Futuro": "Puede llegar una etapa en la que conocimiento y acción se reconcilien. Lo aprendido encuentra salida cuando el silencio interior no teme convertirse en movimiento."
+    },
+    "4": {
+      "title": "Sabiduría",
+      "category": "Ciencia",
+      "Pasado": "La experiencia acumulada ha dejado una reserva de sabiduría, quizá nacida de dificultades que entonces parecían solo obstáculos. Algo ya fue aprendido, aunque no siempre se recuerde.",
+      "Presente": "No todo requiere descubrir algo nuevo. Puede que la situación pida reconocer un conocimiento ya madurado y aplicarlo con serenidad.",
+      "Futuro": "La experiencia puede decantar en una comprensión más simple y profunda. El futuro favorece menos la acumulación de datos que la integración de lo vivido."
+    },
+    "5": {
+      "title": "Origen",
+      "category": "Ciencia",
+      "Pasado": "Algo relacionado con tus raíces, procedencia o primera motivación sigue influyendo en el presente. Mirar atrás puede revelar no nostalgia, sino una clave de identidad.",
+      "Presente": "La pregunta parece ser: ¿desde dónde estás viviendo esto? No solo hacia dónde vas, sino qué origen, impulso o memoria sostiene tu camino.",
+      "Futuro": "Puede aparecer una reconexión con una raíz más auténtica, o el descubrimiento de que tu verdadero origen no coincide con la historia que te contabas."
+    },
+    "6": {
+      "title": "La llamada",
+      "category": "Ciencia",
+      "Pasado": "Una llamada antigua, explícita o silenciosa, pudo iniciar el proceso que hoy continúa. Tal vez fue una inquietud, una coincidencia o la sensación de que había algo que atender.",
+      "Presente": "Algo te está llamando ahora. La cuestión no es solo oírlo, sino distinguir si nace de una necesidad profunda o de una urgencia ajena.",
+      "Futuro": "Si atiendes la señal adecuada, puede abrirse una tarea, un aprendizaje o un vínculo que te coloque en otra relación con tu propósito."
+    },
+    "7": {
+      "title": "Regeneración",
+      "category": "Ciencia",
+      "Pasado": "Ya hubo una ruptura, limpieza o renovación que hizo posible llegar hasta aquí. Quizá una versión anterior de la situación tuvo que agotarse para que otra apareciera.",
+      "Presente": "Algo está en proceso de regeneración. Puede sentirse frágil porque todavía conserva huellas de lo antiguo, pero ya existe una posibilidad de reorganización.",
+      "Futuro": "Lo que hoy parece desgaste puede convertirse en terreno fértil para una forma nueva. La regeneración futura no recupera exactamente lo perdido: lo transforma."
+    },
+    "8": {
+      "title": "Inspiración",
+      "category": "Arte",
+      "Pasado": "Una inspiración pasada encendió algo que todavía no se ha extinguido. Tal vez fue una imagen, una intuición o una idea que pedía más espacio del que entonces recibió.",
+      "Presente": "Hay una chispa disponible, pero necesita silencio para hacerse visible. La inspiración puede aparecer donde no estabas mirando o en una forma que no esperabas.",
+      "Futuro": "Si proteges el impulso creativo sin poseerlo, puede conducir a una obra, una decisión o una comprensión nueva. Lo inspirado crece cuando se le permite respirar."
+    },
+    "9": {
+      "title": "Transformación",
+      "category": "Arte",
+      "Pasado": "Una transformación anterior cambió las reglas del juego, aunque quizá todavía estés comprendiendo sus consecuencias. Algo dejó de ser lo que era.",
+      "Presente": "La situación no parece estable: está pidiendo cambio de forma. Resistirlo puede resultar más agotador que participar conscientemente en él.",
+      "Futuro": "Puede producirse una transformación significativa si aceptas que el resultado no tendrá por qué parecerse al punto de partida. Cambiar también implica perder una forma conocida."
+    },
+    "10": {
+      "title": "Confianza",
+      "category": "Arte",
+      "Pasado": "La confianza —o su ausencia— influyó decisivamente en el camino recorrido. Puede haber un logro que nació de sostenerse cuando todavía no existían garantías.",
+      "Presente": "La situación pide una confianza despierta, no ciega. Hay base para avanzar, pero conviene acompañar la certeza interior con atención a los detalles.",
+      "Futuro": "La confianza sostenida puede convertirse en capacidad real. A medida que avances, lo que hoy parece una apuesta puede adquirir estructura y evidencia."
+    },
+    "11": {
+      "title": "Visión",
+      "category": "Arte",
+      "Pasado": "Una visión anterior, quizá incompleta, orientó decisiones que todavía tienen efecto. Algo fue visto antes de poder ser explicado.",
+      "Presente": "Es momento de ampliar el campo de visión. Lo importante puede estar en un detalle lateral, en una perspectiva nueva o en aquello que hasta ahora quedaba fuera del encuadre.",
+      "Futuro": "Puede aparecer una visión más amplia que reorganice lo que hoy parece confuso. Al cambiar el punto de vista, cambia también el problema."
+    },
+    "12": {
+      "title": "Totalidad",
+      "category": "Arte",
+      "Pasado": "Una experiencia de totalidad o integración pudo mostrarte que piezas aparentemente opuestas pertenecían al mismo conjunto. Esa memoria puede seguir buscando expresión.",
+      "Presente": "La situación es mayor que cualquiera de sus partes. Si solo atiendes a un fragmento, perderás la relación que le da sentido.",
+      "Futuro": "Puede emerger una síntesis donde ahora ves contradicción. La totalidad no elimina las diferencias: aprende a contenerlas sin romperse."
+    },
+    "13": {
+      "title": "Éxito",
+      "category": "Arte",
+      "Pasado": "Un éxito anterior dejó impulso, confianza o reconocimiento, pero también una medida con la que quizá sigues comparando el presente.",
+      "Presente": "Hay señales de logro, aunque conviene preguntar qué significa realmente “éxito” aquí. Puede ser terminar, comprender, servir, crear o simplemente perseverar.",
+      "Futuro": "El esfuerzo bien orientado puede dar fruto. El resultado será más sólido si no depende únicamente de la aprobación externa."
+    },
+    "14": {
+      "title": "Fascinación",
+      "category": "Arte",
+      "Pasado": "Algo te fascinó y dejó una huella profunda: una persona, una idea, una obra o una promesa. Tal vez esa fascinación abrió una puerta, pero también pudo velar ciertos detalles.",
+      "Presente": "Hay algo magnético en la situación. Observa si esa atracción revela belleza auténtica o si te impide ver lo que queda detrás de la forma.",
+      "Futuro": "Puede aparecer una experiencia muy seductora o inspiradora. Su valor dependerá de que puedas admirarla sin perder libertad interior."
+    },
+    "15": {
+      "title": "Observación",
+      "category": "Filosofía",
+      "Pasado": "Una observación hecha a tiempo cambió el rumbo más de lo que parecía. Puede haber algo que viste, o que no quisiste ver, y que aún organiza el presente.",
+      "Presente": "Ahora conviene observar antes de intervenir. La situación puede revelar su lógica si la miras sin apresurarte a clasificarla.",
+      "Futuro": "Una observación más fina puede abrir una comprensión inesperada. Lo futuro cambia cuando cambia la calidad de la mirada presente."
+    },
+    "16": {
+      "title": "Discernimiento",
+      "category": "Filosofía",
+      "Pasado": "Una elección o distinción anterior marcó el camino. Tal vez supiste separar lo esencial de lo accesorio, o quizá confundiste señales que hoy vuelven a presentarse.",
+      "Presente": "La situación exige discernimiento: no todo lo parecido es igual, ni todo lo diferente está separado. Conviene distinguir origen, intención y consecuencia.",
+      "Futuro": "Una diferencia que hoy parece pequeña puede volverse decisiva. Afinar el criterio ahora puede evitar entrar después en un camino que no corresponde."
+    },
+    "17": {
+      "title": "Dogmatismo",
+      "category": "Filosofía",
+      "Pasado": "Una creencia rígida, propia o ajena, pudo limitar opciones que en realidad existían. También puede señalar una estructura social o familiar que definió qué estaba permitido pensar.",
+      "Presente": "Hay una idea que corre el riesgo de convertirse en frontera. Observa dónde una certeza legítima deja de dialogar y empieza a excluir.",
+      "Futuro": "Si una convicción se endurece, puede generar separación; si se revisa con consciencia, puede transformarse en criterio sin fanatismo. La dirección aún está abierta."
+    },
+    "18": {
+      "title": "La caverna",
+      "category": "Filosofía",
+      "Pasado": "Una etapa de encierro, miedo o visión limitada pudo reducir el mundo a unas pocas sombras. Algunas de esas limitaciones quizá sigan operando aunque la salida ya exista.",
+      "Presente": "Puede que estés mirando la realidad desde dentro de una caverna conceptual o emocional. Lo que ves es real como experiencia, pero quizá no sea todo lo que existe.",
+      "Futuro": "Se abre la posibilidad de salir de un marco estrecho, aunque la luz inicial pueda incomodar. Ver más también obliga a revisar lo que antes parecía seguro."
+    },
+    "19": {
+      "title": "Vuelo",
+      "category": "Filosofía",
+      "Pasado": "Hubo un momento en que te elevaste por encima de una limitación y viste el camino desde otra altura. Esa experiencia puede seguir recordándote que no todo se resuelve desde el suelo.",
+      "Presente": "La situación pide vuelo: distancia, amplitud y movimiento. No para escapar, sino para ver la relación entre cosas que desde cerca parecen desconectadas.",
+      "Futuro": "Puede abrirse una etapa de expansión si sueltas peso innecesario. El vuelo no promete ausencia de obstáculos, pero sí otra relación con ellos."
+    },
+    "20": {
+      "title": "Divergencia",
+      "category": "Filosofía",
+      "Pasado": "Una divergencia anterior abrió caminos distintos, quizá separando personas, ideas o versiones de ti mismo. Esa bifurcación todavía puede estar pidiendo integración.",
+      "Presente": "Hay dos o más direcciones que no terminan de coincidir. La diferencia no necesariamente es un error: puede contener información sobre lo que cada parte necesita.",
+      "Futuro": "Las rutas pueden distanciarse más o encontrar un nivel superior donde vuelvan a relacionarse. Lo decisivo será cómo se gestione la diferencia, no que exista."
+    },
+    "21": {
+      "title": "Liberación",
+      "category": "Filosofía",
+      "Pasado": "Una liberación previa rompió un apego, una idea o una situación que parecía inevitable. Esa memoria puede recordarte que algunas cadenas solo se reconocen después de soltarlas.",
+      "Presente": "Algo está listo para ser liberado, o tú estás listo para dejar de sostenerlo. La dificultad puede no estar en abrir la puerta, sino en abandonar lo conocido.",
+      "Futuro": "Puede aparecer una mayor libertad si continúas desidentificándote de aquello que te reduce. La liberación futura no es ausencia de compromiso, sino elección más consciente."
+    },
+    "22": {
+      "title": "La clave",
+      "category": "Espiritualidad",
+      "Pasado": "En algún momento apareció una clave que quizá no fue reconocida como tal. Una experiencia pequeña, una frase o un símbolo pudo contener más información de la que parecía.",
+      "Presente": "La solución puede no ser grande, sino precisa. Hay una llave en la situación, pero requiere encontrar la cerradura correcta.",
+      "Futuro": "Una comprensión sencilla puede reorganizar muchas cosas a la vez. La clave futura podría aparecer cuando dejes de buscar una respuesta total y atiendas a un detalle esencial."
+    },
+    "23": {
+      "title": "Transmutación",
+      "category": "Espiritualidad",
+      "Pasado": "Una transmutación anterior convirtió una dificultad en aprendizaje o una pérdida en materia de cambio. Quizá no elegiste el fuego, pero algo en ti aprendió a trabajar con él.",
+      "Presente": "Lo que ocurre no parece pedir simple sustitución, sino transformación profunda. Una misma energía puede tomar otra forma si cambia la consciencia con que la sostienes.",
+      "Futuro": "Existe potencial para convertir tensión en comprensión, apego en libertad o conflicto en una forma nueva de relación. Nada obliga a que lo difícil conserve su forma actual."
+    },
+    "24": {
+      "title": "Amor",
+      "category": "Espiritualidad",
+      "Pasado": "Un acto de amor, comprensión o cuidado puede estar en la raíz de lo que hoy existe. También una carencia de amor pudo mostrar con claridad lo que era esencial.",
+      "Presente": "La situación pide mirar más allá de simpatía o apego. El amor aquí puede significar integrar, comprender y actuar sin negar la realidad.",
+      "Futuro": "Una respuesta más amorosa puede transformar el vínculo con lo que venga, incluso si no cambia inmediatamente las circunstancias. El amor amplía el campo de posibilidades."
+    },
+    "25": {
+      "title": "Cambio",
+      "category": "Espiritualidad",
+      "Pasado": "Un cambio anterior rompió una continuidad y te obligó a reorganizarte. Lo que entonces parecía interrupción puede haber sido preparación.",
+      "Presente": "La situación se mueve, aunque parte de ti prefiera estabilidad. El cambio puede estar ocurriendo afuera, adentro o en ambos niveles a la vez.",
+      "Futuro": "Se perfila una modificación de rumbo, identidad o contexto. Su valor dependerá de si lo acompañas conscientemente o intentas conservar una forma que ya está desplazándose."
+    },
+    "26": {
+      "title": "Compromiso",
+      "category": "Espiritualidad",
+      "Pasado": "Un compromiso asumido antes sigue generando consecuencias. Puede ser una promesa explícita o una decisión silenciosa que orientó tu camino.",
+      "Presente": "Ahora importa saber con qué estás realmente comprometido. Tus actos pueden revelar una respuesta distinta de la que formula tu mente.",
+      "Futuro": "Un compromiso consciente puede dar continuidad y profundidad a lo que hoy apenas comienza. También puede llegar el momento de revisar compromisos que ya no son verdaderos."
+    },
+    "27": {
+      "title": "Comprensión",
+      "category": "Espiritualidad",
+      "Pasado": "Una comprensión anterior permitió integrar algo que antes parecía contradictorio. Puede que hoy estés usando esa comprensión sin recordar cuánto costó alcanzarla.",
+      "Presente": "La situación pide comprender antes de concluir. Hay una lógica más profunda que todavía puede estar oculta detrás de conductas, emociones o acontecimientos.",
+      "Futuro": "Puede llegar una comprensión que reduzca la lucha sin borrar las diferencias. Cuando algo se entiende de raíz, cambia la forma de relacionarse con ello."
+    },
+    "28": {
+      "title": "Consciencia",
+      "category": "Espiritualidad",
+      "Pasado": "Una toma de consciencia anterior marcó un antes y un después. Tal vez viste algo que ya no pudiste dejar de ver, aunque tardaras en vivir de acuerdo con ello.",
+      "Presente": "Hay una oportunidad de ver con mayor presencia lo que está ocurriendo. La consciencia no exige resolverlo todo; primero ilumina la relación que tienes con la situación.",
+      "Futuro": "Si continúas integrando lo aprendido, puede abrirse un nivel de libertad y coherencia mayor. El futuro aquí es menos un acontecimiento que una forma distinta de estar."
+    }
+  },
+  "Desafío y Consejo": {
+    "0": {
+      "title": "Comodín",
+      "category": "-",
+      "Situación actual": "Hay más potencial que forma. Quizá la situación todavía no deba clasificarse: puede contener varias direcciones, significados o papeles al mismo tiempo.",
+      "Desafío": "El reto puede ser tolerar lo indeterminado sin precipitar una explicación. También puede señalar dispersión: demasiadas posibilidades pueden impedir escoger una experiencia concreta.",
+      "Consejo": "No fuerces una respuesta definitiva. Deja un espacio vacío para que aparezca lo inesperado y utiliza esta carta como permiso para combinar, reinterpretar o empezar de nuevo."
+    },
+    "1": {
+      "title": "Conexión",
+      "category": "Ciencia",
+      "Situación actual": "La situación parece girar alrededor de un vínculo invisible pero decisivo. Pregúntate qué está realmente conectado aquí y qué solo aparenta estarlo.",
+      "Desafío": "El obstáculo puede ser una desconexión propia, una comunicación interrumpida o una señal que no quieres recibir. También puede haber demasiado ruido alrededor de una intuición sencilla.",
+      "Consejo": "Vuelve al punto de origen. Reduce el ruido, observa lo que te enlaza de forma genuina y atiende la señal antes de intentar explicarla."
+    },
+    "2": {
+      "title": "Eficacia",
+      "category": "Ciencia",
+      "Situación actual": "La cuestión central es práctica: ¿qué está dando resultado y qué consume energía sin acercarte al objetivo? La carta invita a mirar el mecanismo, no solo la intención.",
+      "Desafío": "El reto puede estar en confundir actividad con avance, o perfección con eficacia. También puede surgir una solución útil que contradiga tu forma habitual de hacer las cosas.",
+      "Consejo": "Busca el gesto preciso. Simplifica, prueba, corrige y conserva aquello que realmente mueve la situación hacia adelante."
+    },
+    "3": {
+      "title": "Monje y Guerrero",
+      "category": "Ciencia",
+      "Situación actual": "La situación pide equilibrio entre el monje y el guerrero: comprender sin inmovilizarse, actuar sin perder centro. Uno de los dos puede estar ocupando demasiado espacio.",
+      "Desafío": "El obstáculo puede ser actuar sin escuchar o refugiarse en la contemplación para no actuar. También puede encarnar a otra persona que fuerza uno de esos extremos.",
+      "Consejo": "Haz que la acción nazca del centro. Escucha primero, decide después y actúa sin abandonar la observación que te permitió comprender."
+    },
+    "4": {
+      "title": "Sabiduría",
+      "category": "Ciencia",
+      "Situación actual": "Hay conocimiento disponible, pero necesita ser reconocido como tal. Tal vez la respuesta esté en unir experiencia, paciencia y perspectiva.",
+      "Desafío": "El reto puede ser creer que saber equivale a comprender, o usar la experiencia como rigidez. La sabiduría se pierde cuando deja de escuchar.",
+      "Consejo": "Recoge lo aprendido y deja caer lo accesorio. Habla, decide o actúa desde aquello que ha pasado por la experiencia y ya no necesita demostrar nada."
+    },
+    "5": {
+      "title": "Origen",
+      "category": "Ciencia",
+      "Situación actual": "La situación toca el tema del origen: de una idea, un vínculo, un conflicto o incluso una versión de ti mismo. Comprender dónde empezó puede cambiar cómo lo miras.",
+      "Desafío": "El obstáculo puede ser quedar atrapado en el origen, idealizarlo o rechazarlo. También puede haber una historia heredada que condiciona más de lo que parece.",
+      "Consejo": "Regresa a la raíz para comprender, no para retroceder. Distingue qué parte de ese origen merece ser honrada y cuál necesita ser superada."
+    },
+    "6": {
+      "title": "La llamada",
+      "category": "Ciencia",
+      "Situación actual": "La escena contiene una invitación. Puede venir de dentro, de otra persona o de las circunstancias, pero pide una respuesta consciente.",
+      "Desafío": "El reto puede ser ignorar la llamada, responder a una llamada que no es tuya o confundir obligación con propósito. Escuchar bien es parte de la prueba.",
+      "Consejo": "Detente lo suficiente para reconocer qué te está llamando realmente. Responde desde la claridad, no desde el automatismo."
+    },
+    "7": {
+      "title": "Regeneración",
+      "category": "Ciencia",
+      "Situación actual": "La situación pide renovar estructuras, hábitos o miradas. No necesariamente destruirlo todo, sino permitir que lo vivo sustituya a lo que ya quedó vacío.",
+      "Desafío": "El obstáculo puede ser querer volver exactamente al estado anterior. También puede haber resistencia a abandonar una forma conocida aunque ya no tenga vida.",
+      "Consejo": "Cuida lo que está naciendo. Retira lo agotado, conserva lo esencial y permite que la nueva forma tenga tiempo para organizarse."
+    },
+    "8": {
+      "title": "Inspiración",
+      "category": "Arte",
+      "Situación actual": "La situación contiene una posibilidad creativa todavía no del todo formulada. Algo quiere ser imaginado antes de ser resuelto.",
+      "Desafío": "El reto puede ser bloquear la inspiración con control, miedo o exceso de explicación. También puede aparecer una seducción creativa que distrae del sentido profundo.",
+      "Consejo": "Haz espacio. Escucha la primera imagen, gesto o intuición y deja que se desarrolle antes de juzgar si es útil."
+    },
+    "9": {
+      "title": "Transformación",
+      "category": "Arte",
+      "Situación actual": "Hay un proceso de transformación en marcha. La pregunta no es si todo seguirá igual, sino qué necesita cambiar y qué debe conservar su esencia.",
+      "Desafío": "El obstáculo puede ser aferrarse a una forma por miedo a perder identidad, control o reconocimiento. También puede haber cambios externos que no elegiste.",
+      "Consejo": "Trabaja con el cambio en vez de negarlo. Conserva el núcleo, suelta la forma agotada y observa qué posibilidad aparece al otro lado."
+    },
+    "10": {
+      "title": "Confianza",
+      "category": "Arte",
+      "Situación actual": "El centro de la cuestión es cuánto confías en el proceso, en ti o en alguien implicado. Esa confianza necesita distinguir intuición de deseo.",
+      "Desafío": "El reto puede ser la inseguridad, pero también el exceso de confianza. Creer sin observar puede ser tan limitante como dudar de todo.",
+      "Consejo": "Avanza con confianza vigilante. Da el siguiente paso sin exigir garantías absolutas, pero mantén los ojos abiertos."
+    },
+    "11": {
+      "title": "Visión",
+      "category": "Arte",
+      "Situación actual": "La situación requiere mirar más allá de la superficie. Hay información disponible, pero necesita perspectiva para convertirse en visión.",
+      "Desafío": "El obstáculo puede ser una mirada estrecha, una imagen idealizada o la dificultad de ver lo que contradice tus expectativas. También otro puede estar imponiendo su visión.",
+      "Consejo": "Cambia de altura, distancia o ángulo. Antes de actuar, mira la escena como si no supieras todavía qué significa."
+    },
+    "12": {
+      "title": "Totalidad",
+      "category": "Arte",
+      "Situación actual": "Hay muchas voces, capas o factores actuando a la vez. La clave puede estar en comprender el conjunto sin reducirlo a una sola explicación.",
+      "Desafío": "El reto puede ser abarcar demasiado y perder concreción, o identificarse con una parte creyendo que es el todo. La amplitud también necesita centro.",
+      "Consejo": "Incluye lo que habías dejado fuera. Busca una mirada capaz de sostener varias verdades parciales sin forzarlas a ser idénticas."
+    },
+    "13": {
+      "title": "Éxito",
+      "category": "Arte",
+      "Situación actual": "La situación contiene una posibilidad de culminación o reconocimiento. Falta distinguir si persigues el éxito esencial o solo su apariencia.",
+      "Desafío": "El obstáculo puede ser el miedo al fracaso, pero también quedar atrapado en la necesidad de triunfar. A veces el éxito externo desvía del propósito original.",
+      "Consejo": "Define qué sería un logro verdadero antes de perseguirlo. Después, trabaja con constancia y deja que el resultado sea consecuencia, no amo."
+    },
+    "14": {
+      "title": "Fascinación",
+      "category": "Arte",
+      "Situación actual": "La escena contiene brillo, encanto o poder de atracción. La pregunta es si estás contemplando algo o quedando absorbido por ello.",
+      "Desafío": "El reto puede ser la idealización, el culto a la apariencia o una atracción que reduce tu discernimiento. También puede ser necesario atravesar la fascinación para encontrar su núcleo verdadero.",
+      "Consejo": "Disfruta de la belleza sin entregarle tu criterio. Mira dos veces: una con asombro y otra sin el hechizo."
+    },
+    "15": {
+      "title": "Observación",
+      "category": "Filosofía",
+      "Situación actual": "El punto central es mirar con atención lo que realmente ocurre, incluido tu propio papel en la escena. El observador también forma parte de lo observado.",
+      "Desafío": "El obstáculo puede ser mirar desde prejuicios, conclusiones previas o hipervigilancia. Observar no es controlar: es permitir que algo se muestre.",
+      "Consejo": "Mira sin corregir inmediatamente. Inclúyete en la observación y pregunta qué cambia cuando dejas de mirar solo desde tu posición habitual."
+    },
+    "16": {
+      "title": "Discernimiento",
+      "category": "Filosofía",
+      "Situación actual": "Hay elementos mezclados que necesitan ser diferenciados. La claridad no llegará acumulando más información, sino distinguiendo mejor.",
+      "Desafío": "El reto puede ser separar sin fragmentar, o decidir sin certeza total. También puede haber apariencias convincentes que oculten motivaciones distintas.",
+      "Consejo": "No preguntes solo “¿es bueno o malo?”. Pregunta de dónde viene, adónde conduce y qué efecto produce en ti cuando lo contemplas sin prisa."
+    },
+    "17": {
+      "title": "Dogmatismo",
+      "category": "Filosofía",
+      "Situación actual": "La situación parece atravesada por certezas fuertes. Puede tratarse de tus propias ideas, de otra persona o de un sistema de creencias que condiciona el escenario.",
+      "Desafío": "El dogmatismo puede ser el propio o el que encuentras enfrente: una persona, un grupo, una institución o una creencia social. El reto es no combatir rigidez convirtiéndote en su espejo.",
+      "Consejo": "Sostén tus convicciones sin cerrar la puerta a la diferencia. Pregunta qué parte de tu certeza nace de experiencia viva y cuál solo necesita tener razón."
+    },
+    "18": {
+      "title": "La caverna",
+      "category": "Filosofía",
+      "Situación actual": "La situación contiene una limitación de perspectiva. Tal vez no falte solución, sino espacio mental para imaginar que hay algo fuera del marco actual.",
+      "Desafío": "El obstáculo puede ser el miedo a abandonar una explicación conocida, incluso si te aprisiona. También puede haber un entorno que refuerza esa caverna.",
+      "Consejo": "Busca una grieta en la pared, no una respuesta perfecta. Contrasta, amplía perspectiva y permite que una pequeña evidencia nueva cuestione el escenario completo."
+    },
+    "19": {
+      "title": "Vuelo",
+      "category": "Filosofía",
+      "Situación actual": "Algo necesita elevarse por encima de la repetición. Quizá la salida sea cambiar de nivel de comprensión antes que insistir en el mismo plano de acción.",
+      "Desafío": "El reto puede ser confundir libertad con huida, o quedarse pegado a una dificultad por miedo a perder control. Volar requiere soltar, pero también dirección.",
+      "Consejo": "Toma altura. Mira el conjunto, aligera lo que no necesitas y vuelve a la situación con una perspectiva más amplia."
+    },
+    "20": {
+      "title": "Divergencia",
+      "category": "Filosofía",
+      "Situación actual": "La situación está atravesada por una bifurcación. Antes de elegir un lado, conviene comprender qué verdad parcial protege cada camino.",
+      "Desafío": "El obstáculo puede ser convertir la diferencia en enemistad o sentir que solo una opción puede existir. También puede haber una divergencia interna entre lo que piensas, sientes y haces.",
+      "Consejo": "No fuerces una unión prematura. Deja que las diferencias se expresen, identifica su raíz y busca el punto donde puedan relacionarse sin anularse."
+    },
+    "21": {
+      "title": "Liberación",
+      "category": "Filosofía",
+      "Situación actual": "La escena gira alrededor de un vínculo que aprieta demasiado: una creencia, obligación, miedo, papel o relación con un resultado.",
+      "Desafío": "El obstáculo puede ser una atadura visible o una identificación más sutil: necesitar tener razón, ser aprobado, conservar una imagen o repetir una historia.",
+      "Consejo": "Pregunta qué podrías soltar sin perderte a ti mismo. Afloja primero la identificación; muchas veces la cadena se debilita antes que la circunstancia."
+    },
+    "22": {
+      "title": "La clave",
+      "category": "Espiritualidad",
+      "Situación actual": "Existe un elemento que desbloquea el conjunto. Puede ser una pregunta, un gesto, una renuncia, una conversación o una comprensión interior.",
+      "Desafío": "El reto puede ser buscar llaves espectaculares y pasar por alto la que ya tienes. También puedes intentar abrir una puerta que no te corresponde.",
+      "Consejo": "Identifica qué pequeño cambio produciría una gran diferencia. No fuerces la puerta: comprende primero qué mecanismo estás intentando abrir."
+    },
+    "23": {
+      "title": "Transmutación",
+      "category": "Espiritualidad",
+      "Situación actual": "Hay materia prima para una transformación real. El proceso puede sentirse incómodo porque no se trata de decorar lo viejo, sino de alterar su cualidad.",
+      "Desafío": "El obstáculo es querer cambiar sin soltar aquello que debe transformarse. El ego puede preferir conservar una ganancia conocida antes que atravesar una pérdida de forma.",
+      "Consejo": "No desperdicies la energía del conflicto. Pregunta en qué podría convertirse si dejas de usarla para defender la forma anterior."
+    },
+    "24": {
+      "title": "Amor",
+      "category": "Espiritualidad",
+      "Situación actual": "La pregunta central puede ser qué forma adopta el amor en esta escena: acercarse, comprender, poner un límite, acompañar o dejar libre.",
+      "Desafío": "El reto es no confundir amor con dependencia, complacencia o idealización. A veces amar exige ver con claridad aquello que preferiríamos justificar.",
+      "Consejo": "Busca la acción que aumente comprensión y dignidad, no solo comodidad. Inclúyete también a ti dentro de aquello que merece cuidado."
+    },
+    "25": {
+      "title": "Cambio",
+      "category": "Espiritualidad",
+      "Situación actual": "Algo está dejando de encajar con la estructura anterior. La tensión quizá no sea señal de error, sino de que la forma necesita actualizarse.",
+      "Desafío": "El obstáculo puede ser resistir el cambio por miedo, o cambiar compulsivamente para no profundizar. No todo movimiento es transformación.",
+      "Consejo": "Distingue qué cambio ya está ocurriendo y coopera con su parte necesaria. No aceleres lo que necesita madurar ni retengas lo que ya terminó."
+    },
+    "26": {
+      "title": "Compromiso",
+      "category": "Espiritualidad",
+      "Situación actual": "La escena exige constancia, responsabilidad o una definición clara de prioridades. Algo pide saber si estás dentro de verdad o solo cerca.",
+      "Desafío": "El obstáculo puede ser comprometerse por obligación, miedo o imagen, o evitar todo compromiso para conservar opciones. Ambos extremos pueden vaciar el camino.",
+      "Consejo": "Elige aquello que puedas sostener con libertad. Comprométete menos con la apariencia del resultado y más con la calidad del paso que repites."
+    },
+    "27": {
+      "title": "Comprensión",
+      "category": "Espiritualidad",
+      "Situación actual": "No parece faltar información, sino integración. Varias piezas ya están presentes, pero aún no forman una imagen comprensible.",
+      "Desafío": "El reto puede ser querer comprender demasiado rápido o usar la comprensión para justificar lo injustificable. Comprender no significa aprobar.",
+      "Consejo": "Busca el sentido que conecta las piezas sin negar los hechos. Deja que la comprensión amplíe tu respuesta en lugar de cerrarla."
+    },
+    "28": {
+      "title": "Consciencia",
+      "category": "Espiritualidad",
+      "Situación actual": "La clave de la escena puede ser simplemente darse cuenta: de un patrón, una elección, una reacción automática o una verdad que estaba delante.",
+      "Desafío": "El obstáculo puede ser saber algo intelectualmente sin encarnarlo, o usar la idea de consciencia como superioridad. Ver más implica también asumir mayor responsabilidad.",
+      "Consejo": "Permanece presente y observa qué sabes ahora que antes no sabías. Deja que esa comprensión modifique el siguiente gesto, aunque sea pequeño."
+    }
+  }
+}
 }

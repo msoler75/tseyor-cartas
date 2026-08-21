@@ -364,8 +364,11 @@
         return state;
 
       case "NEXT_DRAW": {
-        // T7: "Sacar otra carta" — solo desde draw/reveal y con canDraw
-        // (R3-W2): nunca abrir un carousel con pool vacío o una 4ª tirada.
+        // T7: "Sacar otra carta" — desde draw/reveal o review/spread, con canDraw.
+        if (state.mode === "review" && state.phase === "spread") {
+          if (!getDrawGuard(state, poolFor(state)).canDraw) return state;
+          return { ...state, mode: "draw", phase: "carousel", selectedId: null };
+        }
         if (state.mode !== "draw" || state.phase !== "reveal") return state;
         if (!getDrawGuard(state, poolFor(state)).canDraw) return state;
         return { ...state, phase: "carousel", selectedId: null };
@@ -381,37 +384,29 @@
         return { ...state, mode: "review", phase: "spread", selectedId: null };
       }
 
-      case "REVIEW_TAP": {
-        // T9: tocar una carta del spread abre su detalle (REVIEW-2). Solo sin
-        // diálogo abierto y con cartas de la tirada actual.
+      case "FOCUS_CARD": {
+        // T9: tocar una carta del spread → draw/reveal (vista de carta ampliada)
         if (state.mode !== "review" || state.phase !== "spread") return state;
-        if (state.selectedId !== null) return state; // ya abierto — no-op
         const cardId = action.cardId;
         if (typeof cardId !== "string") return state;
         if (!state.drawn.some((d) => d.cardId === cardId)) return state;
-        return { ...state, selectedId: cardId };
-      }
-
-      case "REVIEW_CLOSE": {
-        // T10: "Cerrar" — solo con el diálogo abierto; el spread queda igual
-        // (REVIEW-2/3).
-        if (state.mode !== "review" || state.phase !== "spread") return state;
-        if (state.selectedId === null) return state;
-        return { ...state, selectedId: null };
+        return {
+          ...state,
+          mode: "draw",
+          phase: "reveal",
+          selectedId: cardId
+        };
       }
 
       case "REVIEW_BACK": {
-        // T11: "Volver" sin diálogo — reanuda en el último reveal (REVIEW-4).
+        // T11: "Volver" — reanuda en el último reveal (REVIEW-4).
         if (state.mode !== "review" || state.phase !== "spread") return state;
-        if (state.selectedId !== null) return state; // con diálogo: cerrar antes
         return resumeFromReview(state);
       }
 
       case "ESCAPE": {
-        // T10/T11/T13: Escape cierra el diálogo si está abierto; sin diálogo
-        // vuelve al último reveal; en fases de draw es no-op (DRAW-7).
+        // En review → vuelve al último reveal; en draw → no-op
         if (state.mode !== "review" || state.phase !== "spread") return state;
-        if (state.selectedId !== null) return { ...state, selectedId: null };
         return resumeFromReview(state);
       }
 
@@ -616,13 +611,13 @@
       actions.appendChild(hint);
     }
 
-    // T8 (Slice 3): "Ver tirada" habilitado solo con drawn.length >= 1
-    // (REVIEW-1). En home normal (drawn = 0) permanece deshabilitado.
-    const reviewBtn = el("button", "btn btn--secondary", "Ver tirada");
-    reviewBtn.type = "button";
-    reviewBtn.disabled = state.drawn.length === 0;
-    reviewBtn.addEventListener("click", () => dispatch({ type: "REVIEW_OPEN" }));
-    actions.appendChild(reviewBtn);
+    // T8: "Ver tirada" solo con 2+ cartas sacadas
+    if (state.drawn.length >= 2) {
+      const reviewBtn = el("button", "btn btn--secondary", "Ver tirada");
+      reviewBtn.type = "button";
+      reviewBtn.addEventListener("click", () => dispatch({ type: "REVIEW_OPEN" }));
+      actions.appendChild(reviewBtn);
+    }
 
     section.appendChild(actions);
     setRoot(root, section);
@@ -740,26 +735,73 @@
     const title = el("h2", "reveal-title", formatTitle(card, col));
     const detail = el("div", "reveal-detail");
 
-    // Texto de la carta
+    // Texto de la carta (colapsable)
     if (card.meaning) {
-      const cardText = el("div", "reveal-card-text");
-      cardText.innerHTML = renderMarkdown(card.meaning);
-      detail.appendChild(cardText);
+      const wrap = el("div", "collapse-wrap");
+      const inner = el("div", "reveal-card-text");
+      inner.innerHTML = renderMarkdown(card.meaning);
+      wrap.appendChild(inner);
+      const key = "collapse-card-" + card.id;
+      const toggle = createCollapseToggle(wrap, key, "descripción de " + formatTitle(card, col));
+      detail.appendChild(toggle);
+      detail.appendChild(wrap);
     }
 
-    // Texto de la categoría
+    // Texto de la categoría (colapsable)
     const catKey = (card.category || "").toLowerCase();
     const categories = col.categories || [];
     const catObj = categories.find(function (c) {
       return (c.label || "").toLowerCase() === catKey;
     });
     if (catObj && catObj.meaning) {
-      const catSection = el("div", "reveal-category-text");
-      catSection.innerHTML = renderMarkdown(catObj.meaning);
-      detail.appendChild(catSection);
+      const wrap = el("div", "collapse-wrap");
+      const inner = el("div", "reveal-category-text");
+      inner.innerHTML = renderMarkdown(catObj.meaning);
+      wrap.appendChild(inner);
+      const key = "collapse-cat-" + catKey;
+      const toggle = createCollapseToggle(wrap, key, "descripción de " + (catObj.label || catKey));
+      detail.appendChild(toggle);
+      detail.appendChild(wrap);
     }
 
     return { kicker, title, detail };
+  }
+
+  /** Chevron SVG para los botones de colapsar */
+  const CHEVRON_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+
+  /**
+   * Crea un botón toggle para una sección colapsable.
+   * Primera vez: expandido. Después: recuerda estado de localStorage.
+   */
+  function createCollapseToggle(wrap, storageKey, label) {
+    const btn = el("button", "collapse-toggle");
+    btn.type = "button";
+
+    // Recuperar estado de localStorage (primera vez: colapsado)
+    const saved = localStorage.getItem(storageKey);
+    if (saved === "expanded") {
+      wrap.classList.add("is-expanded");
+    } else {
+      wrap.classList.add("is-collapsed");
+      btn.classList.add("is-collapsed");
+    }
+
+    function updateBtn() {
+      const collapsed = wrap.classList.contains("is-collapsed");
+      btn.innerHTML = CHEVRON_SVG + "<span>" + (collapsed ? "Ver " + label : "Ocultar " + label) + "</span>";
+    }
+    updateBtn();
+
+    btn.addEventListener("click", function () {
+      const isCollapsed = wrap.classList.toggle("is-collapsed");
+      wrap.classList.toggle("is-expanded", !isCollapsed);
+      btn.classList.toggle("is-collapsed", isCollapsed);
+      updateBtn();
+      localStorage.setItem(storageKey, isCollapsed ? "collapsed" : "expanded");
+    });
+
+    return btn;
   }
 
   /** Convierte markdown básico a HTML: ##, ###, **, párrafos */
@@ -859,14 +901,15 @@
       // Tope 3/3 (DRAW-4) o pool agotado (DECK-2): copia exacta del hint.
       actions.appendChild(el("p", "hint", guard.hint));
     }
-    // T8 (Slice 3): "Ver tirada" habilitado con drawn >= 1 (siempre en reveal).
-    const reviewBtn = el("button", "btn btn--secondary", "Ver tirada");
-    reviewBtn.type = "button";
-    reviewBtn.disabled = state.drawn.length === 0;
-    reviewBtn.addEventListener("click", () =>
-      transitionDispatch({ type: "REVIEW_OPEN" }, "forward")
-    );
-    actions.appendChild(reviewBtn);
+    // T8: "Ver tirada" solo con 2+ cartas sacadas
+    if (state.drawn.length >= 2) {
+      const reviewBtn = el("button", "btn btn--secondary", "Ver tirada");
+      reviewBtn.type = "button";
+      reviewBtn.addEventListener("click", () =>
+        transitionDispatch({ type: "REVIEW_OPEN" }, "forward")
+      );
+      actions.appendChild(reviewBtn);
+    }
     // T12 (Slice 3): "Nueva tirada" — reset instantáneo también desde reveal.
     const resetBtn = el("button", "btn btn--ghost", "Nueva tirada");
     resetBtn.type = "button";
@@ -932,7 +975,7 @@
       btn.dataset.cardId = cardData.id; // para restaurar foco al cerrar (T10)
       btn.setAttribute("aria-label", `${position} · ${cardData.title}`);
       btn.addEventListener("click", () =>
-        dispatch({ type: "REVIEW_TAP", cardId: cardData.id })
+        dispatch({ type: "FOCUS_CARD", cardId: cardData.id })
       );
 
       const face = el("span", "spread-face");
@@ -977,15 +1020,17 @@
     });
     section.appendChild(list);
 
-    // T11: "Volver" reanuda en el último reveal (REVIEW-4); T12: "Nueva
-    // tirada" resetea al instante desde la vista de spread (REVIEW-5).
+    // T12: "Nueva tirada" resetea al instante desde la vista de spread.
     const actions = el("div", "spread-actions");
-    const backBtn = el("button", "btn btn--secondary", "Volver");
-    backBtn.type = "button";
-    backBtn.addEventListener("click", () =>
-      transitionDispatch({ type: "REVIEW_BACK" }, "back")
-    );
-    actions.appendChild(backBtn);
+    const guard = getDrawGuard(state, poolFor(state));
+    if (guard.canDraw) {
+      const drawBtn = el("button", "btn btn--primary", "Sacar otra carta");
+      drawBtn.type = "button";
+      drawBtn.addEventListener("click", () =>
+        transitionDispatch({ type: "NEXT_DRAW" }, "forward")
+      );
+      actions.appendChild(drawBtn);
+    }
     const resetBtn = el("button", "btn btn--ghost", "Nueva tirada");
     resetBtn.type = "button";
     resetBtn.addEventListener("click", () =>
@@ -1424,201 +1469,6 @@
    * queda inert para que el fondo sea inerte pero el diálogo siga vivo.
    * ---------------------------------------------------------------------- */
 
-  /** Vacía un contenedor (fallback seguro sin Element.replaceChildren). */
-  function clearNode(node) {
-    if (typeof node.replaceChildren === "function") {
-      node.replaceChildren();
-    } else {
-      node.textContent = "";
-    }
-  }
-
-  /** REVIEW-2: inerta / des-inerta #app (propiedad + atributo, R4-safe). */
-  function setInert(on) {
-    const app = document.getElementById("app");
-    if (!app) return;
-    if (on) {
-      app.setAttribute("inert", "");
-      app.inert = true;
-    } else {
-      app.removeAttribute("inert");
-      app.inert = false;
-    }
-  }
-
-  /** Selector de elementos enfocables dentro del diálogo (REVIEW-3). */
-  const FOCUSABLE_SEL =
-    'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
-
-  /** Enfocables reales (visibles) de un contenedor. */
-  function focusablesIn(container) {
-    return Array.from(container.querySelectorAll(FOCUSABLE_SEL)).filter(
-      (n) => n.getClientRects().length > 0
-    );
-  }
-
-  /**
-   * REVIEW-3 — trampa de foco: Tab/Shift+Tab ciclan DENTRO del diálogo. Se
-   * computa per-pulsación (los visibles cambian según is-open) y hay un
-   * reductor de foco que recoloca cualquier fuga fuera del diálogo.
-   */
-  function trapKeydown(event) {
-    if (event.key !== "Tab") return;
-    const root = document.getElementById("dialog-root");
-    if (!root) return;
-    const dialog = root.querySelector(".dialog");
-    if (!dialog) return;
-    const focusables = focusablesIn(dialog);
-    if (focusables.length === 0) {
-      event.preventDefault();
-      return;
-    }
-    const first = focusables[0];
-    const last = focusables[focusables.length - 1];
-    const active = document.activeElement;
-    if (event.shiftKey) {
-      if (active === first || !dialog.contains(active)) {
-        event.preventDefault();
-        last.focus();
-      }
-    } else if (active === last || !dialog.contains(active)) {
-      event.preventDefault();
-      first.focus();
-    }
-  }
-
-  function trapFocusIn(event) {
-    const root = document.getElementById("dialog-root");
-    if (!root || !root.classList.contains("is-open")) return;
-    const dialog = root.querySelector(".dialog");
-    if (!dialog || dialog.contains(event.target)) return;
-    const focusables = focusablesIn(dialog);
-    if (focusables.length > 0) focusables[0].focus();
-  }
-
-  function bindDialogTrap() {
-    document.addEventListener("keydown", trapKeydown);
-    document.addEventListener("focusin", trapFocusIn);
-  }
-
-  function unbindDialogTrap() {
-    document.removeEventListener("keydown", trapKeydown);
-    document.removeEventListener("focusin", trapFocusIn);
-  }
-
-  /**
-   * T9: abre el diálogo con el detalle compartido (D10). Pone #app inert
-   * (REVIEW-2), activa la trampa de foco (REVIEW-3) y mueve el foco DENTRO
-   * del diálogo (botón "Cerrar").
-   */
-  function openDialog(cardId) {
-    const root = document.getElementById("dialog-root");
-    const state = Cartas.state;
-    const card = deck().cards.find((c) => c.id === cardId);
-    if (!card || !root) return;
-
-    const posIndex = state.drawn.findIndex((d) => d.cardId === cardId);
-    const position = positionLabels()[posIndex] || "";
-    const { kicker, title, detail } = renderDetail(card, position); // D10
-
-    title.id = "dialog-title";
-    title.tabIndex = -1;
-    detail.classList.add("is-visible"); // dentro del diálogo siempre visible
-
-    const dialog = el("div", "dialog");
-    dialog.setAttribute("role", "dialog");
-    dialog.setAttribute("aria-modal", "true");
-    dialog.setAttribute("aria-labelledby", "dialog-title");
-
-    const col = collection();
-    const imgFolder = col.images_folder || "";
-
-    const face = el("span", "dialog-face");
-    // Cara frontal de la carta en el diálogo: imagen base + ilustración + título
-    if (col.front_image) {
-      const frontBg = el("img", "dialog-face-bg");
-      frontBg.src = `${imgFolder}/${col.front_image}`;
-      frontBg.alt = "";
-      frontBg.draggable = false;
-      face.appendChild(frontBg);
-    }
-    if (card.image && imgFolder) {
-      const artImg = el("img", "dialog-face-art");
-      artImg.src = card._imagePath || `${imgFolder}/${card.image}`;
-      artImg.alt = "";
-      artImg.draggable = false;
-      applyImagePadding(artImg, col, card);
-      face.appendChild(artImg);
-    }
-    if (card.draw_title !== false) {
-      const dialogTitle = el("span", "dialog-face-title", formatTitle(card, col));
-      applyTitleStyle(dialogTitle, col, card.title_style);
-      applyTitlePadding(dialogTitle, col);
-      face.appendChild(dialogTitle);
-    }
-    if (card.category && card.draw_category !== false) {
-      const catEl = el("span", "dialog-face-category", card.category);
-      applyCategoryStyle(catEl, col);
-      applyCategoryPadding(catEl, col);
-      face.appendChild(catEl);
-    }
-
-    const actions = el("div", "dialog-actions");
-    const closeBtn = el("button", "btn btn--secondary", "Cerrar");
-    closeBtn.type = "button";
-    closeBtn.addEventListener("click", () => dispatch({ type: "REVIEW_CLOSE" }));
-    // REVIEW-5: "Nueva tirada" es ALCANZABLE con el diálogo abierto (footer
-    // propio del diálogo, hermano de #app): cierra diálogo, quita trap e
-    // inert y resetea al instante.
-    const resetBtn = el("button", "btn btn--ghost", "Nueva tirada");
-    resetBtn.type = "button";
-    resetBtn.addEventListener("click", () => dispatch({ type: "RESET" }));
-    actions.append(closeBtn, resetBtn);
-
-    dialog.append(kicker, title, face, detail, actions);
-    clearNode(root);
-    root.appendChild(dialog);
-
-    setInert(true); // REVIEW-2: fondo inerte; el diálogo (hermano) sigue vivo
-    unbindDialogTrap();
-    bindDialogTrap(); // REVIEW-3: Tab/Shift+Tab ciclan dentro del diálogo
-
-    // DRAW-7 (Slice 3): el diálogo anuncia título + posición por aria-live,
-    // mismo patrón que el reveal — contexto claro para lectores de pantalla.
-    announce(`${card.title} — ${position}`);
-
-    // La clase vuelve visible el diálogo antes de mover el foco. Enfocar un
-    // descendiente con visibility:hidden falla silenciosamente en Chromium.
-    window.requestAnimationFrame(() => {
-      root.classList.add("is-open");
-      closeBtn.focus({ preventScroll: true });
-    });
-  }
-
-  /**
-   * T10: cierra el diálogo, quita inert y devuelve el foco a la carta que lo
-   * abrió (REVIEW-2/3). El spread se re-renderizó con selectedId null, así
-   * que la carta activadora se busca por su data-card-id.
-   */
-  function closeDialogFocus(cardId) {
-    const root = document.getElementById("dialog-root");
-    if (!root) return;
-    root.classList.remove("is-open");
-    // Limpieza tras el fundido de salida (CSS dueño del movimiento; con
-    // reduced-motion las transiciones son instantáneas y apenas se nota).
-    window.setTimeout(() => {
-      if (!root.classList.contains("is-open") && root.firstChild) {
-        clearNode(root);
-      }
-    }, 240);
-    setInert(false);
-    unbindDialogTrap(); // REVIEW-3: la trampa se suelta al cerrar
-    if (cardId) {
-      const card = document.querySelector(`.spread-card[data-card-id="${cardId}"]`);
-      if (card) card.focus(); // REVIEW-2: foco de vuelta a la carta activadora
-    }
-  }
-
   /** Foco en la primera carta del spread al entrar en review (T8). */
   function focusFirstSpreadCard() {
     const root = document.getElementById("app");
@@ -1667,20 +1517,8 @@
     const next = transition(prev, action);
     if (next === prev) return false;
 
-    const prevDialog =
-      prev.mode === "review" && prev.phase === "spread" && prev.selectedId !== null;
-    const nextDialog =
-      next.mode === "review" && next.phase === "spread" && next.selectedId !== null;
-
     Cartas.state = next;
     render();
-
-    // Diálogo de revisión: hermano de #app, vida imperativa (REVIEW-2).
-    if (nextDialog && !prevDialog) {
-      openDialog(next.selectedId);
-    } else if (!nextDialog && prevDialog) {
-      closeDialogFocus(prev.selectedId);
-    }
 
     // Foco derivado del cambio real (R2-W1): solo cuando cambió el esqueleto.
     if (next.mode === "draw" && next.phase === "carousel" && prev.phase !== "carousel") {
@@ -1693,6 +1531,10 @@
       focusFirstSpreadCard();
     } else if (next.mode === "draw" && next.phase === "home" && prev.phase !== "home") {
       focusHomePrimary();
+    } else if (next.mode === "draw" && next.phase === "reveal" && prev.mode === "review") {
+      // FOCUS_CARD: foco en el título del reveal
+      const title = document.querySelector(".reveal-title");
+      if (title) title.focus({ preventScroll: true });
     }
     return true;
   }
@@ -1709,7 +1551,6 @@
     }
     // Recarga → home (sin persistencia; DRAW-1, REVIEW-5).
     Cartas.state = createInitialState();
-    setInert(false); // defensivo: ningún estado previo deja #app inert
     render();
     bindGlobalKeys();
 

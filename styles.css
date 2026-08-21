@@ -1127,12 +1127,75 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
 .reveal-category-text h2 { font-size: 1.1rem; }
 .reveal-category-text h3 { font-size: 1rem; font-weight: 600; }
 
+/* Collapse: secciones colapsables */
+.collapse-wrap {
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+
+.collapse-wrap.is-collapsed {
+  max-height: 0;
+}
+
+.collapse-wrap.is-expanded {
+  max-height: 5000px;
+}
+
+.collapse-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+}
+
+.collapse-toggle:hover {
+  color: var(--accent-strong);
+}
+
+.collapse-toggle svg {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.3s ease;
+}
+
+/* Chevron: expandido → apunta abajo (para colapsar), colapsado → apunta arriba (para expandir) */
+.collapse-toggle svg {
+  transform: rotate(180deg);
+}
+
+.collapse-toggle.is-collapsed svg {
+  transform: rotate(0deg);
+}
+
+/* Botón colapsado: estilo más grande y centrado */
+.collapse-toggle.is-collapsed {
+  width: 100%;
+  justify-content: center;
+  padding: 0.6em 1.2em;
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper-deep);
+  color: var(--accent);
+}
+
 .reveal-actions {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.9rem;
-  margin-top: 0.5rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
 }
 
 /* ---------------------------------------------------------------------------
@@ -1330,6 +1393,14 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   transition: transform 0.25s ease;
 }
 
+/* Cara de la carta siempre visible arriba del diálogo */
+.dialog .dialog-face {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
 .dialog-root.is-open .dialog {
   transform: none;
 }
@@ -1343,7 +1414,7 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   position: relative;
   display: grid;
   place-items: center;
-  width: min(44vw, 150px);
+  width: min(60vw, 220px);
   aspect-ratio: var(--card-aspect, 764 / 1110);
   margin: 1rem 0 1.25rem;
   background: var(--paper-deep);
