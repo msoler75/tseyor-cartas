@@ -180,7 +180,9 @@ window.Cartas = window.Cartas || {};
         description: "",
         image: imgId,
         draw_title: c.draw_title,
+        draw_category: c.draw_category,
         title_style: c.title_style || "",
+        image_padding: c.image_padding || null,
         _imagePath: imagesFolder ? imagesFolder + "/" + imgId : ""
       };
     });

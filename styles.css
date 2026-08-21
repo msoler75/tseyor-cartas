@@ -87,9 +87,7 @@ body {
   font-size: 1rem;
   line-height: 1.5;
   color: var(--ink);
-  background:
-    radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, 0.38), transparent 62%),
-    var(--paper);
+  background: var(--paper);
   padding-left: env(safe-area-inset-left);   /* respiración en notch/barra */
   padding-right: env(safe-area-inset-right);
   padding-bottom: env(safe-area-inset-bottom);
@@ -440,7 +438,7 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
 .card {
   position: relative;
   width: clamp(140px, 38vw, 210px);
-  aspect-ratio: 3 / 4.6;
+  aspect-ratio: var(--card-aspect, 764 / 1110);
   padding: 0;
   border: 0;
   background: transparent;
@@ -558,7 +556,6 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
   border-radius: inherit;
   pointer-events: none;
 }
@@ -741,7 +738,7 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
 .dialog-face {
   position: relative;
   width: min(60vw, 260px);
-  aspect-ratio: 3 / 4.6;
+  aspect-ratio: var(--card-aspect, 764 / 1110);
   margin: 0 auto 1.2rem;
   border-radius: var(--card-radius);
   overflow: hidden;
@@ -894,7 +891,7 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   display: grid;
   place-items: center;
   width: min(72vw, 340px);
-  aspect-ratio: 3 / 4.6;
+  aspect-ratio: var(--card-aspect, 764 / 1110);
   background: var(--paper-deep);
   border: 2px solid var(--ink);
   border-radius: var(--card-radius);
@@ -986,7 +983,7 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
 .card.reveal-card.card--revealed {
   width: min(72vw, 340px);
   height: auto;
-  aspect-ratio: 3 / 4.6;
+  aspect-ratio: var(--card-aspect, 764 / 1110);
   padding: 0;
   border: 0;
   background: transparent;
@@ -1170,7 +1167,7 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   display: grid;
   place-items: center;
   width: clamp(150px, 52vw, 220px);
-  aspect-ratio: 3 / 4.6;
+  aspect-ratio: var(--card-aspect, 764 / 1110);
   background: var(--paper-deep);
   border: 2px solid var(--ink);
   border-radius: var(--card-radius);
@@ -1305,7 +1302,7 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   display: grid;
   place-items: center;
   width: min(44vw, 150px);
-  aspect-ratio: 3 / 4.6;
+  aspect-ratio: var(--card-aspect, 764 / 1110);
   margin: 1rem 0 1.25rem;
   background: var(--paper-deep);
   border: 2px solid var(--ink);

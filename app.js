@@ -35,8 +35,8 @@
    * a partir del image_padding [top, right, bottom, left] del JSON.
    * Los valores se convierten a % del tamaño original de la carta.
    */
-  function applyImagePadding(img, col) {
-    const pad = col.image_padding;
+  function applyImagePadding(img, col, card) {
+    const pad = (card && card.image_padding) || col.image_padding;
     if (!Array.isArray(pad) || pad.length < 4) return;
     const cw = col.width || 764;
     const ch = col.height || 1110;
@@ -643,7 +643,7 @@
         artImg.src = cardData._imagePath || `${imgFolder}/${cardData.image}`;
         artImg.alt = "";
         artImg.draggable = false;
-        applyImagePadding(artImg, col);
+        applyImagePadding(artImg, col, cardData);
         front.appendChild(artImg);
       }
       if (cardData.draw_title !== false) {
@@ -652,7 +652,7 @@
         applyTitlePadding(titleEl, col);
         front.appendChild(titleEl);
       }
-      if (cardData.category) {
+      if (cardData.category && cardData.draw_category !== false) {
         const catEl = el("span", "face-category", cardData.category);
         applyCategoryStyle(catEl, col);
         applyCategoryPadding(catEl, col);
@@ -774,7 +774,7 @@
       artImg.src = cardData._imagePath || `${imgFolder}/${cardData.image}`;
       artImg.alt = "";
       artImg.draggable = false;
-      applyImagePadding(artImg, col);
+      applyImagePadding(artImg, col, cardData);
       revealCard.appendChild(artImg);
     }
     if (cardData.draw_title !== false) {
@@ -783,7 +783,7 @@
       applyTitlePadding(revealTitle, col);
       revealCard.appendChild(revealTitle);
     }
-    if (cardData.category) {
+    if (cardData.category && cardData.draw_category !== false) {
       const catEl = el("span", "reveal-card-category", cardData.category);
       applyCategoryStyle(catEl, col);
       applyCategoryPadding(catEl, col);
@@ -897,7 +897,7 @@
         artImg.src = cardData._imagePath || `${imgFolder}/${cardData.image}`;
         artImg.alt = "";
         artImg.draggable = false;
-        applyImagePadding(artImg, col);
+        applyImagePadding(artImg, col, cardData);
         face.appendChild(artImg);
       }
       if (cardData.draw_title !== false) {
@@ -906,7 +906,7 @@
         applyTitlePadding(faceTitle, col);
         face.appendChild(faceTitle);
       }
-      if (cardData.category) {
+      if (cardData.category && cardData.draw_category !== false) {
         const catEl = el("span", "spread-face-category", cardData.category);
         applyCategoryStyle(catEl, col);
         applyCategoryPadding(catEl, col);
@@ -1493,7 +1493,7 @@
       artImg.src = card._imagePath || `${imgFolder}/${card.image}`;
       artImg.alt = "";
       artImg.draggable = false;
-      applyImagePadding(artImg, col);
+      applyImagePadding(artImg, col, card);
       face.appendChild(artImg);
     }
     if (card.draw_title !== false) {
@@ -1502,7 +1502,7 @@
       applyTitlePadding(dialogTitle, col);
       face.appendChild(dialogTitle);
     }
-    if (card.category) {
+    if (card.category && card.draw_category !== false) {
       const catEl = el("span", "dialog-face-category", card.category);
       applyCategoryStyle(catEl, col);
       applyCategoryPadding(catEl, col);
@@ -1647,6 +1647,11 @@
     // Carga la colección por defecto antes de renderizar
     if (Cartas.loadCollection && !Cartas.collection) {
       await Cartas.loadCollection();
+    }
+    // Aspect ratio de las cartas desde el JSON
+    const col = collection();
+    if (col.width && col.height) {
+      document.documentElement.style.setProperty("--card-aspect", `${col.width} / ${col.height}`);
     }
     // Recarga → home (sin persistencia; DRAW-1, REVIEW-5).
     Cartas.state = createInitialState();
