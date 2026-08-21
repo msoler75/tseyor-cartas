@@ -63,16 +63,57 @@
   }
 
   /**
-   * Calcula y aplica --title-cqw a un elemento según title_size y width
-   * de la colección. El resultado son unidades cqw (container query width)
-   * para que el título sea proporcional al ancho de la carta.
+   * Aplica los estilos CSS de title_style (string "prop: val; prop: val")
+   * a un elemento. Primero aplica el default de la colección, luego el
+   * particular de la carta (si existe), que lo sobreescribe.
    */
-  function applyTitleSize(el, col, multiplier) {
-    if (!col.title_size) return;
-    const baseSize = parseFloat(col.title_size);
-    const configWidth = col.width || 764;
-    const scale = (baseSize / configWidth) * 100 * (multiplier || 1);
-    el.style.setProperty("--title-cqw", `${scale}cqw`);
+  function applyTitleStyle(el, col, cardStyle) {
+    var cw = col.width || 764;
+    if (col.title_style) applyInlineStyle(el, col.title_style, cw);
+    if (cardStyle) applyInlineStyle(el, cardStyle, cw);
+  }
+
+  /**
+   * Aplica las variables --cat-pad-top/right/bottom/left a un elemento
+   * a partir del category_padding [top, right, bottom, left] del JSON.
+   */
+  function applyCategoryPadding(el, col) {
+    const pad = col.category_padding;
+    if (!Array.isArray(pad) || pad.length < 4) return;
+    const cw = col.width || 764;
+    const ch = col.height || 1110;
+    el.style.setProperty("--cat-pad-top", `${pad[0] / ch * 100}%`);
+    el.style.setProperty("--cat-pad-right", `${pad[1] / cw * 100}%`);
+    el.style.setProperty("--cat-pad-bottom", `${pad[2] / ch * 100}%`);
+    el.style.setProperty("--cat-pad-left", `${pad[3] / cw * 100}%`);
+  }
+
+  /**
+   * Aplica category_style a un elemento. px en font-size se convierte a cqw.
+   */
+  function applyCategoryStyle(el, col) {
+    var cw = col.width || 764;
+    if (col.category_style) applyInlineStyle(el, col.category_style, cw);
+  }
+
+  /** Parsea un string CSS "prop: val; prop: val" y lo aplica como inline.
+   *  Si font-size está en px, lo convierte a cqw para que sea proporcional
+   *  al ancho de la carta y no cambie entre estados. */
+  function applyInlineStyle(el, cssText, configWidth) {
+    var cw = configWidth || 764;
+    cssText.split(";").forEach(function (decl) {
+      var parts = decl.split(":");
+      if (parts.length >= 2) {
+        var prop = parts[0].trim();
+        var val = parts.slice(1).join(":").trim();
+        if (prop && val) {
+          if (prop === "font-size" && val.endsWith("px")) {
+            val = (parseFloat(val) / cw * 100) + "cqw";
+          }
+          el.style.setProperty(prop, val);
+        }
+      }
+    });
   }
 
   /**
@@ -605,11 +646,18 @@
         applyImagePadding(artImg, col);
         front.appendChild(artImg);
       }
-      const titleEl = el("span", "face-title", formatTitle(cardData, col));
-      if (col.title_font) titleEl.style.fontFamily = col.title_font;
-      applyTitleSize(titleEl, col);
-      applyTitlePadding(titleEl, col);
-      front.appendChild(titleEl);
+      if (cardData.draw_title !== false) {
+        const titleEl = el("span", "face-title", formatTitle(cardData, col));
+        applyTitleStyle(titleEl, col, cardData.title_style);
+        applyTitlePadding(titleEl, col);
+        front.appendChild(titleEl);
+      }
+      if (cardData.category) {
+        const catEl = el("span", "face-category", cardData.category);
+        applyCategoryStyle(catEl, col);
+        applyCategoryPadding(catEl, col);
+        front.appendChild(catEl);
+      }
 
       inner.append(back, front);
       card.appendChild(inner);
@@ -694,11 +742,18 @@
       applyImagePadding(artImg, col);
       revealCard.appendChild(artImg);
     }
-    const revealTitle = el("span", "reveal-card-title", formatTitle(cardData, col));
-    if (col.title_font) revealTitle.style.fontFamily = col.title_font;
-    applyTitleSize(revealTitle, col);
-    applyTitlePadding(revealTitle, col);
-    revealCard.appendChild(revealTitle);
+    if (cardData.draw_title !== false) {
+      const revealTitle = el("span", "reveal-card-title", formatTitle(cardData, col));
+      applyTitleStyle(revealTitle, col, cardData.title_style);
+      applyTitlePadding(revealTitle, col);
+      revealCard.appendChild(revealTitle);
+    }
+    if (cardData.category) {
+      const catEl = el("span", "reveal-card-category", cardData.category);
+      applyCategoryStyle(catEl, col);
+      applyCategoryPadding(catEl, col);
+      revealCard.appendChild(catEl);
+    }
 
     cardWrap.appendChild(revealCard);
     section.appendChild(cardWrap);
@@ -810,11 +865,18 @@
         applyImagePadding(artImg, col);
         face.appendChild(artImg);
       }
-      const faceTitle = el("span", "spread-face-title", formatTitle(cardData, col));
-      if (col.title_font) faceTitle.style.fontFamily = col.title_font;
-      applyTitleSize(faceTitle, col);
-      applyTitlePadding(faceTitle, col);
-      face.appendChild(faceTitle);
+      if (cardData.draw_title !== false) {
+        const faceTitle = el("span", "spread-face-title", formatTitle(cardData, col));
+        applyTitleStyle(faceTitle, col, cardData.title_style);
+        applyTitlePadding(faceTitle, col);
+        face.appendChild(faceTitle);
+      }
+      if (cardData.category) {
+        const catEl = el("span", "spread-face-category", cardData.category);
+        applyCategoryStyle(catEl, col);
+        applyCategoryPadding(catEl, col);
+        face.appendChild(catEl);
+      }
 
       const caption = el("span", "spread-caption");
       caption.appendChild(el("span", "spread-pos", position));
@@ -1399,11 +1461,18 @@
       applyImagePadding(artImg, col);
       face.appendChild(artImg);
     }
-    const dialogTitle = el("span", "dialog-face-title", formatTitle(card, col));
-    if (col.title_font) dialogTitle.style.fontFamily = col.title_font;
-    applyTitleSize(dialogTitle, col, 0.9);
-    applyTitlePadding(dialogTitle, col);
-    face.appendChild(dialogTitle);
+    if (card.draw_title !== false) {
+      const dialogTitle = el("span", "dialog-face-title", formatTitle(card, col));
+      applyTitleStyle(dialogTitle, col, card.title_style);
+      applyTitlePadding(dialogTitle, col);
+      face.appendChild(dialogTitle);
+    }
+    if (card.category) {
+      const catEl = el("span", "dialog-face-category", card.category);
+      applyCategoryStyle(catEl, col);
+      applyCategoryPadding(catEl, col);
+      face.appendChild(catEl);
+    }
 
     const actions = el("div", "dialog-actions");
     const closeBtn = el("button", "btn btn--secondary", "Cerrar");

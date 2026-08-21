@@ -174,10 +174,13 @@ window.Cartas = window.Cartas || {};
       return {
         id: String(c.id),
         title: c.title || "",
+        category: c.category || "",
         keywords: c.category || "",
         meaning: c.text || "",
         description: "",
         image: imgId,
+        draw_title: c.draw_title,
+        title_style: c.title_style || "",
         _imagePath: imagesFolder ? imagesFolder + "/" + imgId : ""
       };
     });

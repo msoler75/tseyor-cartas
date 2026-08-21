@@ -21,6 +21,17 @@
  * ========================================================================== */
 
 /* ---------------------------------------------------------------------------
+ * Fuentes locales
+ * ------------------------------------------------------------------------- */
+@font-face {
+  font-family: "Bradley Hand ITC TT Bold";
+  src: url("fonts/Bradley Hand ITC TT Bold.ttf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------------------------------------------------------------------------
  * Tokens
  * ------------------------------------------------------------------------- */
 :root {
@@ -552,7 +563,20 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   text-shadow: 0 1px 3px rgba(242, 234, 217, 0.7);
   line-height: 1.2;
   pointer-events: none;
-  /* font-family se aplica inline desde la config */
+}
+
+.face-category {
+  position: absolute;
+  top: var(--cat-pad-top, 0);
+  right: var(--cat-pad-right, 0);
+  bottom: var(--cat-pad-bottom, 0);
+  left: var(--cat-pad-left, 0);
+  z-index: 2;
+  text-align: center;
+  color: var(--ink);
+  text-shadow: 0 1px 3px rgba(242, 234, 217, 0.7);
+  line-height: 1.2;
+  pointer-events: none;
 }
 
 /* Frente con imagen: oculta el .face-num por defecto */
@@ -602,7 +626,20 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   text-shadow: 0 1px 4px rgba(242, 234, 217, 0.8);
   line-height: 1.2;
   pointer-events: none;
-  /* font-family se aplica inline desde la config */
+}
+
+.reveal-card-category {
+  position: absolute;
+  top: var(--cat-pad-top, 0);
+  right: var(--cat-pad-right, 0);
+  bottom: var(--cat-pad-bottom, 0);
+  left: var(--cat-pad-left, 0);
+  z-index: 2;
+  text-align: center;
+  color: var(--ink);
+  text-shadow: 0 1px 4px rgba(242, 234, 217, 0.8);
+  line-height: 1.2;
+  pointer-events: none;
 }
 
 /* --- Spread: miniaturas con imagen --- */
@@ -643,6 +680,20 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   z-index: 2;
   text-align: center;
   font-size: var(--title-cqw, 3cqw);
+  color: var(--ink);
+  text-shadow: 0 1px 3px rgba(242, 234, 217, 0.7);
+  line-height: 1.2;
+  pointer-events: none;
+}
+
+.spread-face-category {
+  position: absolute;
+  top: var(--cat-pad-top, 0);
+  right: var(--cat-pad-right, 0);
+  bottom: var(--cat-pad-bottom, 0);
+  left: var(--cat-pad-left, 0);
+  z-index: 2;
+  text-align: center;
   color: var(--ink);
   text-shadow: 0 1px 3px rgba(242, 234, 217, 0.7);
   line-height: 1.2;
@@ -697,6 +748,20 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   z-index: 2;
   text-align: center;
   font-size: var(--title-cqw, 3cqw);
+  color: var(--ink);
+  text-shadow: 0 1px 4px rgba(242, 234, 217, 0.8);
+  line-height: 1.2;
+  pointer-events: none;
+}
+
+.dialog-face-category {
+  position: absolute;
+  top: var(--cat-pad-top, 0);
+  right: var(--cat-pad-right, 0);
+  bottom: var(--cat-pad-bottom, 0);
+  left: var(--cat-pad-left, 0);
+  z-index: 2;
+  text-align: center;
   color: var(--ink);
   text-shadow: 0 1px 4px rgba(242, 234, 217, 0.8);
   line-height: 1.2;
