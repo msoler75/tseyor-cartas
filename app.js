@@ -149,7 +149,7 @@
    * persistencia, DRAW-1/REVIEW-5).
    */
   function createInitialState() {
-    return { mode: "draw", phase: "home", drawn: [], selectedId: null, readingMode: 0, question: "" };
+    return { mode: "draw", phase: "home", drawn: [], selectedId: null, readingMode: 0, question: "", poolOrder: null };
   }
 
   /**
@@ -159,8 +159,43 @@
    */
   function poolFor(state) {
     const drawnIds = new Set((state.drawn || []).map((d) => d.cardId));
-    const pool = deck().cards.filter((c) => !drawnIds.has(c.id));
-    // Fisher-Yates shuffle
+    const orderedIds = Array.isArray(state && state.poolOrder)
+      ? state.poolOrder
+      : deck().cards.map((card) => card.id);
+    const byId = new Map(deck().cards.map((card) => [String(card.id), card]));
+    const pool = orderedIds
+      .map((id) => byId.get(String(id)))
+      .filter((card) => card && !drawnIds.has(card.id));
+    if (!Array.isArray(state && state.poolOrder)) {
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+    }
+    return pool;
+  }
+
+  function buildCarouselPose(state) {
+    const order = Array.isArray(state && state.poolOrder)
+      ? state.poolOrder
+      : deck().cards.map((card) => card.id);
+    const pose = {};
+    order.forEach(function (cardId) {
+      const rz = (Math.random() < 0.5 ? -1 : 1) * randRange(JITTER_RZ_MIN, JITTER_RZ_MAX);
+      const rx = (Math.random() < 0.5 ? -1 : 1) * randRange(JITTER_RX_MIN, JITTER_RX_MAX);
+      pose[String(cardId)] = {
+        rz: `${rz.toFixed(2)}deg`,
+        rx: `${rx.toFixed(2)}deg`
+      };
+    });
+    return pose;
+  }
+
+  function shuffledPoolOrder(state) {
+    const drawnIds = new Set((state.drawn || []).map((d) => d.cardId));
+    const pool = deck().cards
+      .map((card) => card.id)
+      .filter((id) => !drawnIds.has(id));
     for (let i = pool.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [pool[i], pool[j]] = [pool[j], pool[i]];
@@ -243,7 +278,14 @@
         // abre con pool vacío ni con drawn.length >= 3 (DECK-2, DRAW-4).
         if (state.mode !== "draw" || state.phase !== "home") return state;
         if (!getDrawGuard(state, poolFor(state)).canDraw) return state;
-        return { ...state, mode: "draw", phase: "carousel" };
+        const poolOrder = shuffledPoolOrder(state);
+        return {
+          ...state,
+          mode: "draw",
+          phase: "carousel",
+          poolOrder,
+          carouselPose: buildCarouselPose({ ...state, poolOrder })
+        };
       }
 
       case "SELECT": {
@@ -375,14 +417,101 @@
   }
 
   /**
-   * Jitter por sesión de carousel (D8): valores frescos de --rz/--rx en cada
-   * apertura. JS genera, CSS compone (rotateX(--rx) rotateZ(--rz) rotateY(--tilt)).
+   * Jitter por sesión de carousel (D8): valores frescos de --rz/--rx una vez
+   * por tirada y reutilizados en cada re-render. JS genera, CSS compone
+   * (rotateX(--rx) rotateZ(--rz) rotateY(--tilt)).
    */
-  function applyJitter(card) {
+  function applyJitter(card, pose) {
+    if (pose) {
+      card.style.setProperty("--rz", pose.rz);
+      card.style.setProperty("--rx", pose.rx);
+      return;
+    }
     const rz = (Math.random() < 0.5 ? -1 : 1) * randRange(JITTER_RZ_MIN, JITTER_RZ_MAX);
     const rx = (Math.random() < 0.5 ? -1 : 1) * randRange(JITTER_RX_MIN, JITTER_RX_MAX);
     card.style.setProperty("--rz", `${rz.toFixed(2)}deg`);
     card.style.setProperty("--rx", `${rx.toFixed(2)}deg`);
+  }
+
+  function carouselCards(carousel) {
+    return Array.from(carousel.querySelectorAll(".card"));
+  }
+
+  function centeredCarouselIndex(carousel) {
+    const cards = carouselCards(carousel);
+    if (cards.length === 0) return -1;
+    const rect = carousel.getBoundingClientRect();
+    const center = rect.left + rect.width / 2;
+    let bestIndex = 0;
+    let bestDistance = Number.POSITIVE_INFINITY;
+    cards.forEach(function (card, index) {
+      const cardRect = card.getBoundingClientRect();
+      const cardCenter = cardRect.left + cardRect.width / 2;
+      const distance = Math.abs(cardCenter - center);
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        bestIndex = index;
+      }
+    });
+    return bestIndex;
+  }
+
+  function scrollCarouselToIndex(carousel, index, behavior) {
+    const cards = carouselCards(carousel);
+    if (index < 0 || index >= cards.length) return;
+    cards[index].scrollIntoView({
+      inline: "center",
+      block: "nearest",
+      behavior: behavior || "smooth"
+    });
+  }
+
+  function bindCarouselArrowHold(button, carousel, direction) {
+    let repeatTimer = null;
+    let started = false;
+
+    const step = () => {
+      const index = centeredCarouselIndex(carousel);
+      const nextIndex = Math.max(0, Math.min(
+        carouselCards(carousel).length - 1,
+        index + direction
+      ));
+      if (nextIndex === index) return;
+      scrollCarouselToIndex(carousel, nextIndex, "smooth");
+    };
+
+    const stop = () => {
+      started = false;
+      if (repeatTimer !== null) {
+        window.clearInterval(repeatTimer);
+        repeatTimer = null;
+      }
+    };
+
+    button.addEventListener("pointerdown", function (event) {
+      if (event.pointerType === "mouse" && event.button !== 0) return;
+      event.preventDefault();
+      button.setPointerCapture?.(event.pointerId);
+      started = true;
+      step();
+      repeatTimer = window.setInterval(function () {
+        if (!started) return;
+        step();
+      }, 140);
+    });
+
+    button.addEventListener("pointerup", stop);
+    button.addEventListener("pointercancel", stop);
+    button.addEventListener("pointerleave", stop);
+    button.addEventListener("blur", stop);
+    button.addEventListener("contextmenu", function (event) {
+      event.preventDefault();
+    });
+  }
+
+  function syncCarouselScrollState(carousel) {
+    if (!Cartas.state) return;
+    Cartas.state.carouselScrollLeft = carousel.scrollLeft;
   }
 
   /**
@@ -413,6 +542,7 @@
     carousel.addEventListener(
       "scroll",
       () => {
+        syncCarouselScrollState(carousel);
         if (ticking) return;
         ticking = true;
         window.requestAnimationFrame(compute);
@@ -428,7 +558,7 @@
    */
   function bindCarouselKeys(carousel) {
     carousel.addEventListener("keydown", (event) => {
-      const cards = Array.from(carousel.querySelectorAll(".card"));
+      const cards = carouselCards(carousel);
       if (cards.length === 0) return;
       const index = cards.indexOf(document.activeElement);
       let target = -1;
@@ -442,7 +572,7 @@
       if (target < 0 || target >= cards.length) return;
       event.preventDefault();
       cards[target].focus();
-      cards[target].scrollIntoView({ inline: "center", block: "nearest" });
+      scrollCarouselToIndex(carousel, target, "smooth");
     });
   }
 
@@ -537,6 +667,7 @@
   function renderCarousel(root) {
     const state = Cartas.state;
     const pool = poolFor(state);
+    const pose = state.carouselPose || {};
 
     const section = el("section", "carousel-section");
     section.appendChild(el("p", "carousel-caption", "Elige una carta"));
@@ -549,9 +680,21 @@
       return;
     }
 
+    const shell = el("div", "carousel-shell");
+    const prevBtn = el("button", "carousel-arrow carousel-arrow--prev");
+    prevBtn.type = "button";
+    prevBtn.setAttribute("aria-label", "Desplazar cartas hacia la izquierda");
+    prevBtn.innerHTML = LUCIDE_CHEVRON_LEFT;
+
     const carousel = el("div", "carousel");
     carousel.setAttribute("role", "group");
     carousel.setAttribute("aria-label", "Cartas disponibles");
+    carousel.tabIndex = 0;
+
+    const nextBtn = el("button", "carousel-arrow carousel-arrow--next");
+    nextBtn.type = "button";
+    nextBtn.setAttribute("aria-label", "Desplazar cartas hacia la derecha");
+    nextBtn.innerHTML = LUCIDE_CHEVRON_RIGHT;
 
     pool.forEach((cardData, i) => {
       const number = deck().cards.indexOf(cardData) + 1; // cara = índice del mazo + 1 (DECK-2)
@@ -565,7 +708,11 @@
       card.type = "button";
       card.setAttribute("aria-label", `Carta ${number}: ${cardData.title}`);
       card.dataset.cardId = cardData.id; // para el movimiento imperativo T3
-      card.addEventListener("click", () => selectCard(cardData.id));
+      card.addEventListener("click", () => {
+        void selectCard(cardData.id).catch((error) => {
+          console.error("[Cartas motion] Error en selectCard", error);
+        });
+      });
 
       const inner = el("span", "card-inner");
 
@@ -578,14 +725,40 @@
       item.appendChild(card);
       carousel.appendChild(item);
 
-      applyJitter(card);
+      applyJitter(card, pose[cardData.id]);
     });
 
-    section.appendChild(carousel);
+    prevBtn.addEventListener("click", function () {
+      const index = centeredCarouselIndex(carousel);
+      scrollCarouselToIndex(carousel, Math.max(0, index - 1));
+      carousel.focus({ preventScroll: true });
+    });
+
+    nextBtn.addEventListener("click", function () {
+      const index = centeredCarouselIndex(carousel);
+      scrollCarouselToIndex(carousel, Math.min(pool.length - 1, index + 1));
+      carousel.focus({ preventScroll: true });
+    });
+
+    bindCarouselArrowHold(prevBtn, carousel, -1);
+    bindCarouselArrowHold(nextBtn, carousel, 1);
+
+    shell.append(prevBtn, carousel, nextBtn);
+    section.appendChild(shell);
     setRoot(root, section);
 
     bindCarouselKeys(carousel);
     bindTilt(carousel);
+
+    window.requestAnimationFrame(function () {
+      if (typeof state.carouselScrollLeft === "number") {
+        carousel.scrollLeft = state.carouselScrollLeft;
+      } else {
+        const middleIndex = Math.floor(pool.length / 2);
+        scrollCarouselToIndex(carousel, middleIndex, "auto");
+      }
+      syncCarouselScrollState(carousel);
+    });
   }
 
   /**
@@ -663,23 +836,19 @@
 
   /** Chevron SVG para los botones de colapsar */
   const CHEVRON_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+  const LUCIDE_CHEVRON_LEFT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>';
+  const LUCIDE_CHEVRON_RIGHT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>';
 
   /**
    * Crea un botón toggle para una sección colapsable.
-   * Primera vez: expandido. Después: recuerda estado de localStorage.
+   * Siempre arranca colapsado para que cada carta nueva se muestre limpia.
    */
-  function createCollapseToggle(wrap, storageKey, label) {
+  function createCollapseToggle(wrap, _storageKey, label) {
     const btn = el("button", "collapse-toggle");
     btn.type = "button";
 
-    // Recuperar estado de localStorage (primera vez: colapsado)
-    const saved = localStorage.getItem(storageKey);
-    if (saved === "expanded") {
-      wrap.classList.add("is-expanded");
-    } else {
-      wrap.classList.add("is-collapsed");
-      btn.classList.add("is-collapsed");
-    }
+    wrap.classList.add("is-collapsed");
+    btn.classList.add("is-collapsed");
 
     function updateBtn() {
       const collapsed = wrap.classList.contains("is-collapsed");
@@ -692,7 +861,6 @@
       wrap.classList.toggle("is-expanded", !isCollapsed);
       btn.classList.toggle("is-collapsed", isCollapsed);
       updateBtn();
-      localStorage.setItem(storageKey, isCollapsed ? "collapsed" : "expanded");
     });
 
     return btn;
@@ -974,7 +1142,7 @@
     return family || "sans-serif";
   }
 
-  function measureCalloutHeight(ctx, text, maxWidth, font, lineHeight, paddingY) {
+  function measureCalloutHeight(ctx, text, maxWidth, font, lineHeight) {
     const prevFont = ctx.font;
     ctx.font = font;
     const lines = wrapTextLines(ctx, text, maxWidth);
@@ -1069,8 +1237,7 @@
           item.extraMeaning,
           meaningWidth,
           extraFont,
-          meaningTheme.lineHeight,
-          0
+          meaningTheme.lineHeight
         );
       }
       const labelHeight = showLabels && item.position ? labelLineHeight : 0;
@@ -1397,7 +1564,7 @@
    * se aplican .is-flipped (elegida) y .is-sunk (hermanas), sin render().
    * Con prefers-reduced-motion se salta directo al reveal (D6/DRAW-3).
    */
-  function selectCard(cardId) {
+  async function selectCard(cardId) {
     const prev = Cartas.state;
     const next = transition(prev, { type: "SELECT", cardId });
     if (next === prev) return; // T5: doble activación durante el reveal — no-op
@@ -1425,6 +1592,17 @@
     if (!detached) {
       dispatch({ type: "FLIP_END" });
       return;
+    }
+
+    const canvases = Array.from(selected.querySelectorAll(".card-canvas"));
+    if (canvases.length) {
+      try {
+        await Promise.all(
+          canvases.map((canvas) => (canvas.renderComplete ? canvas.renderComplete : Promise.resolve()))
+        );
+      } catch (error) {
+        console.error("[Cartas motion] Espera de canvas falló antes del flip", error);
+      }
     }
 
     bindFlipEnd(selected);

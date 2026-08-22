@@ -433,6 +433,12 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   flex-direction: column;
 }
 
+.carousel-shell {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
 .carousel-caption {
   margin: 0 1rem 0.4rem;
   text-align: center;
@@ -458,6 +464,7 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   justify-content: safe center;
   scrollbar-width: thin;
   scrollbar-color: var(--line) transparent;
+  width: 100%;
 }
 
 .carousel::-webkit-scrollbar {
@@ -493,6 +500,46 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   pointer-events: none;
 }
 
+.carousel-arrow {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 2.8rem;
+  height: 2.8rem;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(242, 234, 217, 0.96);
+  color: var(--accent-strong);
+  font-size: 1.4rem;
+  font-weight: 700;
+  box-shadow: 0 8px 18px rgba(38, 34, 28, 0.18);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.carousel-arrow svg {
+  width: 1.35rem;
+  height: 1.35rem;
+  display: block;
+  flex: none;
+}
+
+.carousel-arrow--prev {
+  left: 0.45rem;
+}
+
+.carousel-arrow--next {
+  right: 0.45rem;
+}
+
+.carousel-arrow:hover {
+  background: var(--paper);
+}
+
 /* Al volver desde un reveal, el abanico se reparte en vez de materializarse
    de golpe. La duración total queda acotada aunque haya muchas cartas. */
 .view-enter .carousel-caption {
@@ -526,10 +573,8 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   width: clamp(140px, 38vw, 210px);
   aspect-ratio: var(--card-aspect, 764 / 1110);
   padding: 0;
-  border: 3px solid var(--ink);
-  border-radius: var(--card-radius);
+  border: none;
   background: transparent;
-  box-shadow: 0 4px 12px rgba(38, 34, 28, 0.15);
   cursor: pointer;
   /* JS compone: jitter --rx/--rz + tilt --tilt (D8/D9) */
   transform: rotateX(var(--rx, 0deg)) rotateZ(var(--rz, 0deg))
@@ -551,12 +596,16 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
   position: absolute;
   inset: 0;
   transform-style: preserve-3d;
+  border: 3px solid var(--ink);
+  border-radius: var(--card-radius);
+  box-shadow: 0 4px 12px rgba(38, 34, 28, 0.15);
 }
 
 .face {
   position: absolute;
   inset: 0;
   border-radius: var(--card-radius);
+  -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   box-shadow: 0 10px 24px rgba(38, 34, 28, 0.2);
 }
@@ -645,7 +694,7 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
 /* ---------------------------------------------------------------------------
  * Flip-elevate + hundimiento (Slice 2, D4/D5/D7 — DRAW-3)
  * La elección (T3) marca .is-flipped en la carta elegida y .is-sunk en los
- * hermanos. CSS es dueño de TODO el movimiento: solo transform/opacity.
+ * hermanos. CSS es dueño de TODO el movimiento.
  * ------------------------------------------------------------------------- */
 .card-inner {
   transition: transform 0.64s var(--ease-in-out-soft);
@@ -838,8 +887,16 @@ html[data-view-direction="back"]::view-transition-new(app-stage) {
 }
 
 .card--revealed .card-inner {
-  transform: rotateY(180deg);
+  transform: none;
   transition: none;
+}
+
+.card--revealed .face--back {
+  display: none;
+}
+
+.card--revealed .face--front {
+  transform: none;
 }
 
 .card--revealed .face--front {
