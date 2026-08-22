@@ -1937,6 +1937,10 @@
     if (Cartas.loadCollection && !Cartas.collection) {
       await Cartas.loadCollection();
     }
+    // Precarga imágenes en background (back primero, luego arte de cartas)
+    if (Cartas.cardRenderer && Cartas.cardRenderer.preloadImages) {
+      Cartas.cardRenderer.preloadImages(collection());
+    }
     // Aspect ratio de las cartas desde el JSON
     const col = collection();
     if (col.width && col.height) {

@@ -300,11 +300,24 @@
     return canvas;
   }
 
+  function preloadImages(collection) {
+    if (!collection || !collection.images_folder) return;
+    var back = collection.back_image;
+    if (back) loadImage(imagePath(collection.images_folder, back));
+    var cards = collection.cards || [];
+    for (var i = 0; i < cards.length; i++) {
+      var c = cards[i];
+      var img = c.image || (c.id + ".jpg");
+      loadImage(imagePath(collection.images_folder, img));
+    }
+  }
+
   Cartas.cardRenderer = {
     createCanvas,
     formatTitle,
     imageRect,
     loadImage,
+    preloadImages,
     renderCard,
     renderInto
   };

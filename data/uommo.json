@@ -1,6 +1,6 @@
 {
   "deck": "Cartas de Uommo",
-  "images_folder": "/assets/uommo",
+  "images_folder": "assets/uommo",
   "back_image": "reverso.jpg",
   "front_image": "dorso.jpg",
   "show_titles_in_review": false,
