@@ -301,15 +301,17 @@
   }
 
   function preloadImages(collection) {
-    if (!collection || !collection.images_folder) return;
+    if (!collection || !collection.images_folder) return Promise.resolve();
+    var promises = [];
     var back = collection.back_image;
-    if (back) loadImage(imagePath(collection.images_folder, back));
+    if (back) promises.push(loadImage(imagePath(collection.images_folder, back)));
     var cards = collection.cards || [];
     for (var i = 0; i < cards.length; i++) {
       var c = cards[i];
       var img = c.image || (c.id + ".jpg");
-      loadImage(imagePath(collection.images_folder, img));
+      promises.push(loadImage(imagePath(collection.images_folder, img)));
     }
+    return Promise.all(promises).then(function () {});
   }
 
   Cartas.cardRenderer = {

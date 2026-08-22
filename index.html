@@ -10,6 +10,12 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <!-- Loading overlay: se oculta cuando todas las imágenes están precargadas -->
+    <div id="loading" class="loading-overlay" role="status" aria-label="Cargando">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">Preparando cartas…</p>
+    </div>
+
     <header class="app-header">
       <p class="app-kicker" id="deck-title">Cartas Tseyor</p>
       <button id="dev-toggle" class="dev-toggle" type="button" aria-pressed="false">Ver cartas</button>

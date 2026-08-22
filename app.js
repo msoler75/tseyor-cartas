@@ -1939,7 +1939,15 @@
     }
     // Precarga imágenes en background (back primero, luego arte de cartas)
     if (Cartas.cardRenderer && Cartas.cardRenderer.preloadImages) {
-      Cartas.cardRenderer.preloadImages(collection());
+      await Cartas.cardRenderer.preloadImages(collection());
+    }
+    // Oculta el loading overlay
+    var loadingEl = document.getElementById("loading");
+    if (loadingEl) {
+      loadingEl.classList.add("is-hidden");
+      loadingEl.addEventListener("transitionend", function () {
+        loadingEl.remove();
+      }, { once: true });
     }
     // Aspect ratio de las cartas desde el JSON
     const col = collection();
