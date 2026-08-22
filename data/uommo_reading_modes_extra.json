@@ -1,0 +1,420 @@
+{
+  "deck": "Cartas de Uommo",
+  "description": "Interpretaciones extra por posición de lectura. Complementan el meaning de la carta y el meaning de su categoría; son sugerencias abiertas, no predicciones deterministas.",
+  "reading_modes_extra": {
+    "Pasado, presente y futuro": {
+      "0": {
+        "title": "Comodín",
+        "category": "-",
+        "Pasado": "Una posibilidad que no llegó a tomar una sola forma puede seguir actuando desde atrás. Algo quedó abierto, sin nombre o sin cerrar, y precisamente por eso aún conserva potencia.",
+        "Presente": "El momento no pide una respuesta única. Varias lecturas pueden ser verdaderas a la vez; observa qué significado aparece primero y cuál surge después, cuando dejas de intentar fijarlo.",
+        "Futuro": "Se abre un territorio todavía sin definir. Lo que venga dependerá menos de una ruta ya trazada que de la forma en que uses las posibilidades que ahora están disponibles."
+      },
+      "1": {
+        "title": "Conexión",
+        "category": "Ciencia",
+        "Pasado": "Una conexión, intuición o vínculo interior parece estar en el origen de lo que hoy vives. Tal vez entonces no comprendiste del todo la señal, pero abrió una puerta.",
+        "Presente": "Algo pide reconexión: contigo, con una idea esencial, con una persona o con aquello que da sentido al conjunto. La respuesta puede estar más cerca de escuchar que de buscar.",
+        "Futuro": "Si mantienes abierto el canal de atención, puede emerger una relación más clara entre piezas que ahora parecen separadas. La conexión futura nace de una escucha presente."
+      },
+      "2": {
+        "title": "Eficacia",
+        "category": "Ciencia",
+        "Pasado": "Hubo una manera de actuar que resolvió, ordenó o hizo avanzar algo importante. Esa eficacia pasada puede seguir siendo una referencia, aunque quizá ya no baste repetirla.",
+        "Presente": "Es momento de comprobar qué funciona de verdad. Menos teoría, más correspondencia entre intención, medios y resultado.",
+        "Futuro": "Puede abrirse una etapa de mayor fluidez si ajustas lo necesario y eliminas lo superfluo. La eficacia aparece cuando cada movimiento sirve al propósito."
+      },
+      "3": {
+        "title": "Monje y Guerrero",
+        "category": "Ciencia",
+        "Pasado": "Una tensión antigua entre recogimiento y acción puede haber dado forma a este momento. Quizá aprendiste a pensar y actuar por separado cuando necesitaban caminar juntos.",
+        "Presente": "Ahora conviven dos fuerzas: una que observa y otra que interviene. La clave no parece elegir entre ambas, sino descubrir cuándo debe hablar cada una.",
+        "Futuro": "Puede llegar una etapa en la que conocimiento y acción se reconcilien. Lo aprendido encuentra salida cuando el silencio interior no teme convertirse en movimiento."
+      },
+      "4": {
+        "title": "Sabiduría",
+        "category": "Ciencia",
+        "Pasado": "La experiencia acumulada ha dejado una reserva de sabiduría, quizá nacida de dificultades que entonces parecían solo obstáculos. Algo ya fue aprendido, aunque no siempre se recuerde.",
+        "Presente": "No todo requiere descubrir algo nuevo. Puede que la situación pida reconocer un conocimiento ya madurado y aplicarlo con serenidad.",
+        "Futuro": "La experiencia puede decantar en una comprensión más simple y profunda. El futuro favorece menos la acumulación de datos que la integración de lo vivido."
+      },
+      "5": {
+        "title": "Origen",
+        "category": "Ciencia",
+        "Pasado": "Algo relacionado con tus raíces, procedencia o primera motivación sigue influyendo en el presente. Mirar atrás puede revelar no nostalgia, sino una clave de identidad.",
+        "Presente": "La pregunta parece ser: ¿desde dónde estás viviendo esto? No solo hacia dónde vas, sino qué origen, impulso o memoria sostiene tu camino.",
+        "Futuro": "Puede aparecer una reconexión con una raíz más auténtica, o el descubrimiento de que tu verdadero origen no coincide con la historia que te contabas."
+      },
+      "6": {
+        "title": "La llamada",
+        "category": "Ciencia",
+        "Pasado": "Una llamada antigua, explícita o silenciosa, pudo iniciar el proceso que hoy continúa. Tal vez fue una inquietud, una coincidencia o la sensación de que había algo que atender.",
+        "Presente": "Algo te está llamando ahora. La cuestión no es solo oírlo, sino distinguir si nace de una necesidad profunda o de una urgencia ajena.",
+        "Futuro": "Si atiendes la señal adecuada, puede abrirse una tarea, un aprendizaje o un vínculo que te coloque en otra relación con tu propósito."
+      },
+      "7": {
+        "title": "Regeneración",
+        "category": "Ciencia",
+        "Pasado": "Ya hubo una ruptura, limpieza o renovación que hizo posible llegar hasta aquí. Quizá una versión anterior de la situación tuvo que agotarse para que otra apareciera.",
+        "Presente": "Algo está en proceso de regeneración. Puede sentirse frágil porque todavía conserva huellas de lo antiguo, pero ya existe una posibilidad de reorganización.",
+        "Futuro": "Lo que hoy parece desgaste puede convertirse en terreno fértil para una forma nueva. La regeneración futura no recupera exactamente lo perdido: lo transforma."
+      },
+      "8": {
+        "title": "Inspiración",
+        "category": "Arte",
+        "Pasado": "Una inspiración pasada encendió algo que todavía no se ha extinguido. Tal vez fue una imagen, una intuición o una idea que pedía más espacio del que entonces recibió.",
+        "Presente": "Hay una chispa disponible, pero necesita silencio para hacerse visible. La inspiración puede aparecer donde no estabas mirando o en una forma que no esperabas.",
+        "Futuro": "Si proteges el impulso creativo sin poseerlo, puede conducir a una obra, una decisión o una comprensión nueva. Lo inspirado crece cuando se le permite respirar."
+      },
+      "9": {
+        "title": "Transformación",
+        "category": "Arte",
+        "Pasado": "Una transformación anterior cambió las reglas del juego, aunque quizá todavía estés comprendiendo sus consecuencias. Algo dejó de ser lo que era.",
+        "Presente": "La situación no parece estable: está pidiendo cambio de forma. Resistirlo puede resultar más agotador que participar conscientemente en él.",
+        "Futuro": "Puede producirse una transformación significativa si aceptas que el resultado no tendrá por qué parecerse al punto de partida. Cambiar también implica perder una forma conocida."
+      },
+      "10": {
+        "title": "Confianza",
+        "category": "Arte",
+        "Pasado": "La confianza —o su ausencia— influyó decisivamente en el camino recorrido. Puede haber un logro que nació de sostenerse cuando todavía no existían garantías.",
+        "Presente": "La situación pide una confianza despierta, no ciega. Hay base para avanzar, pero conviene acompañar la certeza interior con atención a los detalles.",
+        "Futuro": "La confianza sostenida puede convertirse en capacidad real. A medida que avances, lo que hoy parece una apuesta puede adquirir estructura y evidencia."
+      },
+      "11": {
+        "title": "Visión",
+        "category": "Arte",
+        "Pasado": "Una visión anterior, quizá incompleta, orientó decisiones que todavía tienen efecto. Algo fue visto antes de poder ser explicado.",
+        "Presente": "Es momento de ampliar el campo de visión. Lo importante puede estar en un detalle lateral, en una perspectiva nueva o en aquello que hasta ahora quedaba fuera del encuadre.",
+        "Futuro": "Puede aparecer una visión más amplia que reorganice lo que hoy parece confuso. Al cambiar el punto de vista, cambia también el problema."
+      },
+      "12": {
+        "title": "Totalidad",
+        "category": "Arte",
+        "Pasado": "Una experiencia de totalidad o integración pudo mostrarte que piezas aparentemente opuestas pertenecían al mismo conjunto. Esa memoria puede seguir buscando expresión.",
+        "Presente": "La situación es mayor que cualquiera de sus partes. Si solo atiendes a un fragmento, perderás la relación que le da sentido.",
+        "Futuro": "Puede emerger una síntesis donde ahora ves contradicción. La totalidad no elimina las diferencias: aprende a contenerlas sin romperse."
+      },
+      "13": {
+        "title": "Éxito",
+        "category": "Arte",
+        "Pasado": "Un éxito anterior dejó impulso, confianza o reconocimiento, pero también una medida con la que quizá sigues comparando el presente.",
+        "Presente": "Hay señales de logro, aunque conviene preguntar qué significa realmente “éxito” aquí. Puede ser terminar, comprender, servir, crear o simplemente perseverar.",
+        "Futuro": "El esfuerzo bien orientado puede dar fruto. El resultado será más sólido si no depende únicamente de la aprobación externa."
+      },
+      "14": {
+        "title": "Fascinación",
+        "category": "Arte",
+        "Pasado": "Algo te fascinó y dejó una huella profunda: una persona, una idea, una obra o una promesa. Tal vez esa fascinación abrió una puerta, pero también pudo velar ciertos detalles.",
+        "Presente": "Hay algo magnético en la situación. Observa si esa atracción revela belleza auténtica o si te impide ver lo que queda detrás de la forma.",
+        "Futuro": "Puede aparecer una experiencia muy seductora o inspiradora. Su valor dependerá de que puedas admirarla sin perder libertad interior."
+      },
+      "15": {
+        "title": "Observación",
+        "category": "Filosofía",
+        "Pasado": "Una observación hecha a tiempo cambió el rumbo más de lo que parecía. Puede haber algo que viste, o que no quisiste ver, y que aún organiza el presente.",
+        "Presente": "Ahora conviene observar antes de intervenir. La situación puede revelar su lógica si la miras sin apresurarte a clasificarla.",
+        "Futuro": "Una observación más fina puede abrir una comprensión inesperada. Lo futuro cambia cuando cambia la calidad de la mirada presente."
+      },
+      "16": {
+        "title": "Discernimiento",
+        "category": "Filosofía",
+        "Pasado": "Una elección o distinción anterior marcó el camino. Tal vez supiste separar lo esencial de lo accesorio, o quizá confundiste señales que hoy vuelven a presentarse.",
+        "Presente": "La situación exige discernimiento: no todo lo parecido es igual, ni todo lo diferente está separado. Conviene distinguir origen, intención y consecuencia.",
+        "Futuro": "Una diferencia que hoy parece pequeña puede volverse decisiva. Afinar el criterio ahora puede evitar entrar después en un camino que no corresponde."
+      },
+      "17": {
+        "title": "Dogmatismo",
+        "category": "Filosofía",
+        "Pasado": "Una creencia rígida, propia o ajena, pudo limitar opciones que en realidad existían. También puede señalar una estructura social o familiar que definió qué estaba permitido pensar.",
+        "Presente": "Hay una idea que corre el riesgo de convertirse en frontera. Observa dónde una certeza legítima deja de dialogar y empieza a excluir.",
+        "Futuro": "Si una convicción se endurece, puede generar separación; si se revisa con consciencia, puede transformarse en criterio sin fanatismo. La dirección aún está abierta."
+      },
+      "18": {
+        "title": "La caverna",
+        "category": "Filosofía",
+        "Pasado": "Una etapa de encierro, miedo o visión limitada pudo reducir el mundo a unas pocas sombras. Algunas de esas limitaciones quizá sigan operando aunque la salida ya exista.",
+        "Presente": "Puede que estés mirando la realidad desde dentro de una caverna conceptual o emocional. Lo que ves es real como experiencia, pero quizá no sea todo lo que existe.",
+        "Futuro": "Se abre la posibilidad de salir de un marco estrecho, aunque la luz inicial pueda incomodar. Ver más también obliga a revisar lo que antes parecía seguro."
+      },
+      "19": {
+        "title": "Vuelo",
+        "category": "Filosofía",
+        "Pasado": "Hubo un momento en que te elevaste por encima de una limitación y viste el camino desde otra altura. Esa experiencia puede seguir recordándote que no todo se resuelve desde el suelo.",
+        "Presente": "La situación pide vuelo: distancia, amplitud y movimiento. No para escapar, sino para ver la relación entre cosas que desde cerca parecen desconectadas.",
+        "Futuro": "Puede abrirse una etapa de expansión si sueltas peso innecesario. El vuelo no promete ausencia de obstáculos, pero sí otra relación con ellos."
+      },
+      "20": {
+        "title": "Divergencia",
+        "category": "Filosofía",
+        "Pasado": "Una divergencia anterior abrió caminos distintos, quizá separando personas, ideas o versiones de ti mismo. Esa bifurcación todavía puede estar pidiendo integración.",
+        "Presente": "Hay dos o más direcciones que no terminan de coincidir. La diferencia no necesariamente es un error: puede contener información sobre lo que cada parte necesita.",
+        "Futuro": "Las rutas pueden distanciarse más o encontrar un nivel superior donde vuelvan a relacionarse. Lo decisivo será cómo se gestione la diferencia, no que exista."
+      },
+      "21": {
+        "title": "Liberación",
+        "category": "Filosofía",
+        "Pasado": "Una liberación previa rompió un apego, una idea o una situación que parecía inevitable. Esa memoria puede recordarte que algunas cadenas solo se reconocen después de soltarlas.",
+        "Presente": "Algo está listo para ser liberado, o tú estás listo para dejar de sostenerlo. La dificultad puede no estar en abrir la puerta, sino en abandonar lo conocido.",
+        "Futuro": "Puede aparecer una mayor libertad si continúas desidentificándote de aquello que te reduce. La liberación futura no es ausencia de compromiso, sino elección más consciente."
+      },
+      "22": {
+        "title": "La clave",
+        "category": "Espiritualidad",
+        "Pasado": "En algún momento apareció una clave que quizá no fue reconocida como tal. Una experiencia pequeña, una frase o un símbolo pudo contener más información de la que parecía.",
+        "Presente": "La solución puede no ser grande, sino precisa. Hay una llave en la situación, pero requiere encontrar la cerradura correcta.",
+        "Futuro": "Una comprensión sencilla puede reorganizar muchas cosas a la vez. La clave futura podría aparecer cuando dejes de buscar una respuesta total y atiendas a un detalle esencial."
+      },
+      "23": {
+        "title": "Transmutación",
+        "category": "Espiritualidad",
+        "Pasado": "Una transmutación anterior convirtió una dificultad en aprendizaje o una pérdida en materia de cambio. Quizá no elegiste el fuego, pero algo en ti aprendió a trabajar con él.",
+        "Presente": "Lo que ocurre no parece pedir simple sustitución, sino transformación profunda. Una misma energía puede tomar otra forma si cambia la consciencia con que la sostienes.",
+        "Futuro": "Existe potencial para convertir tensión en comprensión, apego en libertad o conflicto en una forma nueva de relación. Nada obliga a que lo difícil conserve su forma actual."
+      },
+      "24": {
+        "title": "Amor",
+        "category": "Espiritualidad",
+        "Pasado": "Un acto de amor, comprensión o cuidado puede estar en la raíz de lo que hoy existe. También una carencia de amor pudo mostrar con claridad lo que era esencial.",
+        "Presente": "La situación pide mirar más allá de simpatía o apego. El amor aquí puede significar integrar, comprender y actuar sin negar la realidad.",
+        "Futuro": "Una respuesta más amorosa puede transformar el vínculo con lo que venga, incluso si no cambia inmediatamente las circunstancias. El amor amplía el campo de posibilidades."
+      },
+      "25": {
+        "title": "Cambio",
+        "category": "Espiritualidad",
+        "Pasado": "Un cambio anterior rompió una continuidad y te obligó a reorganizarte. Lo que entonces parecía interrupción puede haber sido preparación.",
+        "Presente": "La situación se mueve, aunque parte de ti prefiera estabilidad. El cambio puede estar ocurriendo afuera, adentro o en ambos niveles a la vez.",
+        "Futuro": "Se perfila una modificación de rumbo, identidad o contexto. Su valor dependerá de si lo acompañas conscientemente o intentas conservar una forma que ya está desplazándose."
+      },
+      "26": {
+        "title": "Compromiso",
+        "category": "Espiritualidad",
+        "Pasado": "Un compromiso asumido antes sigue generando consecuencias. Puede ser una promesa explícita o una decisión silenciosa que orientó tu camino.",
+        "Presente": "Ahora importa saber con qué estás realmente comprometido. Tus actos pueden revelar una respuesta distinta de la que formula tu mente.",
+        "Futuro": "Un compromiso consciente puede dar continuidad y profundidad a lo que hoy apenas comienza. También puede llegar el momento de revisar compromisos que ya no son verdaderos."
+      },
+      "27": {
+        "title": "Comprensión",
+        "category": "Espiritualidad",
+        "Pasado": "Una comprensión anterior permitió integrar algo que antes parecía contradictorio. Puede que hoy estés usando esa comprensión sin recordar cuánto costó alcanzarla.",
+        "Presente": "La situación pide comprender antes de concluir. Hay una lógica más profunda que todavía puede estar oculta detrás de conductas, emociones o acontecimientos.",
+        "Futuro": "Puede llegar una comprensión que reduzca la lucha sin borrar las diferencias. Cuando algo se entiende de raíz, cambia la forma de relacionarse con ello."
+      },
+      "28": {
+        "title": "Consciencia",
+        "category": "Espiritualidad",
+        "Pasado": "Una toma de consciencia anterior marcó un antes y un después. Tal vez viste algo que ya no pudiste dejar de ver, aunque tardaras en vivir de acuerdo con ello.",
+        "Presente": "Hay una oportunidad de ver con mayor presencia lo que está ocurriendo. La consciencia no exige resolverlo todo; primero ilumina la relación que tienes con la situación.",
+        "Futuro": "Si continúas integrando lo aprendido, puede abrirse un nivel de libertad y coherencia mayor. El futuro aquí es menos un acontecimiento que una forma distinta de estar."
+      }
+    },
+    "Desafío y Consejo": {
+      "0": {
+        "title": "Comodín",
+        "category": "-",
+        "Situación actual": "Hay más potencial que forma. Quizá la situación todavía no deba clasificarse: puede contener varias direcciones, significados o papeles al mismo tiempo.",
+        "Desafío": "El reto puede ser tolerar lo indeterminado sin precipitar una explicación. También puede señalar dispersión: demasiadas posibilidades pueden impedir escoger una experiencia concreta.",
+        "Consejo": "No fuerces una respuesta definitiva. Deja un espacio vacío para que aparezca lo inesperado y utiliza esta carta como permiso para combinar, reinterpretar o empezar de nuevo."
+      },
+      "1": {
+        "title": "Conexión",
+        "category": "Ciencia",
+        "Situación actual": "La situación parece girar alrededor de un vínculo invisible pero decisivo. Pregúntate qué está realmente conectado aquí y qué solo aparenta estarlo.",
+        "Desafío": "El obstáculo puede ser una desconexión propia, una comunicación interrumpida o una señal que no quieres recibir. También puede haber demasiado ruido alrededor de una intuición sencilla.",
+        "Consejo": "Vuelve al punto de origen. Reduce el ruido, observa lo que te enlaza de forma genuina y atiende la señal antes de intentar explicarla."
+      },
+      "2": {
+        "title": "Eficacia",
+        "category": "Ciencia",
+        "Situación actual": "La cuestión central es práctica: ¿qué está dando resultado y qué consume energía sin acercarte al objetivo? La carta invita a mirar el mecanismo, no solo la intención.",
+        "Desafío": "El reto puede estar en confundir actividad con avance, o perfección con eficacia. También puede surgir una solución útil que contradiga tu forma habitual de hacer las cosas.",
+        "Consejo": "Busca el gesto preciso. Simplifica, prueba, corrige y conserva aquello que realmente mueve la situación hacia adelante."
+      },
+      "3": {
+        "title": "Monje y Guerrero",
+        "category": "Ciencia",
+        "Situación actual": "La situación pide equilibrio entre el monje y el guerrero: comprender sin inmovilizarse, actuar sin perder centro. Uno de los dos puede estar ocupando demasiado espacio.",
+        "Desafío": "El obstáculo puede ser actuar sin escuchar o refugiarse en la contemplación para no actuar. También puede encarnar a otra persona que fuerza uno de esos extremos.",
+        "Consejo": "Haz que la acción nazca del centro. Escucha primero, decide después y actúa sin abandonar la observación que te permitió comprender."
+      },
+      "4": {
+        "title": "Sabiduría",
+        "category": "Ciencia",
+        "Situación actual": "Hay conocimiento disponible, pero necesita ser reconocido como tal. Tal vez la respuesta esté en unir experiencia, paciencia y perspectiva.",
+        "Desafío": "El reto puede ser creer que saber equivale a comprender, o usar la experiencia como rigidez. La sabiduría se pierde cuando deja de escuchar.",
+        "Consejo": "Recoge lo aprendido y deja caer lo accesorio. Habla, decide o actúa desde aquello que ha pasado por la experiencia y ya no necesita demostrar nada."
+      },
+      "5": {
+        "title": "Origen",
+        "category": "Ciencia",
+        "Situación actual": "La situación toca el tema del origen: de una idea, un vínculo, un conflicto o incluso una versión de ti mismo. Comprender dónde empezó puede cambiar cómo lo miras.",
+        "Desafío": "El obstáculo puede ser quedar atrapado en el origen, idealizarlo o rechazarlo. También puede haber una historia heredada que condiciona más de lo que parece.",
+        "Consejo": "Regresa a la raíz para comprender, no para retroceder. Distingue qué parte de ese origen merece ser honrada y cuál necesita ser superada."
+      },
+      "6": {
+        "title": "La llamada",
+        "category": "Ciencia",
+        "Situación actual": "La escena contiene una invitación. Puede venir de dentro, de otra persona o de las circunstancias, pero pide una respuesta consciente.",
+        "Desafío": "El reto puede ser ignorar la llamada, responder a una llamada que no es tuya o confundir obligación con propósito. Escuchar bien es parte de la prueba.",
+        "Consejo": "Detente lo suficiente para reconocer qué te está llamando realmente. Responde desde la claridad, no desde el automatismo."
+      },
+      "7": {
+        "title": "Regeneración",
+        "category": "Ciencia",
+        "Situación actual": "La situación pide renovar estructuras, hábitos o miradas. No necesariamente destruirlo todo, sino permitir que lo vivo sustituya a lo que ya quedó vacío.",
+        "Desafío": "El obstáculo puede ser querer volver exactamente al estado anterior. También puede haber resistencia a abandonar una forma conocida aunque ya no tenga vida.",
+        "Consejo": "Cuida lo que está naciendo. Retira lo agotado, conserva lo esencial y permite que la nueva forma tenga tiempo para organizarse."
+      },
+      "8": {
+        "title": "Inspiración",
+        "category": "Arte",
+        "Situación actual": "La situación contiene una posibilidad creativa todavía no del todo formulada. Algo quiere ser imaginado antes de ser resuelto.",
+        "Desafío": "El reto puede ser bloquear la inspiración con control, miedo o exceso de explicación. También puede aparecer una seducción creativa que distrae del sentido profundo.",
+        "Consejo": "Haz espacio. Escucha la primera imagen, gesto o intuición y deja que se desarrolle antes de juzgar si es útil."
+      },
+      "9": {
+        "title": "Transformación",
+        "category": "Arte",
+        "Situación actual": "Hay un proceso de transformación en marcha. La pregunta no es si todo seguirá igual, sino qué necesita cambiar y qué debe conservar su esencia.",
+        "Desafío": "El obstáculo puede ser aferrarse a una forma por miedo a perder identidad, control o reconocimiento. También puede haber cambios externos que no elegiste.",
+        "Consejo": "Trabaja con el cambio en vez de negarlo. Conserva el núcleo, suelta la forma agotada y observa qué posibilidad aparece al otro lado."
+      },
+      "10": {
+        "title": "Confianza",
+        "category": "Arte",
+        "Situación actual": "El centro de la cuestión es cuánto confías en el proceso, en ti o en alguien implicado. Esa confianza necesita distinguir intuición de deseo.",
+        "Desafío": "El reto puede ser la inseguridad, pero también el exceso de confianza. Creer sin observar puede ser tan limitante como dudar de todo.",
+        "Consejo": "Avanza con confianza vigilante. Da el siguiente paso sin exigir garantías absolutas, pero mantén los ojos abiertos."
+      },
+      "11": {
+        "title": "Visión",
+        "category": "Arte",
+        "Situación actual": "La situación requiere mirar más allá de la superficie. Hay información disponible, pero necesita perspectiva para convertirse en visión.",
+        "Desafío": "El obstáculo puede ser una mirada estrecha, una imagen idealizada o la dificultad de ver lo que contradice tus expectativas. También otro puede estar imponiendo su visión.",
+        "Consejo": "Cambia de altura, distancia o ángulo. Antes de actuar, mira la escena como si no supieras todavía qué significa."
+      },
+      "12": {
+        "title": "Totalidad",
+        "category": "Arte",
+        "Situación actual": "Hay muchas voces, capas o factores actuando a la vez. La clave puede estar en comprender el conjunto sin reducirlo a una sola explicación.",
+        "Desafío": "El reto puede ser abarcar demasiado y perder concreción, o identificarse con una parte creyendo que es el todo. La amplitud también necesita centro.",
+        "Consejo": "Incluye lo que habías dejado fuera. Busca una mirada capaz de sostener varias verdades parciales sin forzarlas a ser idénticas."
+      },
+      "13": {
+        "title": "Éxito",
+        "category": "Arte",
+        "Situación actual": "La situación contiene una posibilidad de culminación o reconocimiento. Falta distinguir si persigues el éxito esencial o solo su apariencia.",
+        "Desafío": "El obstáculo puede ser el miedo al fracaso, pero también quedar atrapado en la necesidad de triunfar. A veces el éxito externo desvía del propósito original.",
+        "Consejo": "Define qué sería un logro verdadero antes de perseguirlo. Después, trabaja con constancia y deja que el resultado sea consecuencia, no amo."
+      },
+      "14": {
+        "title": "Fascinación",
+        "category": "Arte",
+        "Situación actual": "La escena contiene brillo, encanto o poder de atracción. La pregunta es si estás contemplando algo o quedando absorbido por ello.",
+        "Desafío": "El reto puede ser la idealización, el culto a la apariencia o una atracción que reduce tu discernimiento. También puede ser necesario atravesar la fascinación para encontrar su núcleo verdadero.",
+        "Consejo": "Disfruta de la belleza sin entregarle tu criterio. Mira dos veces: una con asombro y otra sin el hechizo."
+      },
+      "15": {
+        "title": "Observación",
+        "category": "Filosofía",
+        "Situación actual": "El punto central es mirar con atención lo que realmente ocurre, incluido tu propio papel en la escena. El observador también forma parte de lo observado.",
+        "Desafío": "El obstáculo puede ser mirar desde prejuicios, conclusiones previas o hipervigilancia. Observar no es controlar: es permitir que algo se muestre.",
+        "Consejo": "Mira sin corregir inmediatamente. Inclúyete en la observación y pregunta qué cambia cuando dejas de mirar solo desde tu posición habitual."
+      },
+      "16": {
+        "title": "Discernimiento",
+        "category": "Filosofía",
+        "Situación actual": "Hay elementos mezclados que necesitan ser diferenciados. La claridad no llegará acumulando más información, sino distinguiendo mejor.",
+        "Desafío": "El reto puede ser separar sin fragmentar, o decidir sin certeza total. También puede haber apariencias convincentes que oculten motivaciones distintas.",
+        "Consejo": "No preguntes solo “¿es bueno o malo?”. Pregunta de dónde viene, adónde conduce y qué efecto produce en ti cuando lo contemplas sin prisa."
+      },
+      "17": {
+        "title": "Dogmatismo",
+        "category": "Filosofía",
+        "Situación actual": "La situación parece atravesada por certezas fuertes. Puede tratarse de tus propias ideas, de otra persona o de un sistema de creencias que condiciona el escenario.",
+        "Desafío": "El dogmatismo puede ser el propio o el que encuentras enfrente: una persona, un grupo, una institución o una creencia social. El reto es no combatir rigidez convirtiéndote en su espejo.",
+        "Consejo": "Sostén tus convicciones sin cerrar la puerta a la diferencia. Pregunta qué parte de tu certeza nace de experiencia viva y cuál solo necesita tener razón."
+      },
+      "18": {
+        "title": "La caverna",
+        "category": "Filosofía",
+        "Situación actual": "La situación contiene una limitación de perspectiva. Tal vez no falte solución, sino espacio mental para imaginar que hay algo fuera del marco actual.",
+        "Desafío": "El obstáculo puede ser el miedo a abandonar una explicación conocida, incluso si te aprisiona. También puede haber un entorno que refuerza esa caverna.",
+        "Consejo": "Busca una grieta en la pared, no una respuesta perfecta. Contrasta, amplía perspectiva y permite que una pequeña evidencia nueva cuestione el escenario completo."
+      },
+      "19": {
+        "title": "Vuelo",
+        "category": "Filosofía",
+        "Situación actual": "Algo necesita elevarse por encima de la repetición. Quizá la salida sea cambiar de nivel de comprensión antes que insistir en el mismo plano de acción.",
+        "Desafío": "El reto puede ser confundir libertad con huida, o quedarse pegado a una dificultad por miedo a perder control. Volar requiere soltar, pero también dirección.",
+        "Consejo": "Toma altura. Mira el conjunto, aligera lo que no necesitas y vuelve a la situación con una perspectiva más amplia."
+      },
+      "20": {
+        "title": "Divergencia",
+        "category": "Filosofía",
+        "Situación actual": "La situación está atravesada por una bifurcación. Antes de elegir un lado, conviene comprender qué verdad parcial protege cada camino.",
+        "Desafío": "El obstáculo puede ser convertir la diferencia en enemistad o sentir que solo una opción puede existir. También puede haber una divergencia interna entre lo que piensas, sientes y haces.",
+        "Consejo": "No fuerces una unión prematura. Deja que las diferencias se expresen, identifica su raíz y busca el punto donde puedan relacionarse sin anularse."
+      },
+      "21": {
+        "title": "Liberación",
+        "category": "Filosofía",
+        "Situación actual": "La escena gira alrededor de un vínculo que aprieta demasiado: una creencia, obligación, miedo, papel o relación con un resultado.",
+        "Desafío": "El obstáculo puede ser una atadura visible o una identificación más sutil: necesitar tener razón, ser aprobado, conservar una imagen o repetir una historia.",
+        "Consejo": "Pregunta qué podrías soltar sin perderte a ti mismo. Afloja primero la identificación; muchas veces la cadena se debilita antes que la circunstancia."
+      },
+      "22": {
+        "title": "La clave",
+        "category": "Espiritualidad",
+        "Situación actual": "Existe un elemento que desbloquea el conjunto. Puede ser una pregunta, un gesto, una renuncia, una conversación o una comprensión interior.",
+        "Desafío": "El reto puede ser buscar llaves espectaculares y pasar por alto la que ya tienes. También puedes intentar abrir una puerta que no te corresponde.",
+        "Consejo": "Identifica qué pequeño cambio produciría una gran diferencia. No fuerces la puerta: comprende primero qué mecanismo estás intentando abrir."
+      },
+      "23": {
+        "title": "Transmutación",
+        "category": "Espiritualidad",
+        "Situación actual": "Hay materia prima para una transformación real. El proceso puede sentirse incómodo porque no se trata de decorar lo viejo, sino de alterar su cualidad.",
+        "Desafío": "El obstáculo es querer cambiar sin soltar aquello que debe transformarse. El ego puede preferir conservar una ganancia conocida antes que atravesar una pérdida de forma.",
+        "Consejo": "No desperdicies la energía del conflicto. Pregunta en qué podría convertirse si dejas de usarla para defender la forma anterior."
+      },
+      "24": {
+        "title": "Amor",
+        "category": "Espiritualidad",
+        "Situación actual": "La pregunta central puede ser qué forma adopta el amor en esta escena: acercarse, comprender, poner un límite, acompañar o dejar libre.",
+        "Desafío": "El reto es no confundir amor con dependencia, complacencia o idealización. A veces amar exige ver con claridad aquello que preferiríamos justificar.",
+        "Consejo": "Busca la acción que aumente comprensión y dignidad, no solo comodidad. Inclúyete también a ti dentro de aquello que merece cuidado."
+      },
+      "25": {
+        "title": "Cambio",
+        "category": "Espiritualidad",
+        "Situación actual": "Algo está dejando de encajar con la estructura anterior. La tensión quizá no sea señal de error, sino de que la forma necesita actualizarse.",
+        "Desafío": "El obstáculo puede ser resistir el cambio por miedo, o cambiar compulsivamente para no profundizar. No todo movimiento es transformación.",
+        "Consejo": "Distingue qué cambio ya está ocurriendo y coopera con su parte necesaria. No aceleres lo que necesita madurar ni retengas lo que ya terminó."
+      },
+      "26": {
+        "title": "Compromiso",
+        "category": "Espiritualidad",
+        "Situación actual": "La escena exige constancia, responsabilidad o una definición clara de prioridades. Algo pide saber si estás dentro de verdad o solo cerca.",
+        "Desafío": "El obstáculo puede ser comprometerse por obligación, miedo o imagen, o evitar todo compromiso para conservar opciones. Ambos extremos pueden vaciar el camino.",
+        "Consejo": "Elige aquello que puedas sostener con libertad. Comprométete menos con la apariencia del resultado y más con la calidad del paso que repites."
+      },
+      "27": {
+        "title": "Comprensión",
+        "category": "Espiritualidad",
+        "Situación actual": "No parece faltar información, sino integración. Varias piezas ya están presentes, pero aún no forman una imagen comprensible.",
+        "Desafío": "El reto puede ser querer comprender demasiado rápido o usar la comprensión para justificar lo injustificable. Comprender no significa aprobar.",
+        "Consejo": "Busca el sentido que conecta las piezas sin negar los hechos. Deja que la comprensión amplíe tu respuesta en lugar de cerrarla."
+      },
+      "28": {
+        "title": "Consciencia",
+        "category": "Espiritualidad",
+        "Situación actual": "La clave de la escena puede ser simplemente darse cuenta: de un patrón, una elección, una reacción automática o una verdad que estaba delante.",
+        "Desafío": "El obstáculo puede ser saber algo intelectualmente sin encarnarlo, o usar la idea de consciencia como superioridad. Ver más implica también asumir mayor responsabilidad.",
+        "Consejo": "Permanece presente y observa qué sabes ahora que antes no sabías. Deja que esa comprensión modifique el siguiente gesto, aunque sea pequeño."
+      }
+    }
+  },
+  "tirada_libre": {
+    "extra_by_position": false,
+    "reason": "Este modo no define labels/posiciones fijas; se conserva la interpretación abierta de la carta y de su categoría."
+  }
+}
